@@ -1,7 +1,8 @@
-package amber_team.amber.dao;
+package amber_team.amber.user;
 
 
-import amber_team.amber.model.User;
+import amber_team.amber.util.ErrorMesagges;
+import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -26,32 +27,27 @@ public class UserDao implements IUserDao {
     public ResponseEntity save(User user){
         if(!checkEmailAviability(user.getEmail())) {
             return ResponseEntity.badRequest()
-                    .body("{ErrorMessage : 'Your email is already registered'}");
+                    .body(ErrorMesagges.ALREADY_REGISTERED_EMAIL);
 
         } else {
-
-            String sql = "INSERT INTO users" +
-                    " (id ,email, password, s_name, f_name) VALUES (?, ?, ?, ?, ?);" +
-                    "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)";
             jdbcTemplate = new JdbcTemplate(dataSource);
             String id = UUID.randomUUID().toString();
             int role_id = 2; //Role_User
-            jdbcTemplate.update(sql, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSname(), user.getFname(), id, role_id});
+            jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
+                    user.getSecondName(), user.getFirstName(), id, role_id});
             User result = new User();
             result.setId(id);
-            result.setFname(user.getFname());
-            result.setSname(user.getSname());
+            result.setFirstName(user.getFirstName());
+            result.setSecondName(user.getSecondName());
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
         }
     }
 
     private boolean checkEmailAviability(String email){
-        String sql = "SELECT email FROM users WHERE email=?";
         jdbcTemplate = new JdbcTemplate(dataSource);
         try {
-            jdbcTemplate.queryForObject(sql, new Object[]{email}, String.class);
+            jdbcTemplate.queryForObject(SQLQueries.EXISTING_THIS_EMAIL, new Object[]{email}, String.class);
         } catch (EmptyResultDataAccessException e){
             return true;
         }

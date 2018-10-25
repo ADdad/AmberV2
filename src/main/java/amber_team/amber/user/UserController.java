@@ -1,9 +1,7 @@
-package amber_team.amber.controller;
+package amber_team.amber.user;
 
 
-import amber_team.amber.model.User;
-import amber_team.amber.model.UserDto;
-import amber_team.amber.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

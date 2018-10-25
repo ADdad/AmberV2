@@ -1,7 +1,7 @@
-package amber_team.amber.dao;
+package amber_team.amber.user;
 
 
-import amber_team.amber.model.User;
+
 import org.springframework.http.ResponseEntity;
 
 public interface IUserDao {

@@ -1,4 +1,4 @@
-package amber_team.amber.model;
+package amber_team.amber.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,19 +43,19 @@ public class User {
         this.password = password;
     }
 
-    public String getSname() {
+    public String getSecondName() {
         return s_name;
     }
 
-    public void setSname(String s_name) {
+    public void setSecondName(String s_name) {
         this.s_name = s_name;
     }
 
-    public String getFname() {
+    public String getFirstName() {
         return f_name;
     }
 
-    public void setFname(String f_name) {
+    public void setFirstName(String f_name) {
         this.f_name = f_name;
     }
 
