@@ -1,7 +1,7 @@
 package amber_team.amber.user;
 
 
-import amber_team.amber.util.ErrorMesagges;
+import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -27,14 +27,15 @@ public class UserDao implements IUserDao {
     public ResponseEntity save(User user){
         if(!checkEmailAviability(user.getEmail())) {
             return ResponseEntity.badRequest()
-                    .body(ErrorMesagges.ALREADY_REGISTERED_EMAIL);
+                    .body(ErrorMessages.ALREADY_REGISTERED_EMAIL);
 
         } else {
             jdbcTemplate = new JdbcTemplate(dataSource);
             String id = UUID.randomUUID().toString();
             int role_id = 2; //Role_User
+            int enabled = 1;
             jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSecondName(), user.getFirstName(), id, role_id});
+                    user.getSecondName(), user.getFirstName(), enabled, id, role_id});
             User result = new User();
             result.setId(id);
             result.setFirstName(user.getFirstName());

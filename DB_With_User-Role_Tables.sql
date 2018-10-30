@@ -1,11 +1,10 @@
 CREATE TABLE public.roles
 (
     id integer DEFAULT nextval('roles_id_seq'::regclass) PRIMARY KEY NOT NULL,
-    description varchar(255) NOT NULL,
     name varchar(40)
 );
-INSERT INTO public.roles (id, description, name) VALUES (1, 'Admin role', 'ROLE_ADMIN');
-INSERT INTO public.roles (id, description, name) VALUES (2, 'User role', 'ROLE_USER');
+INSERT INTO public.roles (id, name) VALUES (1, 'ROLE_ADMIN');
+INSERT INTO public.roles (id, name) VALUES (2, 'ROLE_USER');
 CREATE TABLE public.user_roles
 (
     role_id integer NOT NULL,

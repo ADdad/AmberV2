@@ -2,7 +2,7 @@ package amber_team.amber.user;
 
 
 
-import amber_team.amber.util.ErrorMesagges;
+import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.RegExp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +28,13 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity save(UserDto user) {
 		if(!checkConfirmPass(user.getPassword(),user.getConfirmPassword())) {
 			return ResponseEntity.badRequest()
-					.body(ErrorMesagges.PASSWORD_AND_CONFIRMATION_NOT_EQUAL);
+					.body(ErrorMessages.PASSWORD_AND_CONFIRMATION_NOT_EQUAL);
 		} else if (!checkForNotNull(user.getEmail(),user.getPassword(),user.getFirstName(),user.getSecondName())) {
 			return ResponseEntity.badRequest()
-					.body(ErrorMesagges.BLANK_INPUTS);
+					.body(ErrorMessages.BLANK_INPUTS);
 		} else if (!checkEmailReg(user.getEmail())) {
 			return ResponseEntity.badRequest()
-					.body(ErrorMesagges.INVALID_EMAIL);
+					.body(ErrorMessages.INVALID_EMAIL);
 		} else {
 			User newUser = new User();
 			newUser.setEmail(user.getEmail());
