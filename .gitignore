@@ -139,3 +139,5 @@ buildNumber.properties
 
 ### Node modules ###
 src/main/webapp/node_modules
+### Frontend build ###
+src/main/webapp/build

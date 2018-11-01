@@ -33,7 +33,7 @@ class LogInForm extends Component {
     console.log(this.state.mail, "\n", this.state.password);
     var params = new URLSearchParams([['email',this.state.mail],['password',this.state.password]]);
     
-    fetch("http://localhost:8080/perform_login", {
+    fetch("/perform_login", {
       method: "POST",
       body: params,
       headers: {

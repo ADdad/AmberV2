@@ -5,7 +5,7 @@
 
     <groupId>amber_team</groupId>
     <artifactId>amber</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <name>amber</name>
@@ -26,6 +26,7 @@
         <node.version>v8.11.3</node.version>
         <npm.version>6.1.0</npm.version>
         <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+        <full-artifact-name>target/${project.artifactId}-${project.version}.jar</full-artifact-name>
     </properties>
 
     <dependencies>
@@ -68,15 +69,6 @@
                     <addResources>true</addResources>
                 </configuration>
             </plugin>
-            <!-- Heroku plugin -->
-            <plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-maven-plugin</artifactId>
-                <version>2.0.6</version>
-                <configuration>
-                    <appName>netcracker-back</appName>
-                </configuration>
-            </plugin>
             <!-- react build configuration -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -115,7 +107,7 @@
                         </goals>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <arguments>build</arguments>
+                            <arguments>run-script build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -141,6 +133,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>2.0.6</version>
+                <configuration>
+                    <appName>netcracker-back</appName>
+                    <includeTarget>false</includeTarget>
+                    <includes>
+                        <include>${basedir}/${full-artifact-name}</include>
+                    </includes>
+                    <jdkVersion>1.8</jdkVersion>
+                    <processTypes>
+                        <web>java $JAVA_OPTS -jar ${full-artifact-name}</web>
+                    </processTypes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
