@@ -9,5 +9,6 @@
 1. Make sure you are collaborator for our [heroku app](netcracker-backend.herokuapp.com) (contact me if you want to contribute sdimka0777@gmail.com)
 2. Check application.properties and set credentials of remote db (You can see them on app-dashboard -> resources -> heroku postgres -> settings -> Database credentials)
 3. Use command `mvn package` in root of the project to build jar file.
-4. Use command `mvn heroku:deploy` to deploy.
-5. Go to [your app](netcracker-backend.herokuapp.com).
+4. Use command `heroku login` to login in your heroku account.
+5. Use command `mvn heroku:deploy` to deploy.
+6. Go to [your app](netcracker-backend.herokuapp.com).
