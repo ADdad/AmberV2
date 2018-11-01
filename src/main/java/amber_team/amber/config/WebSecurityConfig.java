@@ -26,7 +26,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -49,15 +49,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
 
                 .authorizeRequests()
-                .antMatchers("/register","/perform_login", "/login","/*.js","/*.ico", "/*.json", "/index*","/perform_login", "/static/**", "/**").permitAll()
+                .antMatchers("/register","/perform_login","/*.js","/*.ico", "/*.json", "/index*", "/static/**", "/registration", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
+                .formLogin().loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .loginProcessingUrl("/perform_login")
-                //.defaultSuccessUrl("/admin", true)
-                .failureUrl("/index.html?error=true")
+                .defaultSuccessUrl("/admin", true)
+                //.failureUrl("/index.html?error=true")
                 .and()
                 .logout().logoutSuccessUrl("/login")
                 .and().csrf().disable();

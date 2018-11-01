@@ -136,3 +136,6 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+
+### Node modules ###
+src/main/webapp/node_modules

@@ -1,11 +1,16 @@
 package amber_team.amber.config;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-@EnableWebMvc
+
 @Configuration
 @Controller
 public class MvcConfig extends WebMvcConfigurerAdapter {
@@ -16,6 +21,25 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+    }
+
+    @GetMapping("/")
+    public String index() {
+        return "index.html";
+    }
+
+    @GetMapping("/registration")
+    public String registration() {
+        return "index.html";
+    }
+
+    @GetMapping("/login")
+    public String login() { return "index.html"; }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String admin() {
+        return "index.html";
     }
 
 }
