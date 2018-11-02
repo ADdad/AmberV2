@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from 'react-router-dom';
 import "bootstrap";
 import "jquery";
 class LogInForm extends Component {
@@ -6,11 +7,11 @@ class LogInForm extends Component {
     super(props);
 
     this.state = {
-      mail: "",
-      password: "",
-      alert: "",
-      error: false,
-      res: false
+        mail: "",
+        password: "",
+        alert: "",
+        error: false,
+        res: false
     };
   }
 
@@ -39,8 +40,14 @@ class LogInForm extends Component {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
-    })
-      .then(response => response.json())
+    })  //response.json()
+      .then(response => {
+          if(response.ok) {
+              //this.props.history.push('/admin')
+          } else {
+              this.setState({ alert: "Fields are not filled propperly" })
+          }
+      } )
       .then(a => this.props.isAuth(a))
       .catch(error => console.log(error));
     // If any error is still present or password is < 6 printing error
@@ -49,7 +56,11 @@ class LogInForm extends Component {
       ? this.setState({ alert: "Fields are not filled propperly" })
       : this.setState({ alert: "Logging in..." });
   };
+  handleRegistration = () => {
+      this.props.history.push('/registration')
+  }
   render() {
+
     // const { from } = this.props.location.state || { from: { pathname: "/" } };
     return (
       <React.Fragment>
@@ -60,6 +71,7 @@ class LogInForm extends Component {
             <br />
             <br />
             <br />
+
             {/* Mail input field */}
             <input
               type="text"
@@ -88,6 +100,13 @@ class LogInForm extends Component {
             >
               Login
             </button>
+              {/* Button to registration */}
+              <button
+                  className="btn btn-primary m-2"
+                  onClick={this.handleRegistration}
+              >
+                  Register
+              </button>
             {/* Error label for submitting */}
             <label>{this.state.alert}</label>
           </div>
@@ -97,4 +116,4 @@ class LogInForm extends Component {
   }
 }
 
-export default LogInForm;
+export default withRouter(LogInForm);

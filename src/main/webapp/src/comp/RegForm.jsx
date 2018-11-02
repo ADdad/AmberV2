@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from 'react-router-dom';
 class RegForm extends Component {
   state = {
     //   To compare passwords
@@ -87,6 +88,9 @@ class RegForm extends Component {
         .catch(error => console.error("Error:", error));
     }
   };
+    handleToLogin = () => {
+        this.props.history.push('/login')
+    }
   render() {
     return (
       <React.Fragment>
@@ -155,6 +159,13 @@ class RegForm extends Component {
             >
               Submit
             </button>
+              {/* Button to login */}
+              <button
+                  className="btn btn-primary m-2"
+                  onClick={this.handleToLogin}
+              >
+                  Login page
+              </button>
             <label>{this.state.alert}</label>
           </div>
         </div>
@@ -163,4 +174,4 @@ class RegForm extends Component {
   }
 }
 
-export default RegForm;
+export default withRouter(RegForm);
