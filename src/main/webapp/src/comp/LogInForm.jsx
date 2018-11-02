@@ -42,13 +42,13 @@ class LogInForm extends Component {
       }
     })  //response.json()
       .then(response => {
-          if(response.ok) {
-              //this.props.history.push('/admin')
+          const regex = /admin$/gm;
+          if(regex.test(response.url)) {
+              this.props.history.push('/admin')
           } else {
               this.setState({ alert: "Fields are not filled propperly" })
           }
       } )
-      .then(a => this.props.isAuth(a))
       .catch(error => console.log(error));
     // If any error is still present or password is < 6 printing error
     console.log(this.state.res);
