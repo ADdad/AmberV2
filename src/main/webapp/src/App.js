@@ -63,7 +63,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <header className="navbar" style={{ position: "fixed" }}>
+          <header className="navbar">
             <Navbar />
           </header>
 
@@ -73,13 +73,8 @@ class App extends Component {
             render={() => <LogInForm isAuth={this.callbk} />}
           />
           <Route path="/registration" component={RegForm} />
-          <PrivateRoute exact path="/admin" component={AdminPage} />
-          <PrivateRoute
-            path="/order"
-            component={Order}
-            yesno={this.state.callback}
-            attachments={this.state.attachments}
-          />
+          <Route path="/admin" component={AdminPage} />
+          <Route path="/order" component={Order} />
         </div>
       </BrowserRouter>
     );

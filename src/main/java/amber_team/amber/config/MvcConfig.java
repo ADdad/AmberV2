@@ -42,4 +42,10 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         return "index.html";
     }
 
+    @GetMapping("/order")
+    @PreAuthorize("isAuthenticated()")
+    public String odrer() {
+        return "index.html";
+    }
+
 }

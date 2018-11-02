@@ -49,7 +49,7 @@ class AdminPage extends Component {
             User`s roles:
             <br/>
             {this.state.userRoles.map(function(role, index){
-                return  <label key={index}>{role} </label>
+                return  <label key={index}>{role+", "}</label>
             })}
         </div>
       </React.Fragment>
