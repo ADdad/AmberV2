@@ -9,11 +9,13 @@ class RegForm extends Component {
     confirmPass: "",
     name: "",
     surname: "",
+      loginStatus: false,
     // Errors for each situation
     errorMail: false,
-    errorPass: false,
-    errorConfPass: false,
-    errorName: false
+    errorPass: true,
+    errorConfPass: true,
+    errorName: true,
+      errorSurname: true
   };
   handleMailChange = p => {
     this.setState({ mail: p.target.value });
@@ -43,23 +45,29 @@ class RegForm extends Component {
   };
   writeSurName = p => {
     this.setState({ surname: p.target.value });
-    this.handleNamesChange(p);
+    this.handleSurnameChange(p);
   };
   handleNamesChange = p => {
     //this.setState({ name: p.target.value });
     //   Only lettersa
-    console.log(p.target.value);
-    /[a-zA-Z]+/.test(p.target.value)
+
+    /^[a-zA-Z]+$/.test(p.target.value)
       ? this.setState({ errorName: false })
       : this.setState({ errorName: true });
   };
-  handleSubmit = () => {
+  handleSurnameChange = p => {
+      /^[a-zA-Z]+$/.test(p.target.value)
+          ? this.setState({ errorSurname: false })
+          : this.setState({ errorSurname: true });
+  }
+   handleSubmit = async () => {
     //   Container for all errors
     const error =
       this.state.errorConfPass ||
       this.state.errorMail ||
       this.state.errorName ||
-      this.state.errorPass;
+      this.state.errorPass ||
+        this.state.errorSurname;
     console.log(
       this.state.errorConfPass,
       this.state.errorMail,
@@ -69,8 +77,9 @@ class RegForm extends Component {
     if (error) {
       this.setState({ alert: "Fields are not filled propperly" });
     } else {
+
       this.setState({ alert: "Registring..." });
-      fetch("/register", {
+      await fetch("/register", {
         method: "POST",
         body: JSON.stringify({
           email: this.state.mail,
@@ -83,9 +92,42 @@ class RegForm extends Component {
           "Content-Type": "application/json"
         }
       })
-        .then(res => res.json())
-        .then(response => console.log("Success:", JSON.stringify(response)))
-        .catch(error => console.error("Error:", error));
+        .then(res => {
+            if(res.status == 200) {
+                this.setState({alert: "Succesfuly registered"})
+                this.setState({ loginStatus: true})
+                console.log("Success:", JSON.stringify(res))
+                console.log(res.status);
+            } else {
+                this.setState({ alert: "You are already registered" })
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            this.setState({ alert: "Registration failed" })
+        });
+    }
+      //setTimeout(function(){}, 1000);
+    if(this.state.loginStatus){
+        this.setState({ alert: "Logging in"})
+        var params = new URLSearchParams([['email',this.state.mail],['password',this.state.pass]]);
+
+        fetch("/perform_login", {
+            method: "POST",
+            body: params,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        })  //response.json()
+            .then(response => {
+                const regex = /admin$/gm;
+                if(regex.test(response.url)) {
+                    this.props.history.push('/admin')
+                } else {
+                    this.setState({ alert: "Unknown exception" })
+                }
+            } )
+            .catch(error => console.log(error));
     }
   };
     handleToLogin = () => {
@@ -101,58 +143,61 @@ class RegForm extends Component {
             <br />
             <br />
             <br />
+              <label>Your email</label>
             <input
               type="text"
               className="form-control"
               placeholder="Mail"
               onChange={this.handleMailChange.bind(this)}
-              onFocus={() => this.setState({ errorMail: true })}
+
             />
 
-            <label>{this.state.errorMail ? "Error" : "Login"}</label>
+            <label>{this.state.errorMail ? "Wrong email type" : ""}</label>
             <br />
+              <label>Password</label>
             <input
-              type="text"
+              type="password"
               className="form-control"
               placeholder="Password"
               onChange={this.handlePasswordChange.bind(this)}
-              onFocus={() => this.setState({ errorPass: true })}
+
               required
             />
-            <label>{this.state.errorPass ? "Error" : "Password"}</label>
+            <label>{this.state.errorPass ? "At least 7 characters" : ""}</label>
             <br />
-
+            <label>Confirm password</label>
             <input
-              type="text"
+              type="password"
               className="form-control"
               placeholder="Confirm Password"
               onChange={this.handlePasswordConfChange.bind(this)}
-              onFocus={() => this.setState({ errorConfPass: true })}
+
             />
             <label>
-              {this.state.errorConfPass ? "Error" : "Confirm Password"}
+              {this.state.errorConfPass ? "Should be the same" : ""}
             </label>
             <br />
-
+            <label>Name</label>
             <input
               type="text"
               className="form-control"
               placeholder="Name"
               onChange={this.writeName.bind(this)}
-              onFocus={() => this.setState({ errorName: true })}
+
             />
 
-            <label>{this.state.errorName ? "Error" : "Name"}</label>
+            <label>{this.state.errorName ? "Only letters" : ""}</label>
             <br />
-
+            <label>Surname</label>
             <input
               type="text"
               className="form-control"
               placeholder="Surname"
               onChange={this.writeSurName.bind(this)}
-              onFocus={() => this.setState({ errorName: true })}
+
             />
-            <label>{this.state.errorName ? "Error" : "Surname"}</label>
+            <label>{this.state.errorSurname ? "Only letters" : ""}</label>
+              <div>
             <button
               className="btn btn-outline-primary m-2"
               onClick={this.handleSubmit}
@@ -166,6 +211,7 @@ class RegForm extends Component {
               >
                   Login page
               </button>
+              </div>
             <label>{this.state.alert}</label>
           </div>
         </div>

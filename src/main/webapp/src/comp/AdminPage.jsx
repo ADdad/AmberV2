@@ -4,8 +4,14 @@ class AdminPage extends Component {
   render() {
     return (
       <React.Fragment>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
         <div className="container">
+
           <h1>Admin page</h1>
+
         </div>
       </React.Fragment>
     );

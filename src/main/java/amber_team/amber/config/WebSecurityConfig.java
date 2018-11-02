@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         SQLQueries.USER_BY_USERNAME_QUERY)
                 .authoritiesByUsernameQuery(
                         SQLQueries.AUTHORITIES_BY_USERNAME).passwordEncoder(encoder());
+    }
+
+    public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
+        try {
+            request.login(username, password);
+        } catch (ServletException e) {
+            //LOGGER.error("Error while login ", e);
+        }
     }
 
 

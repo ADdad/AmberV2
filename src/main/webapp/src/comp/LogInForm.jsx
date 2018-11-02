@@ -71,7 +71,7 @@ class LogInForm extends Component {
             <br />
             <br />
             <br />
-
+              <label>Email</label>
             {/* Mail input field */}
             <input
               type="text"
@@ -80,12 +80,12 @@ class LogInForm extends Component {
               className="form-control"
             />
 
-            <label>{this.state.error ? "X" : "V"}</label>
+            <label>{this.state.error ? "Unsupported email form" : ""}</label>
             <br />
-
+            <label>Password</label>
             {/* Password input field */}
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className="form-control"
               onChange={this.handlePasswordChange.bind(this)}
@@ -93,22 +93,24 @@ class LogInForm extends Component {
 
             <br />
 
-            {/* Submit button */}
-            <button
-              className="btn btn-outline-primary m-2"
-              onClick={this.handleSubmit}
-            >
-              Login
-            </button>
-              {/* Button to registration */}
-              <button
-                  className="btn btn-primary m-2"
-                  onClick={this.handleRegistration}
-              >
-                  Register
-              </button>
             {/* Error label for submitting */}
             <label>{this.state.alert}</label>
+              <div>
+                  {/* Submit button */}
+                  <button
+                      className="btn btn-outline-primary m-2"
+                      onClick={this.handleSubmit}
+                  >
+                      Login
+                  </button>
+                  {/* Button to registration */}
+                  <button
+                      className="btn btn-primary m-2"
+                      onClick={this.handleRegistration}
+                  >
+                      Register
+                  </button>
+              </div>
           </div>
         </div>
       </React.Fragment>
