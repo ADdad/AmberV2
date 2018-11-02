@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.regex.Matcher;
 
 
@@ -45,7 +46,12 @@ public class UserServiceImpl implements UserService {
 		}
     }
 
-    private boolean checkForNotNull(String email, String password, String fname, String sname){
+	@Override
+	public ResponseEntity<UserInfoDto> getUserInfo(Principal principal) {
+		return userDao.getUserInfo(principal);
+	}
+
+	private boolean checkForNotNull(String email, String password, String fname, String sname){
 		return !(email.equals("") || password.equals("") || fname.equals("") || sname.equals(""));
 	}
 

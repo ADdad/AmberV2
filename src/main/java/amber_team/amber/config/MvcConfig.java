@@ -37,7 +37,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public String login() { return "index.html"; }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     public String admin() {
         return "index.html";
     }

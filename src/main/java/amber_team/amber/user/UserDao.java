@@ -7,9 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.security.Principal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 @Repository(value = "userDao")
@@ -43,6 +48,25 @@ public class UserDao implements IUserDao {
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
         }
+    }
+
+    @Override
+    public ResponseEntity getUserInfo(Principal principal) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME, new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
+            @Override
+            public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
+                UserInfoDto info = new UserInfoDto();
+                info.setId(resultSet.getString("id"));
+                info.setEmail(resultSet.getString("email"));
+                info.setFirstName(resultSet.getString("f_name"));
+                info.setSecondName(resultSet.getString("s_name"));
+                return info;
+            }
+        });
+        List<String> roles = jdbcTemplate.queryForList(SQLQueries.USER_ROLES_BY_ID, new Object[] {info.getId()}, String.class);
+        info.setRoles(roles);
+        return ResponseEntity.ok(info);
     }
 
     private boolean checkEmailAviability(String email){

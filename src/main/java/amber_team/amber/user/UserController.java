@@ -4,8 +4,10 @@ package amber_team.amber.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,6 +26,10 @@ public class UserController {
         return  userService.save(user);
     }
 
-
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value="/userinfo", method = RequestMethod.GET)
+    public ResponseEntity<UserInfoDto> getUserInfo(Principal principal){
+        return userService.getUserInfo(principal);
+    }
 
 }
