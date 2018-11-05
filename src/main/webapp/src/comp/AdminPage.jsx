@@ -6,8 +6,18 @@ class AdminPage extends Component {
       userFirstName: null,
       userSecondName: null,
       userRoles:[],
-      isLoading:true
+      isLoading:false
   };
+
+  handleLogout = () => {
+
+
+    fetch('/logout')
+        .then(response => document.location.reload())
+        //.then(data=> document.location.reload())
+        .catch(error => console.log(error))
+
+  }
 
   componentDidMount() {
       fetch('/userinfo')
@@ -17,6 +27,8 @@ class AdminPage extends Component {
           })
           .catch(error => console.log(error))
   }
+
+
   render() {
       if (this.state.isLoading) {
           return <p>Loading ...</p>;
@@ -28,7 +40,14 @@ class AdminPage extends Component {
           <br/>
           <br/>
           <br/>
+
         <div className="container">
+            <button
+                className="btn btn-outline-danger m-2 logout-btn"
+                onClick={this.handleLogout}
+            >
+                Logout
+            </button>
           <h1>Admin page</h1>
             User id:
             <br/>

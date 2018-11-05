@@ -35,6 +35,10 @@
   color: white;
 }
 
+.logout-btn {
+  float : right;
+}
+
 .App-link {
   color: #61dafb;
 }
