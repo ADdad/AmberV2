@@ -6,15 +6,12 @@ class AdminPage extends Component {
       userFirstName: null,
       userSecondName: null,
       userRoles:[],
-      isLoading:false
+      isLoading:true
   };
 
   handleLogout = () => {
-
-
     fetch('/logout')
         .then(response => document.location.reload())
-        //.then(data=> document.location.reload())
         .catch(error => console.log(error))
 
   }
