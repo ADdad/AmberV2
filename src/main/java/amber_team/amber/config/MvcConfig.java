@@ -36,7 +36,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @GetMapping("/login")
     public String login() { return "index.html"; }
 
-    @GetMapping("/admin")
+    @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
     public String admin() {
         return "index.html";

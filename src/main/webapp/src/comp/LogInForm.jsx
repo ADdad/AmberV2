@@ -42,9 +42,9 @@ class LogInForm extends Component {
       }
     })  //response.json()
       .then(response => {
-          const regex = /admin$/gm;
+          const regex = /dashboard$/gm;
           if(regex.test(response.url)) {
-              this.props.history.push('/admin')
+              this.props.history.push('/dashboard')
           } else {
               this.setState({ alert: "Fields are not filled propperly" })
           }
