@@ -45,7 +45,7 @@ class AdminPage extends Component {
             >
                 Logout
             </button>
-          <h1>Admin page</h1>
+          <h1>Welcome to your dashboard</h1>
             User id:
             <br/>
             <label>{this.state.userId}</label>
@@ -65,7 +65,7 @@ class AdminPage extends Component {
             User`s roles:
             <br/>
             {this.state.userRoles.map(function(role, index){
-                return  <label key={index}>{role+", "}</label>
+                return  <label key={index}>{role+" "}</label>
             })}
         </div>
       </React.Fragment>

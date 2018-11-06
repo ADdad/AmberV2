@@ -73,7 +73,7 @@ class App extends Component {
             render={() => <LogInForm isAuth={this.callbk} />}
           />
           <Route path="/registration" component={RegForm} />
-          <Route path="/admin" component={AdminPage} />
+          <Route path="/dashboard" component={AdminPage} />
           <Route path="/order" component={Order} />
         </div>
       </BrowserRouter>
