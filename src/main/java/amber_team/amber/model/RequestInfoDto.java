@@ -1,4 +1,4 @@
-package amber_team.amber.request;
+package amber_team.amber.model;
 
 import java.time.LocalDate;
 import java.util.List;

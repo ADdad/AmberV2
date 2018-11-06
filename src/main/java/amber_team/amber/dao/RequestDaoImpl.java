@@ -1,6 +1,8 @@
-package amber_team.amber.request;
+package amber_team.amber.dao;
 
 
+import amber_team.amber.model.Request;
+import amber_team.amber.model.RequestStatusChangeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 
 @Repository(value = "requestDao")
-public class RequestDao implements IRequestDao {
+public class RequestDaoImpl implements IRequestDao {
     @Autowired
     private DataSource dataSource;
     @Autowired

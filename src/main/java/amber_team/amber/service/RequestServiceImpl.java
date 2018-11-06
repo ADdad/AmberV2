@@ -1,7 +1,11 @@
-package amber_team.amber.request;
+package amber_team.amber.service;
 
 
 
+import amber_team.amber.dao.IRequestDao;
+import amber_team.amber.model.Request;
+import amber_team.amber.model.RequestSaveDto;
+import amber_team.amber.model.RequestStatusChangeDto;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service(value = "requestService")
-public class RequestServiceImpl implements RequestService {
+public class RequestServiceImpl implements IRequestService {
 	
 
 

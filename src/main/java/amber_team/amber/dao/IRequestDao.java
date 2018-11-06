@@ -1,7 +1,9 @@
-package amber_team.amber.request;
+package amber_team.amber.dao;
 
 
 
+import amber_team.amber.model.Request;
+import amber_team.amber.model.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
 public interface IRequestDao {

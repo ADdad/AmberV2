@@ -1,13 +1,16 @@
-package amber_team.amber.request;
+package amber_team.amber.controller;
 
 
 
+import amber_team.amber.model.Request;
+import amber_team.amber.model.RequestInfoDto;
+import amber_team.amber.model.RequestSaveDto;
+import amber_team.amber.model.RequestStatusChangeDto;
+import amber_team.amber.service.IRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -15,7 +18,7 @@ import java.security.Principal;
 public class RequestController {
 
     @Autowired
-    private RequestService requestService;
+    private IRequestService requestService;
 
     @PreAuthorize("isAuthenticated() and (#request.getCreator_id() == principal.id or request.getExecutor_id() == principal.id)")
     @RequestMapping(value="/r_info", method = RequestMethod.GET)

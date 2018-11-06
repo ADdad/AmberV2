@@ -1,4 +1,4 @@
-package amber_team.amber.user;
+package amber_team.amber.model;
 
 public class UserDto {
 

@@ -1,7 +1,11 @@
-package amber_team.amber.user;
+package amber_team.amber.service;
 
 
 
+import amber_team.amber.dao.IUserDao;
+import amber_team.amber.model.User;
+import amber_team.amber.model.UserDto;
+import amber_team.amber.model.UserInfoDto;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.RegExp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,7 @@ import java.util.regex.Matcher;
 
 
 @Service(value = "userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements IUserService {
 	
 
 

@@ -1,4 +1,4 @@
-package amber_team.amber.user;
+package amber_team.amber.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,11 +1,11 @@
-package amber_team.amber.request;
+package amber_team.amber.service;
 
+import amber_team.amber.model.RequestSaveDto;
+import amber_team.amber.model.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
-import java.security.Principal;
 
-
-public interface RequestService {
+public interface IRequestService {
 
     ResponseEntity getRequestInfo(RequestStatusChangeDto request);
     ResponseEntity save(RequestSaveDto request);

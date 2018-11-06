@@ -1,7 +1,8 @@
-package amber_team.amber.user;
+package amber_team.amber.dao;
 
 
 
+import amber_team.amber.model.User;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;

@@ -1,4 +1,4 @@
-package amber_team.amber.request;
+package amber_team.amber.model;
 
 
 public class RequestStatusChangeDto {

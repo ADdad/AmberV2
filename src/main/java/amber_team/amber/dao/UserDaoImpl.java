@@ -1,6 +1,8 @@
-package amber_team.amber.user;
+package amber_team.amber.dao;
 
 
+import amber_team.amber.model.User;
+import amber_team.amber.model.UserInfoDto;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository(value = "userDao")
-public class UserDao implements IUserDao {
+public class UserDaoImpl implements IUserDao {
     @Autowired
     private DataSource dataSource;
     @Autowired
