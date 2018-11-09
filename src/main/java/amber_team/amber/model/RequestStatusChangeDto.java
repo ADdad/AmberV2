@@ -3,17 +3,26 @@ package amber_team.amber.model;
 
 public class RequestStatusChangeDto {
 
-    private String id;
+    private String username;
+    private String request_id;
     private String creator_id;
     private String executor_id;
     private String status;
 
-    public String getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(String id) {
+        this.request_id = id;
     }
 
     public String getCreator_id() {
