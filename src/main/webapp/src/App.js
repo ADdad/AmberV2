@@ -5,9 +5,10 @@ import RegForm from "./comp/RegForm";
 import LogInForm from "./comp/LogInForm";
 import AdminPage from "./comp/AdminPage";
 import Navbar from "./comp/Navbar";
+import ErrorPage from "./comp/ErrorPage";
 // import PrivateRoute from "./PrivateRoute";
 import "./App.css";
-import { Route, BrowserRouter, Redirect } from "react-router-dom";
+import { Route, BrowserRouter, Redirect, Switch } from "react-router-dom";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -60,6 +61,8 @@ class App extends Component {
     return this.state.callback;
   }
   render() {
+
+
     return (
       <BrowserRouter>
         <div>
@@ -68,13 +71,17 @@ class App extends Component {
           </header>
 
           <br />
+            <Switch>
           <Route
             path="/login"
             render={() => <LogInForm isAuth={this.callbk} />}
           />
+
           <Route path="/registration" component={RegForm} />
           <Route path="/dashboard" component={AdminPage} />
           <Route path="/order" component={Order} />
+            <Route component={ErrorPage} />
+          </Switch>
         </div>
       </BrowserRouter>
     );
