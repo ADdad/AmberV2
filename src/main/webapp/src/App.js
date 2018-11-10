@@ -9,6 +9,8 @@ import ErrorPage from "./comp/ErrorPage";
 // import PrivateRoute from "./PrivateRoute";
 import "./App.css";
 import { Route, BrowserRouter, Redirect, Switch } from "react-router-dom";
+import CreateOrder from "./comp/CreateOrder";
+import OrderReview from "./comp/OrderReview";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -61,8 +63,6 @@ class App extends Component {
     return this.state.callback;
   }
   render() {
-
-
     return (
       <BrowserRouter>
         <div>
@@ -71,15 +71,17 @@ class App extends Component {
           </header>
 
           <br />
-            <Switch>
-          <Route
-            path="/login"
-            render={() => <LogInForm isAuth={this.callbk} />}
-          />
+          <Switch>
+            <Route
+              path="/login"
+              render={() => <LogInForm isAuth={this.callbk} />}
+            />
 
-          <Route path="/registration" component={RegForm} />
-          <Route path="/dashboard" component={AdminPage} />
-          <Route path="/order" component={Order} />
+            <Route path="/registration" component={RegForm} />
+            <Route path="/order/create" component={CreateOrder} />
+            <Route path="/order/view/:requestId" component={OrderReview} />
+            <Route path="/dashboard" component={AdminPage} />
+            <Route path="/order" component={Order} />
             <Route component={ErrorPage} />
           </Switch>
         </div>

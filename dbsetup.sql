@@ -58,11 +58,17 @@ CREATE TABLE requests (
     creator_id varchar(100) REFERENCES users (id) ON UPDATE CASCADE,
     executor_id varchar(100) REFERENCES users (id) ON UPDATE CASCADE,
     req_type_id varchar(100) REFERENCES request_types (id),
+    connected_request varchar(100) REFERENCES request (id),
     status varchar(40) NOT NULL,
     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     description text,
     archive bool NOT NULL
+);
+
+CREATE TABLE connected_requests (
+    order_request varchar(100) REFERENCES requests (id) NOT NULL,
+    connected_request varchar(100) REFERENCES requests (id) NOT NULL,
 );
 
 CREATE TABLE request_equipment (
