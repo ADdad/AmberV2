@@ -2,11 +2,11 @@ package amber_team.amber.controller;
 
 
 
-import amber_team.amber.model.Request;
-import amber_team.amber.model.RequestInfoDto;
-import amber_team.amber.model.RequestSaveDto;
-import amber_team.amber.model.RequestStatusChangeDto;
-import amber_team.amber.service.IRequestService;
+import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.dto.RequestInfoDto;
+import amber_team.amber.model.dto.RequestSaveDto;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
+import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class RequestController {
 
     @Autowired
-    private IRequestService requestService;
+    private RequestService requestService;
 
     @PreAuthorize("isAuthenticated() and (#request.getUsername() == principal.username or request.getUsername() == principal.username)")
     @RequestMapping(value="/r_info", method = RequestMethod.GET)

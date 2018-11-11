@@ -1,13 +1,13 @@
-package amber_team.amber.dao;
+package amber_team.amber.dao.interfaces;
 
 
 
-import amber_team.amber.model.User;
+import amber_team.amber.model.entities.User;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
 
-public interface IUserDao {
+public interface UserDao {
     public ResponseEntity save (User user);
     public ResponseEntity getUserInfo(Principal principal);
 }

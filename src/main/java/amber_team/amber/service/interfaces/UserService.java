@@ -1,12 +1,12 @@
-package amber_team.amber.service;
+package amber_team.amber.service.interfaces;
 
-import amber_team.amber.model.UserDto;
+import amber_team.amber.model.dto.UserDto;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
 
 
-public interface IUserService {
+public interface UserService {
 
     ResponseEntity save(UserDto user);
     ResponseEntity getUserInfo(Principal principal);

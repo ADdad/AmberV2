@@ -1,12 +1,12 @@
-package amber_team.amber.dao;
+package amber_team.amber.dao.interfaces;
 
 
 
-import amber_team.amber.model.Request;
-import amber_team.amber.model.RequestStatusChangeDto;
+import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
-public interface IRequestDao {
+public interface RequestDao {
     public ResponseEntity save(Request request);
     public ResponseEntity open(RequestStatusChangeDto request);
     public ResponseEntity cancel(RequestStatusChangeDto request);

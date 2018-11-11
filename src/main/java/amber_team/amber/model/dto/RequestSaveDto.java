@@ -1,4 +1,4 @@
-package amber_team.amber.model;
+package amber_team.amber.model.dto;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ public class RequestSaveDto {
     private String username;
     private String title;
     private String description;
-    private String type_id;
+    private String typeId;
     private List<String> attributes;
 
     public String getUsername() {
@@ -34,12 +34,12 @@ public class RequestSaveDto {
         this.description = description;
     }
 
-    public String getType_id() {
-        return type_id;
+    public String getTypeId() {
+        return typeId;
     }
 
-    public void setType_id(String type_id) {
-        this.type_id = type_id;
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 
     public List<String> getAttributes() {

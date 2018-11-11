@@ -1,9 +1,10 @@
-package amber_team.amber.dao;
+package amber_team.amber.dao.implementation;
 
 
-import amber_team.amber.model.Request;
-import amber_team.amber.model.RequestInfoDto;
-import amber_team.amber.model.RequestStatusChangeDto;
+import amber_team.amber.dao.interfaces.RequestDao;
+import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.dto.RequestInfoDto;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 @Repository(value = "requestDao")
-public class RequestDaoImpl implements IRequestDao {
+public class RequestDaoImpl implements RequestDao {
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -41,16 +42,16 @@ public class RequestDaoImpl implements IRequestDao {
 
         LocalDate creationDate = LocalDate.now();
 
-        jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreator_id(), request.getType_id(), status,
+        jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
                 creationDate, creationDate, request.getDescription(), 0);
 
         Request result = new Request();
-        result.setRequest_id(id);
-        result.setCreator_id(request.getCreator_id());
-        result.setType_id(request.getType_id());
+        result.setId(id);
+        result.setCreatorId(request.getCreatorId());
+        result.setTypeId(request.getTypeId());
         result.setStatus(status);
-        result.setCreation_date(creationDate);
-        result.setModified_date(creationDate);
+        result.setCreationDate(creationDate);
+        result.setModifiedDate(creationDate);
         result.setDescription(request.getDescription());
         result.setArchive(false);
 
@@ -60,65 +61,65 @@ public class RequestDaoImpl implements IRequestDao {
     @Override
     public ResponseEntity open(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_CREATOR_ID, request.getCreator_id(), request.getStatus(),
-                LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_CREATOR_ID, request.getCreatorId(), request.getStatus(),
+                LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity cancel(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity review(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity reject(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity progress(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID, request.getStatus(), request.getExecutor_id(),
-                LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID, request.getStatus(), request.getExecutorId(),
+                LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity hold(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity deliver(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
     public ResponseEntity complete(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getId());
+        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
         return ResponseEntity.ok(request);
     }
 
     @Override
-    public ResponseEntity getRequestInfo(RequestStatusChangeDto principal) {
+    public ResponseEntity getRequestInfo(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        RequestInfoDto info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {principal.getId()}, new RowMapper<RequestInfoDto>() {
+        RequestInfoDto info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getRequestId()}, new RowMapper<RequestInfoDto>() {
             @Override
             public RequestInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
                 RequestInfoDto info = new RequestInfoDto();

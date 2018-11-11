@@ -2,10 +2,10 @@ package amber_team.amber.controller;
 
 
 
-import amber_team.amber.model.User;
-import amber_team.amber.model.UserDto;
-import amber_team.amber.model.UserInfoDto;
-import amber_team.amber.service.IUserService;
+import amber_team.amber.model.entities.User;
+import amber_team.amber.model.dto.UserDto;
+import amber_team.amber.model.dto.UserInfoDto;
+import amber_team.amber.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,7 @@ import java.security.Principal;
 public class UserController {
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     @RequestMapping(value = "/signin")
     public void sgnin(){}

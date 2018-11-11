@@ -1,11 +1,12 @@
-package amber_team.amber.service;
+package amber_team.amber.service.implementation;
 
 
 
-import amber_team.amber.dao.IUserDao;
-import amber_team.amber.model.User;
-import amber_team.amber.model.UserDto;
-import amber_team.amber.model.UserInfoDto;
+import amber_team.amber.dao.interfaces.UserDao;
+import amber_team.amber.model.entities.User;
+import amber_team.amber.model.dto.UserDto;
+import amber_team.amber.model.dto.UserInfoDto;
+import amber_team.amber.service.interfaces.UserService;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.RegExp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ import java.util.regex.Matcher;
 
 
 @Service(value = "userService")
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements UserService {
 	
 
 
 	@Autowired
-	private IUserDao userDao;
+	private UserDao userDao;
 
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements IUserService {
 			User newUser = new User();
 			newUser.setEmail(user.getEmail());
 			newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-			newUser.setFirstName(user.getFirstName());
+			newUser.setfName(user.getFirstName());
 			newUser.setSecondName(user.getSecondName());
 			return userDao.save(newUser);
 		}
