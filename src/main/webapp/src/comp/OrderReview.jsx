@@ -3,6 +3,7 @@ import Comment from "./Comment";
 import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
+import Attachments from "./Attachments";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
@@ -249,7 +250,7 @@ class OrderReview extends Component {
             </div>
 
             {this.buttonsSpace()}
-            {/*attachments*/}
+            <Attachments attachments={this.state.attachments} />
             <br />
             <br />
             <h2>Comments</h2>

@@ -1,7 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
 import { RadioGroup, Radio } from "react-radio-group";
 import { Checkbox, CheckboxGroup } from "react-checkbox-group";
+import Attachments from "./Attachments";
+import Dropzone from "react-dropzone";
+
 class CreateOrder extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +20,7 @@ class CreateOrder extends Component {
       type: "",
       description: "",
       attachments: [],
+      files: [],
       optionalAttributes: [
         {
           name: "TestRadio",
@@ -187,12 +191,20 @@ class CreateOrder extends Component {
     this.changeOptionalValue(index, checkBoxValues);
   };
 
+  getFileExtension1 = filename => {
+    return /[.]/.exec(filename) ? /[^.]+$/.exec(filename)[0] : undefined;
+  };
+
   handleAdd = () => {
     let readyItems = [
       ...this.state.resultItems.slice(),
       { itemId: 0, quantity: 0 }
     ];
     this.setState({ resultItems: readyItems });
+  };
+
+  handleClearFiles = () => {
+    this.setState({ attachments: [], files: [] });
   };
 
   handleDelete = () => {
@@ -204,10 +216,12 @@ class CreateOrder extends Component {
     this.props.history.push("/dashboard");
   };
 
-  handleAddAddAttachment = event => {
-    console.log(event.target.files[0]);
-    const files1 = Array.from(event.target.files);
-    this.setState({ attachments: files1 });
+  onPreviewDrop = files => {
+    let url = files.map(f => URL.createObjectURL(f));
+    this.setState({
+      files: this.state.files.concat(url),
+      attachments: this.state.attachments.concat(files)
+    });
   };
   handleSubmit = () => {
     fetch("/postOrder", {
@@ -222,6 +236,7 @@ class CreateOrder extends Component {
       .catch(error => console.error("Error:", error));
   };
   render() {
+
     const globalOptionalFields = [...this.state.optionalAttributes];
     let localOptionalFields = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
@@ -331,16 +346,24 @@ class CreateOrder extends Component {
             </button>
 
             <div className="form-row">
-              <button className="form-group col-md-3 btn btn-lg btn-outline-default">
-                Add file{" "}
-                <input
-                  type="file"
-                  multiple
-                  hidden
-                  onChange={e => this.handleAddAddAttachment(e)}
-                />
-              </button>
+              <div className="form-group">
+                <Dropzone
+                  accept="image/*,.doc,.pdf"
+                  onDrop={this.onPreviewDrop}
+                >
+                  Drop an image, get a preview!
+                </Dropzone>
+                <button
+                  onClick={() => this.handleClearFiles()}
+                  className={
+                    "form-group col-md-10 btn btn-lg btn-outline-danger"
+                  }
+                >
+                  Clear files
+                </button>
+              </div>
             </div>
+            <Attachments attachments={this.state.attachments} />
             {localOptionalFields}
             <div className="form-row">
               <button
