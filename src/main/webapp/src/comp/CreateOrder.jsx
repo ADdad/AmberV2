@@ -205,6 +205,7 @@ class CreateOrder extends Component {
   };
 
   handleAddAddAttachment = event => {
+    console.log(event.target.files[0]);
     const files1 = Array.from(event.target.files);
     this.setState({ attachments: files1 });
   };
@@ -330,7 +331,7 @@ class CreateOrder extends Component {
             </button>
 
             <div className="form-row">
-              <label className="form-group col-md-3 btn btn-lg btn-outline-default">
+              <button className="form-group col-md-3 btn btn-lg btn-outline-default">
                 Add file{" "}
                 <input
                   type="file"
@@ -338,7 +339,7 @@ class CreateOrder extends Component {
                   hidden
                   onChange={e => this.handleAddAddAttachment(e)}
                 />
-              </label>
+              </button>
             </div>
             {localOptionalFields}
             <div className="form-row">
