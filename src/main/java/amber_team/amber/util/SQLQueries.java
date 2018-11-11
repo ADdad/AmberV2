@@ -18,4 +18,23 @@ public class SQLQueries {
             "FROM roles " +
             "INNER JOIN user_roles ON roles.id = user_roles.role_id " +
             "WHERE user_roles.user_id=?";
+    public static final String ADD_NEW_REQUEST = "INSERT INTO requests " +
+            "(id, creator_id, req_type_id, status, creation_date, modified_date, description, archive) VALUES (?,?,?,?,?,?,?,?)";
+    public static final String CHANGE_REQUEST_STATUS_AND_CREATOR_ID = "UPDATE requests " +
+            "SET creator_id = ?, status = ?, modified_date = ?" +
+            "WHERE id = ?";
+    public static final String CHANGE_REQUEST_STATUS = "UPDATE requests" +
+            " SET status = ?, modified_date = ?" +
+            " WHERE id = ?";
+    public static final String CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID = "UPDATE requests " +
+            "SET executor_id = ?, status = ?, modified_date = ?" +
+            "WHERE id = ?";
+    public static final String REQUEST_INFO_BY_ID = "SELECT warehouse_id, creator_id, executor_id, type_id," +
+            " title, status, creation_date, modified_date, description, archive" +
+            "FROM requests" +
+            "WHERE requests.id = ?";
+    public static final String REQUEST_ATTRIBUTES_BY_ID = "SELECT attributes" +
+            "FROM requests" +
+            "WHERE requests.id = ?";
+
 }
