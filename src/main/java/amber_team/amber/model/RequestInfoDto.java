@@ -5,6 +5,7 @@ import java.util.List;
 
 public class RequestInfoDto {
 
+    private String username;
     private String request_id;
     private String warehouse_id;
     private String creator_id;
@@ -17,6 +18,14 @@ public class RequestInfoDto {
     private String description;
     private boolean archive;
     private List<String> attributes;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getRequest_id() {
         return request_id;

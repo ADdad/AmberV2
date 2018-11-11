@@ -20,25 +20,25 @@ public class RequestController {
     @Autowired
     private IRequestService requestService;
 
-    @PreAuthorize("isAuthenticated() and (#request.getCreator_id() == principal.id or request.getExecutor_id() == principal.id)")
+    @PreAuthorize("isAuthenticated() and (#request.getUsername() == principal.username or request.getUsername() == principal.username)")
     @RequestMapping(value="/r_info", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> getRequestInfo(RequestStatusChangeDto request){
         return requestService.getRequestInfo(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getCreator_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_save", method = RequestMethod.POST)
     public ResponseEntity<Request> save(RequestSaveDto request){
         return requestService.save(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getCreator_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_open", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> open(RequestStatusChangeDto request){
         return requestService.open(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getCreator_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_cancel", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> cancel(RequestStatusChangeDto request){
         return requestService.cancel(request);
@@ -62,19 +62,19 @@ public class RequestController {
         return requestService.progress(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getExecutor_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_hold", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> hold(RequestStatusChangeDto request){
         return requestService.hold(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getExecutor_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_deliver", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> deliver(RequestStatusChangeDto request){
         return requestService.deliver(request);
     }
 
-    @PreAuthorize("isAuthenticated() and #request.getCreator_id() == principal.id")
+    @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value="/r_completed", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> complete(RequestStatusChangeDto request){
         return requestService.complete(request);

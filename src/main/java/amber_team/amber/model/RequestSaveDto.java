@@ -4,10 +4,19 @@ import java.util.List;
 
 public class RequestSaveDto {
 
+    private String username;
     private String title;
     private String description;
     private String type_id;
     private List<String> attributes;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getTitle() {
         return title;

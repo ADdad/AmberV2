@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 class RegForm extends Component {
   state = {
     //   To compare passwords
@@ -9,13 +9,13 @@ class RegForm extends Component {
     confirmPass: "",
     name: "",
     surname: "",
-      loginStatus: false,
+    loginStatus: false,
     // Errors for each situation
     errorMail: false,
     errorPass: true,
     errorConfPass: true,
     errorName: true,
-      errorSurname: true
+    errorSurname: true
   };
   handleMailChange = p => {
     this.setState({ mail: p.target.value });
@@ -37,7 +37,11 @@ class RegForm extends Component {
     const v = p.target.value;
     v.length < 6 || v !== this.state.chars
       ? this.setState({ errorConfPass: true })
-      : this.setState({ errorConfPass: false, pass: p.target.value, confirmPass: p.target.value });
+      : this.setState({
+          errorConfPass: false,
+          pass: p.target.value,
+          confirmPass: p.target.value
+        });
   };
   writeName = p => {
     this.setState({ name: p.target.value });
@@ -56,18 +60,18 @@ class RegForm extends Component {
       : this.setState({ errorName: true });
   };
   handleSurnameChange = p => {
-      /^[a-zA-Z]+$/.test(p.target.value)
-          ? this.setState({ errorSurname: false })
-          : this.setState({ errorSurname: true });
-  }
-   handleSubmit = async () => {
+    /^[a-zA-Z]+$/.test(p.target.value)
+      ? this.setState({ errorSurname: false })
+      : this.setState({ errorSurname: true });
+  };
+  handleSubmit = async () => {
     //   Container for all errors
     const error =
       this.state.errorConfPass ||
       this.state.errorMail ||
       this.state.errorName ||
       this.state.errorPass ||
-        this.state.errorSurname;
+      this.state.errorSurname;
     console.log(
       this.state.errorConfPass,
       this.state.errorMail,
@@ -77,7 +81,6 @@ class RegForm extends Component {
     if (error) {
       this.setState({ alert: "Fields are not filled propperly" });
     } else {
-
       this.setState({ alert: "Registring..." });
       await fetch("/register", {
         method: "POST",
@@ -93,46 +96,49 @@ class RegForm extends Component {
         }
       })
         .then(res => {
-            if(res.status == 200) {
-                this.setState({alert: "Succesfuly registered"})
-                this.setState({ loginStatus: true})
-                console.log("Success:", JSON.stringify(res))
-                console.log(res.status);
-            } else {
-                this.setState({ alert: "You are already registered" })
-            }
+          if (res.status == 200) {
+            this.setState({ alert: "Succesfuly registered" });
+            this.setState({ loginStatus: true });
+            console.log("Success:", JSON.stringify(res));
+            console.log(res.status);
+          } else {
+            this.setState({ alert: "You are already registered" });
+          }
         })
         .catch(error => {
-            console.error("Error:", error);
-            this.setState({ alert: "Registration failed" })
+          console.error("Error:", error);
+          this.setState({ alert: "Registration failed" });
         });
     }
-      //setTimeout(function(){}, 1000);
-    if(this.state.loginStatus){
-        this.setState({ alert: "Logging in"})
-        var params = new URLSearchParams([['email',this.state.mail],['password',this.state.pass]]);
+    //setTimeout(function(){}, 1000);
+    if (this.state.loginStatus) {
+      this.setState({ alert: "Logging in" });
+      var params = new URLSearchParams([
+        ["email", this.state.mail],
+        ["password", this.state.pass]
+      ]);
 
-        fetch("/perform_login", {
-            method: "POST",
-            body: params,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        })  //response.json()
-            .then(response => {
-                const regex = /dashboard$/gm;
-                if(regex.test(response.url)) {
-                    this.props.history.push('/dashboard')
-                } else {
-                    this.setState({ alert: "Unknown exception" })
-                }
-            } )
-            .catch(error => console.log(error));
+      fetch("/perform_login", {
+        method: "POST",
+        body: params,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }) //response.json()
+        .then(response => {
+          const regex = /dashboard$/gm;
+          if (regex.test(response.url)) {
+            this.props.history.push("/dashboard");
+          } else {
+            this.setState({ alert: "Unknown exception" });
+          }
+        })
+        .catch(error => console.log(error));
     }
   };
-    handleToLogin = () => {
-        this.props.history.push('/login')
-    }
+  handleToLogin = () => {
+    this.props.history.push("/login");
+  };
   render() {
     return (
       <React.Fragment>
@@ -143,24 +149,22 @@ class RegForm extends Component {
             <br />
             <br />
             <br />
-              <label>Your email</label>
+            <label>Your email</label>
             <input
               type="text"
               className="form-control"
               placeholder="Mail"
               onChange={this.handleMailChange.bind(this)}
-
             />
 
             <label>{this.state.errorMail ? "Wrong email type" : ""}</label>
             <br />
-              <label>Password</label>
+            <label>Password</label>
             <input
               type="password"
               className="form-control"
               placeholder="Password"
               onChange={this.handlePasswordChange.bind(this)}
-
               required
             />
             <label>{this.state.errorPass ? "At least 7 characters" : ""}</label>
@@ -171,7 +175,6 @@ class RegForm extends Component {
               className="form-control"
               placeholder="Confirm Password"
               onChange={this.handlePasswordConfChange.bind(this)}
-
             />
             <label>
               {this.state.errorConfPass ? "Should be the same" : ""}
@@ -183,7 +186,6 @@ class RegForm extends Component {
               className="form-control"
               placeholder="Name"
               onChange={this.writeName.bind(this)}
-
             />
 
             <label>{this.state.errorName ? "Only letters" : ""}</label>
@@ -194,24 +196,23 @@ class RegForm extends Component {
               className="form-control"
               placeholder="Surname"
               onChange={this.writeSurName.bind(this)}
-
             />
             <label>{this.state.errorSurname ? "Only letters" : ""}</label>
-              <div>
-            <button
-              className="btn btn-outline-primary m-2"
-              onClick={this.handleSubmit}
-            >
-              Submit
-            </button>
+            <div>
+              <button
+                className="btn btn-outline-primary m-2"
+                onClick={this.handleSubmit}
+              >
+                Submit
+              </button>
               {/* Button to login */}
               <button
-                  className="btn btn-primary m-2"
-                  onClick={this.handleToLogin}
+                className="btn btn-primary m-2"
+                onClick={this.handleToLogin}
               >
-                  Login page
+                Login page
               </button>
-              </div>
+            </div>
             <label>{this.state.alert}</label>
           </div>
         </div>

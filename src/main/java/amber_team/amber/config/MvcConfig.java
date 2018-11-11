@@ -13,15 +13,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @Controller
-public class MvcConfig extends WebMvcConfigurerAdapter {
+public class MvcConfig implements WebMvcConfigurer {
 
-
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-    }
 
     @GetMapping("/")
     public String index() {
@@ -38,13 +31,13 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
-    public String admin() {
+    public String dashboard() {
         return "index.html";
     }
 
     @GetMapping("/order")
     @PreAuthorize("isAuthenticated()")
-    public String odrer() {
+    public String order() {
         return "index.html";
     }
 
