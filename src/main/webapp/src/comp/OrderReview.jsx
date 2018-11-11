@@ -35,7 +35,7 @@ class OrderReview extends Component {
       ],
       warehouse: 0,
       type: "Order",
-      status: "On reviewing",
+      status: "Opened",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",

@@ -11,6 +11,7 @@ import "./App.css";
 import { Route, BrowserRouter, Redirect, Switch } from "react-router-dom";
 import CreateOrder from "./comp/CreateOrder";
 import OrderReview from "./comp/OrderReview";
+import OrderEdit from "./comp/OrderEdit";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -78,11 +79,12 @@ class App extends Component {
             />
 
             <Route path="/registration" component={RegForm} />
+            <Route path="/order/edit/:requestId" component={OrderEdit} />
             <Route path="/order/create" component={CreateOrder} />
             <Route path="/order/:mode/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={AdminPage} />
             <Route path="/order" component={Order} />
-            <Route component={ErrorPage} />
+            <Route path="/error" component={ErrorPage} />
           </Switch>
         </div>
       </BrowserRouter>
