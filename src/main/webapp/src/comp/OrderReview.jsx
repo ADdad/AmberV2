@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import Comment from "./Comment";
 import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
+import CreatorButtons from "./CreatorButtons";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
       requestId: 0,
-      userId: 1,
+      userId: 2,
       userRoles: ["Admin", "User", "Keeper"],
       creator: { id: 2, firstName: "Den", secondName: "Star" },
       title: "Example1",
@@ -28,12 +29,12 @@ class OrderReview extends Component {
         }
       ],
       attributes: [
-        { name: "Additional", order: 1, value: "Test" },
-        { name: "Additional2", order: 2, value: "Test" }
+        { name: "Additional", order: 3, values: ["Test"] },
+        { name: "Additional2", order: 2, values: ["Test", "Test2"] }
       ],
       warehouse: 0,
       type: "Order",
-      status: "In progress",
+      status: "On reviewing",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",
@@ -56,45 +57,123 @@ class OrderReview extends Component {
         { id: 5, firstName: "Andrew", secondName: "Lobinski" },
         { id: 4, firstName: "Nan", secondName: "Kek" }
       ],
-      executorId: 0
+      executorId: 0,
+      mode: ""
     };
   }
 
-  //   componentDidMount() {
-  //     const { requestId } = this.props.match.params;
+  choseExecutor = () => {
+    if (
+      this.state.status === "On reviewing" &&
+      this.state.userRoles.includes("Admin" && this.state.mode === "view")
+    ) {
+      return (
+        <div className="form-row">
+          <div className="form-group">
+            <h4>Executor</h4>
+            <select
+              className="form-control"
+              onChange={e => this.setState({ executorId: e.target.value })}
+            >
+              {this.state.executors.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.firstName + " " + p.secondName}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      );
+    }
+  };
 
-  //     fetch("/userinfo")
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         this.setState({
-  //           userId: data.id,
-  //           userRoles: data.roles
-  //         });
-  //       })
-  //       .catch(error => console.log(error));
+  additionalAttributes = () => {
+    let localAttributes = this.state.attributes;
+    localAttributes.sort(function(a, b) {
+      return parseInt(a.order) - parseInt(b.order);
+    });
 
-  //     fetch(`/r_info/${requestId}`)
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         this.setState({
-  //           title: data.title,
-  //           status: data.status,
-  //           type: data.type,
-  //           description: data.description,
-  //           creationDate: data.creation_date,
-  //           updatedDate: data.modified_date,
-  //           warehouse: data.warehouse,
-  //           executors: data.executors,
-  //           equipment: data.equipment,
-  //           attributes: data.attributes,
-  //           attachments: data.attachments,
-  //           comments: data.comments,
-  //           requestId: requestId,
-  //           isLoading: false
-  //         });
-  //       })
-  //       .catch(error => console.log(error));
-  //   }
+    let renderAttributes = [];
+    localAttributes.map(a => {
+      if (a.values.length == 1) {
+        renderAttributes.push({ name: a.name, value: a.values[0] });
+      } else {
+        let str = "|";
+        a.values.map(v => {
+          str += v + "|";
+        });
+        renderAttributes.push({ name: a.name, value: str });
+      }
+    });
+
+    return (
+      <React.Fragment>
+        {renderAttributes.map(a => (
+          <h5 key={a.name}>
+            {a.name}: {a.value}
+          </h5>
+        ))}
+      </React.Fragment>
+    );
+  };
+
+  buttonsSpace = () => {
+    switch (this.state.mode) {
+      case "view": {
+        return (
+          <ExecutorButtons
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+          />
+        );
+      }
+      case "created": {
+        if (this.state.creator.id == this.state.userId)
+          return <CreatorButtons status={this.state.status} />;
+        else return <h3>Sorry, you can just view that</h3>;
+      }
+      default: {
+        return <h3>Sorry, you can just view that</h3>;
+      }
+    }
+  };
+
+  componentDidMount() {
+    const { requestId } = this.props.match.params;
+    const { mode } = this.props.match.params;
+    this.setState({ requestId: requestId, mode: mode });
+    //     fetch("/userinfo")
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         this.setState({
+    //           userId: data.id,
+    //           userRoles: data.roles
+    //         });
+    //       })
+    //       .catch(error => console.log(error));
+
+    //     fetch(`/r_info/${requestId}`)
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         this.setState({
+    //           title: data.title,
+    //           status: data.status,
+    //           type: data.type,
+    //           description: data.description,
+    //           creationDate: data.creation_date,
+    //           updatedDate: data.modified_date,
+    //           warehouse: data.warehouse,
+    //           executors: data.executors,
+    //           equipment: data.equipment,
+    //           attributes: data.attributes,
+    //           attachments: data.attachments,
+    //           comments: data.comments,
+    //           requestId: requestId,
+    //           isLoading: false
+    //         });
+    //       })
+    //       .catch(error => console.log(error));
+  }
 
   //   handleSubmit = () => {
   //     fetch("/postOrder", {
@@ -109,51 +188,6 @@ class OrderReview extends Component {
   //       .catch(error => console.error("Error:", error));
   //   };
   render() {
-    let equipment = [];
-    // let attachments = [];
-    // for (let i = 0; i < 3; i++) {
-    //   attachments.push(<li key={i}>Attachment {i}</li>);
-    // }
-    // for (let i = 0; i < this.state.num; i++) {
-    //   items.push(
-    //     <div key={i} className="form-row">
-    //       <div className="form-group col-md-8">
-    //         <label>Item</label>
-    //         <select
-    //           className="form-control"
-    //           onChange={e => {
-    //             let item = this.state.item;
-    //             item.itemType = e.target.value;
-    //             this.setState({ item });
-    //           }}
-    //         >
-    //           {this.state.items.map(p => (
-    //             <option key={p} value={p}>
-    //               {p}
-    //             </option>
-    //           ))}
-    //         </select>
-    //       </div>
-    //       <div className="form-group col-md-4">
-    //         <label>Quantity</label>
-    //         <input
-    //           id="quantity"
-    //           className="form-control"
-    //           type="number"
-    //           min="0"
-    //           step="1"
-    //           data-bind="value:replyNumber"
-    //           onChange={e => {
-    //             let item = this.state.item;
-    //             item.itemQuantity = e.target.value;
-    //             this.setState({ item });
-    //             console.log(this.state.item);
-    //           }}
-    //         />
-    //       </div>
-    //     </div>
-    //   );
-    // }
     return (
       <React.Fragment>
         <div className="container">
@@ -199,25 +233,22 @@ class OrderReview extends Component {
                 <p>{this.state.description}</p>
               </div>
             </div>
+
             <div className="form-row">
-              <div className="form-group">
-                <h4>Executor</h4>
-                <select
-                  className="form-control"
-                  onChange={e => this.setState({ executorId: e.target.value })}
-                >
-                  {this.state.executors.map(p => (
-                    <option key={p.id} value={p.id}>
-                      {p.firstName + " " + p.secondName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <h4 className="form-group">
+                Warehouse:
+                <span className="m-2">{this.state.warehouse}</span>
+              </h4>
             </div>
+
+            {this.choseExecutor()}
             <h3>Order items</h3>
             <ItemsList equipment={this.state.equipment} />
+            <div className="form-row">
+              <div className="form-group">{this.additionalAttributes()}</div>
+            </div>
 
-            <ExecutorButtons status={this.state.status} />
+            {this.buttonsSpace()}
             {/*attachments*/}
             <br />
             <br />

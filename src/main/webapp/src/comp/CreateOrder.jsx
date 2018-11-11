@@ -6,15 +6,18 @@ class CreateOrder extends Component {
     this.state = {
       title: "",
       fields: [],
+      myItems: [
+        { id: "2das", name: "model1, producer1" },
+        { id: "5das", name: "model2, producer1" }
+      ],
+      resultItems: [{ itemId: 0, quantity: 0 }],
       item: {},
       warehouses: [1, 2, 3, 4, 5],
       items: [1, 2, 3, 4, 5],
-      resItems: [],
       num: 1,
-      roles: ["Creator", "executor", "manager"],
+      roles: ["User", "Keeper", "Admin"],
       Warehouse: 0,
       type: "",
-      status: "",
       creationDate: "",
       updatedDate: "",
       description: "",
@@ -22,8 +25,58 @@ class CreateOrder extends Component {
       comments: []
     };
   }
+
+  resultItemEdit = (i, e) => {
+    let readyItems = this.state.resultItems.slice();
+    let editObject = readyItems[i];
+    editObject.itemId = e.target.value;
+    readyItems[i] = editObject;
+    this.setState({ resultItems: readyItems });
+  };
+  resultQuantityEdit = (i, e) => {
+    let readyItems = this.state.resultItems.slice();
+    let editObject = readyItems[i];
+    editObject.quantity = e.target.value > -1 ? e.target.value : 0;
+    readyItems[i] = editObject;
+    this.setState({ resultItems: readyItems });
+  };
+
+  renderAdditionalAttribute = (type, name, multiple, values, immutable) => {
+    // switch(type) {
+    //   case "select": {
+    //       return (
+    //         <div className="form-row">
+    //         <div className="form-group">
+    //         </div>
+    //         </div>
+    //       );
+    //   }
+    //   case "textarea": {
+    //     <div className="form-row">
+    //     <div className="form-group">
+    //     </div>
+    //     </div>
+    //   }
+    //   default: {
+    //     <div className="form-row">
+    //     <div className="form-group">
+    //     </div>
+    //     </div>
+    //   }
+    // }
+  };
+
   handleAdd = () => {
-    this.setState({ num: this.state.num + 1 });
+    let readyItems = [
+      ...this.state.resultItems.slice(),
+      { itemId: 0, quantity: 0 }
+    ];
+    this.setState({ resultItems: readyItems });
+  };
+
+  handleDelete = () => {
+    let readyItems = this.state.resultItems.slice(0, -1);
+    this.setState({ resultItems: readyItems });
   };
 
   handleCancel = () => {
@@ -48,30 +101,18 @@ class CreateOrder extends Component {
   };
   render() {
     let items = [];
-    let attachments = [];
-    let comments = [];
-    for (let i = 0; i < 3; i++) {
-      attachments.push(<li key={i}>Attachment {i}</li>);
-    }
-    for (let i = 0; i < 3; i++) {
-      comments.push(<h5 key={i}>Comment {i}</h5>);
-    }
-    for (let i = 0; i < this.state.num; i++) {
+    for (let i = 0; i < this.state.resultItems.length; i++) {
       items.push(
         <div key={i} className="form-row">
           <div className="form-group col-md-8">
             <label>Item</label>
             <select
               className="form-control"
-              onChange={e => {
-                let item = this.state.item;
-                item.itemType = e.target.value;
-                this.setState({ item });
-              }}
+              onChange={e => this.resultItemEdit(i, e)}
             >
-              {this.state.items.map(p => (
-                <option key={p} value={p}>
-                  {p}
+              {this.state.myItems.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
                 </option>
               ))}
             </select>
@@ -84,13 +125,9 @@ class CreateOrder extends Component {
               type="number"
               min="0"
               step="1"
+              value={this.state.resultItems[i].quantity}
               data-bind="value:replyNumber"
-              onChange={e => {
-                let item = this.state.item;
-                item.itemQuantity = e.target.value;
-                this.setState({ item });
-                console.log(this.state.item);
-              }}
+              onChange={e => this.resultQuantityEdit(i, e)}
             />
           </div>
         </div>
@@ -146,7 +183,7 @@ class CreateOrder extends Component {
               Add
             </button>
             <button
-              onClick={() => this.setState({ num: this.state.num - 1 })}
+              onClick={() => this.handleDelete()}
               className={
                 this.state.num <= 0
                   ? "form-group col-md-3 btn btn-lg btn-outline-danger disabled"

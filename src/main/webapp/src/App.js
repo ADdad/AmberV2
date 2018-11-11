@@ -79,7 +79,7 @@ class App extends Component {
 
             <Route path="/registration" component={RegForm} />
             <Route path="/order/create" component={CreateOrder} />
-            <Route path="/order/view/:requestId" component={OrderReview} />
+            <Route path="/order/:mode/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={AdminPage} />
             <Route path="/order" component={Order} />
             <Route component={ErrorPage} />

@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 class ExecutorButtons extends Component {
   state = {
-    buttons: []
+    buttons: [],
+    noButtons: false,
+    adminStates: ["Opened", "On reviewing"],
+    keeperStates: ["In progress", "On hold", "Delivering"]
   };
 
   handleClick = name => {
@@ -41,15 +44,31 @@ class ExecutorButtons extends Component {
         localButtons.push({ value: "Back to execute", type: "success" });
         break;
       }
-      case "On reviewing": {
+      case "Delivering": {
         localButtons.push({ value: "Cancel delivering", type: "danger" });
         break;
+      }
+      default: {
+        this.setState({ noButtons: true });
       }
     }
     this.setState({ buttons: localButtons });
   };
 
   render() {
+    if (
+      !(
+        this.props.userRoles.includes("Admin") &&
+        this.state.adminStates.includes(this.props.status)
+      ) &&
+      !(
+        this.props.userRoles.includes("Keeper") &&
+        this.state.keeperStates.includes(this.props.status)
+      )
+    )
+      return <h3>Sorry, you can just view that</h3>;
+
+    if (this.state.noButtons) return <h3>Sorry, you can just view that</h3>;
     const buttonsLoc = this.state.buttons;
     return (
       <div className="form-row">
@@ -62,7 +81,6 @@ class ExecutorButtons extends Component {
             {p.value}
           </button>
         ))}
-        ;
       </div>
     );
   }

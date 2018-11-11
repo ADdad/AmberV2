@@ -3,7 +3,7 @@ class Comment extends Component {
   state = {};
   render() {
     return (
-      <div className="media-body u-shadow-v18 g-bg-secondary g-pa-30 col-md-8">
+      <div className="media-body u-shadow-v18 g-bg-secondary g-pa-30 col-md-8 border border-secondary rounded m-2">
         <div className="g-mb-15">
           <h5 className="h5 g-color-gray-dark-v1 mb-0">
             {this.props.authorName}
