@@ -5,20 +5,28 @@ import { Checkbox, CheckboxGroup } from "react-checkbox-group";
 import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
 
-class CreateOrder extends Component {
+class OrderEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
+      title: "TitleEdit",
       myItems: [
         { id: "2das", name: "model1, producer1" },
-        { id: "5das", name: "model2, producer1" }
+        { id: "5das", name: "model2, producer1" },
+        { id: "79842", name: "model3, producer6" },
+        { id: "6747", name: "model4, producer2" },
+        { id: "dlla", name: "model5, producer4" },
+        { id: "740jf", name: "model6, producer2" }
       ],
-      resultItems: [{ itemId: 0, quantity: 0 }],
+      resultItems: [
+        { itemId: "740jf", quantity: 5 },
+        { itemId: "6747", quantity: 8 },
+        { itemId: "79842", quantity: 12 }
+      ],
       warehouses: [1, 2, 3, 4, 5],
-      warehouse: 0,
+      warehouse: 2,
       type: "",
-      description: "",
+      description: "TestDesctiption",
       attachments: [],
       files: [],
       optionalAttributes: [
@@ -51,7 +59,7 @@ class CreateOrder extends Component {
           values: []
         }
       ],
-      oAttributesValues: []
+      oAttributesValues: ["Test1", "Test2|Test3"]
     };
   }
 
@@ -85,6 +93,7 @@ class CreateOrder extends Component {
             <div className="form-group">
               <label>{name}: </label>
               <select
+                value={this.state.oAttributesValues[index]}
                 className="form-control"
                 onChange={p => this.changeOptionalValue(index, p.target.value)}
               >
@@ -104,6 +113,7 @@ class CreateOrder extends Component {
             <div className="form-group col-md-8">
               <label>{name}</label>
               <textarea
+                value={this.state.oAttributesValues[index]}
                 className="form-control"
                 id="exampleFormControlTextarea1"
                 rows="5"
@@ -118,7 +128,13 @@ class CreateOrder extends Component {
           <div className="form-row">
             <div className="form-group">
               <h4>{name}</h4>
-              <RadioGroup name={name} onChange={this.changeRadiobuttonValue}>
+              <RadioGroup
+                name={name}
+                selectedValue={
+                  this.state.oAttributesValues[index] + "|" + index
+                }
+                onChange={this.changeRadiobuttonValue}
+              >
                 {values.map(v => (
                   <label key={v} className="form-group m-2">
                     <Radio value={v + "|" + index} />
@@ -139,6 +155,9 @@ class CreateOrder extends Component {
                 checkboxDepth={2}
                 name={name}
                 onChange={this.handleCheckbox}
+                value={this.state.oAttributesValues[index]
+                  .split("|")
+                  .map(v => v + "|" + index)}
               >
                 {values.map(v => (
                   <label key={v} className="form-group m-2">
@@ -155,8 +174,11 @@ class CreateOrder extends Component {
         return (
           <div className="form-row">
             <div className="form-group">
-              <h4>{name}: </h4>
+              <h4>
+                {name}: {this.state.oAttributesValues[index]}
+              </h4>
               <input
+                value={this.state.oAttributesValues[index]}
                 className="form-control col-md-12"
                 type={type}
                 onChange={p => this.changeOptionalValue(index, p.target.value)}
@@ -258,6 +280,7 @@ class CreateOrder extends Component {
           <div className="form-group col-md-8">
             <label>Item</label>
             <select
+              value={this.state.resultItems[i].itemId}
               className="form-control"
               onChange={e => this.resultItemEdit(i, e)}
             >
@@ -294,7 +317,7 @@ class CreateOrder extends Component {
             <br />
             <br />
             <br />
-            <h2>Title: </h2>
+            <h2>Title: {this.state.title}</h2>
             <input
               className="form-control col-md-4"
               onChange={p => this.setState({ title: p.target.value })}
@@ -307,6 +330,7 @@ class CreateOrder extends Component {
                   className="form-control"
                   id="exampleFormControlTextarea1"
                   rows="5"
+                  value={this.state.description}
                   onChange={p => this.setState({ description: p.target.value })}
                 />
               </div>
@@ -315,6 +339,7 @@ class CreateOrder extends Component {
               <div className="form-group">
                 <label>Warehouse</label>
                 <select
+                  value={this.state.warehouse}
                   className="form-control"
                   onChange={e => this.setState({ warehouse: e.target.value })}
                 >
@@ -369,7 +394,7 @@ class CreateOrder extends Component {
                 className="form-group col-md-3 btn btn-lg btn-outline-success"
                 onClick={() => this.handleSubmit()}
               >
-                Send request
+                Reopen
               </button>
 
               <button
@@ -386,4 +411,4 @@ class CreateOrder extends Component {
     );
   }
 }
-export default withRouter(CreateOrder);
+export default withRouter(OrderEdit);

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "../css/Comments.css";
 class Comment extends Component {
   state = {};
   render() {
