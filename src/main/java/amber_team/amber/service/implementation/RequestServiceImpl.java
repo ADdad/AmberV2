@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 
 @Service(value = "requestService")
 public class RequestServiceImpl implements RequestService {
@@ -115,6 +117,11 @@ public class RequestServiceImpl implements RequestService {
 		} else {
 			return requestDao.complete(request);
 		}
+	}
+
+	@Override
+	public void archiveOldRequests(Date tenDaysBefore) {
+		requestDao.archiveOldRequests(tenDaysBefore);
 	}
 
 	@Override

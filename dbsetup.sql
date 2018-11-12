@@ -1,3 +1,41 @@
+/* 18 tables to drop */
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS user_warehouses;
+DROP TABLE IF EXISTS warehouse_equipment;
+DROP TABLE IF EXISTS connected_requests;
+DROP TABLE IF EXISTS request_equipment;
+DROP TABLE IF EXISTS attributes_res_values;
+DROP TABLE IF EXISTS reserved_values;
+DROP TABLE IF EXISTS request_values;
+DROP TABLE IF EXISTS request_types_attributes;
+DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS attribute_types;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS requests;
+DROP TABLE IF EXISTS request_types;
+DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS warehouses;
+DROP TABLE IF EXISTS users;
+
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS user_warehouses;
+DROP TABLE IF EXISTS warehouse_equipment;
+DROP TABLE IF EXISTS connected_requests;
+DROP TABLE IF EXISTS request_equipment;
+DROP TABLE IF EXISTS attributes_res_values;
+DROP TABLE IF EXISTS reserved_values;
+DROP TABLE IF EXISTS request_values;
+DROP TABLE IF EXISTS request_types_attributes;
+DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS attribute_types;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS requests;
+DROP TABLE IF EXISTS request_types;
+DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS warehouses;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
 (
@@ -58,7 +96,7 @@ CREATE TABLE requests (
     creator_id varchar(100) REFERENCES users (id) ON UPDATE CASCADE,
     executor_id varchar(100) REFERENCES users (id) ON UPDATE CASCADE,
     req_type_id varchar(100) REFERENCES request_types (id),
-    connected_request varchar(100) REFERENCES request (id),
+    connected_request varchar(100) REFERENCES requests (id),
     status varchar(40) NOT NULL,
     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -68,7 +106,7 @@ CREATE TABLE requests (
 
 CREATE TABLE connected_requests (
     order_request varchar(100) REFERENCES requests (id) NOT NULL,
-    connected_request varchar(100) REFERENCES requests (id) NOT NULL,
+    connected_request varchar(100) REFERENCES requests (id) NOT NULL
 );
 
 CREATE TABLE request_equipment (

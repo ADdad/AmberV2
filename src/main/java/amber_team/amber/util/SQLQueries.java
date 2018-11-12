@@ -36,5 +36,7 @@ public class SQLQueries {
     public static final String REQUEST_ATTRIBUTES_BY_ID = "SELECT attributes" +
             "FROM requests" +
             "WHERE requests.id = ?";
-
+    public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
+            " SET archive = true" +
+            " WHERE (status = 'completed' OR status = 'rejected' OR status = 'canceled') AND modified_date <= ?";
 }

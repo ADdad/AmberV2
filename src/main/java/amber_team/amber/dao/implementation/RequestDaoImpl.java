@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -140,5 +141,11 @@ public class RequestDaoImpl implements RequestDao {
         List<String> attributes = jdbcTemplate.queryForList(SQLQueries.REQUEST_ATTRIBUTES_BY_ID, new Object[] {info.getRequest_id()}, String.class);
         info.setAttributes(attributes);
         return ResponseEntity.ok(info);
+    }
+
+    @Override
+    public void archiveOldRequests(Date tenDaysBefore) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(SQLQueries.ARCHIVE_OLD_REQUESTS, new Object[] {tenDaysBefore});
     }
 }
