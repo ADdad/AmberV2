@@ -21,7 +21,7 @@ public class ScheduledTasks {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-    @Scheduled(cron="0 1 0 ? * * *")
+    @Scheduled(cron="0 1 0 ? * *")
     public void reportCurrentTime() {
         log.info("Archiving old requests for {}", dateFormat.format(new Date()));
         Calendar tenDaysBefore = Calendar.getInstance();
