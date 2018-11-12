@@ -2,21 +2,20 @@ package amber_team.amber.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.List;
 
 
 public class User {
 
 
     private String id;
-
     private String email;
-
     @JsonIgnore
     private String password;
-
     private String fName;
-
     private String sName;
+    // todo add comments to service
+    private List<Comment> comments;
 
 
     public String getId() {
@@ -43,20 +42,29 @@ public class User {
         this.password = password;
     }
 
-    public String getSecondName() {
-        return sName;
-    }
-
-    public void setSecondName(String s_name) {
-        this.sName = s_name;
-    }
-
-    public String getfName() {
+    public String getFName() {
         return fName;
     }
 
-    public void setfName(String f_name) {
-        this.fName = f_name;
+    public void setFName(String fName) {
+        this.fName = fName;
     }
 
+    public String getSName() {
+        return sName;
+    }
+
+    public void setSName(String sName) {
+        this.sName = sName;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public boolean addComment(Comment comment) { return comments.add(comment); }
 }

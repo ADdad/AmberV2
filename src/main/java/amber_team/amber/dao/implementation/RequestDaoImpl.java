@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public class RequestDaoImpl implements RequestDao {
         if (status == null)
             status = "Created";
 
-        LocalDate creationDate = LocalDate.now();
+        LocalDateTime creationDate = LocalDateTime.now();
 
         jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
                 creationDate, creationDate, request.getDescription(), 0);

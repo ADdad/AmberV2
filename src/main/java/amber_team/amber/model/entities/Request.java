@@ -1,7 +1,8 @@
 package amber_team.amber.model.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 
 public class Request {
@@ -13,11 +14,16 @@ public class Request {
     private String typeId;
     private String title;
     private String status;
-    private LocalDate creationDate;
-    private LocalDate modifiedDate;
+    private LocalDateTime creationDate;
+    private LocalDateTime modifiedDate;
     private String description;
     private boolean archive;
-    private List<String> attributes;
+    // todo add attributes to service
+    private List<Attribute> attributes;
+    // todo add equipment to service
+    private Map<Equipment, Integer> equipment;
+    // todo add comments to service
+    private List<Comment> comments;
 
     public String getId() {
         return id;
@@ -75,19 +81,19 @@ public class Request {
         this.status = status;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDate getModifiedDate() {
+    public LocalDateTime getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(LocalDate modifiedDate) {
+    public void setModifiedDate(LocalDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
@@ -107,11 +113,27 @@ public class Request {
         this.archive = archive;
     }
 
-    public List<String> getAttributes() {
+    public List<Attribute> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<String> attributes) {
+    public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public Map<Equipment, Integer> getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(Map<Equipment, Integer> equipment) {
+        this.equipment = equipment;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

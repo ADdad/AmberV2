@@ -32,7 +32,7 @@ public class RequestServiceImpl implements RequestService {
 			newRequest.setTitle(request.getTitle());
 			newRequest.setDescription(request.getDescription());
 			newRequest.setTypeId(request.getTypeId());
-			newRequest.setAttributes(request.getAttributes());
+			//todo setAttrbutes
 			return requestDao.save(newRequest);
 		}
     }

@@ -43,11 +43,11 @@ public class UserDaoImpl implements UserDao {
             int role_id = 2; //Role_User
             int enabled = 1;
             jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSecondName(), user.getfName(), enabled, id, role_id});
+                    user.getSName(), user.getFName(), enabled, id, role_id});
             User result = new User();
             result.setId(id);
-            result.setfName(user.getfName());
-            result.setSecondName(user.getSecondName());
+            result.setFName(user.getFName());
+            result.setSName(user.getSName());
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
         }
