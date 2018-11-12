@@ -38,5 +38,5 @@ public class SQLQueries {
             "WHERE requests.id = ?";
     public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
             " SET archive = true" +
-            " WHERE (status = 'completed' OR status = 'rejected' OR status = 'canceled') AND modified_date <= ?";
+            " WHERE (status = 'completed' OR status = 'canceled') AND modified_date <= ?";
 }
