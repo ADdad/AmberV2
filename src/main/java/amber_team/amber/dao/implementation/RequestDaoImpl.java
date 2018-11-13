@@ -6,6 +6,8 @@ import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestInfoDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.util.SQLQueries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -32,6 +35,10 @@ public class RequestDaoImpl implements RequestDao {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
+    private static final Logger log = LoggerFactory.getLogger(RequestDaoImpl.class);
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public ResponseEntity save(Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -145,7 +152,9 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public void archiveOldRequests(Date tenDaysBefore) {
+        log.info("Archiving old requests for {}", dateFormat.format(new Date()));
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update(SQLQueries.ARCHIVE_OLD_REQUESTS, new Object[] {tenDaysBefore});
+        log.info("Archiving ended on {}", dateFormat.format(new Date()));
     }
 }

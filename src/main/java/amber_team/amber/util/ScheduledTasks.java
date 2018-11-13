@@ -22,12 +22,10 @@ public class ScheduledTasks {
 
 
     @Scheduled(cron="0 1 0 ? * *")
-    public void reportCurrentTime() {
-        log.info("Archiving old requests for {}", dateFormat.format(new Date()));
+    public void archiveOldRequests() {
         Calendar tenDaysBefore = Calendar.getInstance();
         tenDaysBefore.setTime(new Date());
         tenDaysBefore.add(Calendar.DAY_OF_MONTH, -10);
         requestService.archiveOldRequests(tenDaysBefore.getTime());
-        log.info("Archiving ended on {}", dateFormat.format(new Date()));
     }
 }
