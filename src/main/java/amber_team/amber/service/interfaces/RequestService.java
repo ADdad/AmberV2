@@ -17,4 +17,5 @@ public interface RequestService {
     ResponseEntity hold(RequestStatusChangeDto request);
     ResponseEntity deliver(RequestStatusChangeDto request);
     ResponseEntity complete(RequestStatusChangeDto request);
+    ResponseEntity creationData(String type);
 }

@@ -9,20 +9,22 @@ class CreateOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      userId: "",
+      alert: "",
       title: "",
       myItems: [
-        { id: "2das", name: "model1, producer1" },
-        { id: "5das", name: "model2, producer1" }
+        { id: "2das", model: "model1", producer: "producer1", country: "Ukr" },
+        { id: "5das", name: "model2", producer: "producer1", country: "Ukr" }
       ],
       resultItems: [{ itemId: 0, quantity: 0 }],
-      warehouses: [1, 2, 3, 4, 5],
+      warehouses: [{ id: "123", adress: "someTHing", contactNumber: "09230" }],
       warehouse: 0,
       type: "",
       description: "",
       attachments: [],
-      files: [],
       optionalAttributes: [
         {
+          id: "ejklwq",
           name: "TestRadio",
           type: "radio",
           multiple: true,
@@ -30,6 +32,7 @@ class CreateOrder extends Component {
           values: ["Test1", "Test2", "Test3"]
         },
         {
+          id: "2233",
           name: "TestCheckbox",
           type: "checkbox",
           multiple: true,
@@ -37,6 +40,7 @@ class CreateOrder extends Component {
           values: ["Test1", "Test2", "Test3"]
         },
         {
+          id: "dka",
           name: "TestDate",
           type: "date",
           multiple: false,
@@ -44,6 +48,7 @@ class CreateOrder extends Component {
           values: []
         },
         {
+          id: "djlkjfdl",
           name: "TestText",
           type: "Text",
           multiple: false,
@@ -51,9 +56,90 @@ class CreateOrder extends Component {
           values: []
         }
       ],
-      oAttributesValues: []
+      oAttributesValues: [],
+      resultOptionalAttributes: []
     };
   }
+
+  componentDidMount() {
+    fetch("/userinfo")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ userId: data.id });
+      })
+      .catch(error => console.log(error));
+
+    const type = this.props.match.params.type;
+    fetch(`/request/create/${type}`)
+      .then(res => res.json())
+      .then(response => {
+        this.setState({
+          optionalAttributes: this.sortAttributes(response.attributes),
+          warehouses: response.warehouses,
+          myItems: response.equipment,
+          type: type,
+          isLoading: false
+        });
+      })
+      .catch(error => console.error("Error:", error));
+  }
+
+  handleSubmit = () => {
+    const readyAttributes = this.compileAdditionalAttributes();
+    fetch("/request/save", {
+      method: "POST",
+      body: JSON.stringify({
+        creatorId: this.state.userId,
+        title: this.state.title,
+        description: this.state.description,
+        type: this.state.type,
+        warehouseId: this.state.warehouse,
+        items: this.state.resultItems,
+        attributes: readyAttributes
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ alert: "Succesfuly ordered" });
+          console.log("Success:", JSON.stringify(res));
+          console.log(res.status);
+        } else {
+          this.setState({ alert: "Something went wrong" });
+          console.log(JSON.stringify(res));
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        this.setState({ alert: "Bad idea" });
+      });
+  };
+
+  compileAdditionalAttributes = () => {
+    let readyAttributes = [];
+    for (let i = 0; i < this.state.attributes; i++) {
+      readyAttributes.push({
+        id: this.state.attributes[i].id,
+        value: this.state.oAttributesValues[i]
+      });
+    }
+    return readyAttributes;
+  };
+
+  sortAttributes = attributes => {
+    let localAttributes = attributes;
+    localAttributes.sort(function(a, b) {
+      return parseInt(a.order) - parseInt(b.order);
+    });
+    return localAttributes;
+  };
+
+  itemName = item => {
+    let strName = item.model + ", " + item.producer + ", " + item.country;
+    return strName;
+  };
 
   resultItemEdit = (i, e) => {
     let readyItems = this.state.resultItems.slice();
@@ -203,8 +289,19 @@ class CreateOrder extends Component {
     this.setState({ resultItems: readyItems });
   };
 
+  returnButton = () => {
+    return (
+      <button
+        className="form-group col-md-3 btn btn-lg btn-outline-success"
+        onClick={this.context.router.history.push(`/dashboard`)}
+      >
+        To main page
+      </button>
+    );
+  };
+
   handleClearFiles = () => {
-    this.setState({ attachments: [], files: [] });
+    this.setState({ attachments: [] });
   };
 
   handleDelete = () => {
@@ -217,23 +314,9 @@ class CreateOrder extends Component {
   };
 
   onPreviewDrop = files => {
-    let url = files.map(f => URL.createObjectURL(f));
     this.setState({
-      files: this.state.files.concat(url),
       attachments: this.state.attachments.concat(files)
     });
-  };
-  handleSubmit = () => {
-    fetch("/postOrder", {
-      method: "POST",
-      body: JSON.stringify(this.state),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.json())
-      .then(response => console.log("Success:", JSON.stringify(response)))
-      .catch(error => console.error("Error:", error));
   };
   render() {
     const globalOptionalFields = [...this.state.optionalAttributes];
@@ -263,7 +346,7 @@ class CreateOrder extends Component {
             >
               {this.state.myItems.map(p => (
                 <option key={p.id} value={p.id}>
-                  {p.name}
+                  {this.itemName(p)}
                 </option>
               ))}
             </select>
@@ -292,7 +375,8 @@ class CreateOrder extends Component {
             <br />
             <h2>Create order</h2>
             <br />
-            <br />
+            <label>{this.state.alert}</label>
+            {this.returnButton}
             <br />
             <h2>Title: </h2>
             <input
@@ -319,8 +403,8 @@ class CreateOrder extends Component {
                   onChange={e => this.setState({ warehouse: e.target.value })}
                 >
                   {this.state.warehouses.map(p => (
-                    <option key={p} value={p}>
-                      {p}
+                    <option key={p.id} value={p.id}>
+                      {p.adress}
                     </option>
                   ))}
                 </select>

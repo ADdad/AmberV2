@@ -1,5 +1,6 @@
 package amber_team.amber.model.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,8 @@ public class Request {
     private String typeId;
     private String title;
     private String status;
-    private LocalDateTime creationDate;
-    private LocalDateTime modifiedDate;
+    private Timestamp creationDate;
+    private Timestamp modifiedDate;
     private String description;
     private boolean archive;
     // todo add attributes to service
@@ -81,19 +82,19 @@ public class Request {
         this.status = status;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getModifiedDate() {
+    public Timestamp getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(LocalDateTime modifiedDate) {
+    public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
