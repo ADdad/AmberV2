@@ -153,27 +153,22 @@ class OrderReview extends Component {
     //       })
     //       .catch(error => console.log(error));
 
-    //     fetch(`/r_info/${requestId}`)
-    //       .then(response => response.json())
-    //       .then(data => {
-    //         this.setState({
-    //           title: data.title,
-    //           status: data.status,
-    //           type: data.type,
-    //           description: data.description,
-    //           creationDate: data.creation_date,
-    //           updatedDate: data.modified_date,
-    //           warehouse: data.warehouse,
-    //           executors: data.executors,
-    //           equipment: data.equipment,
-    //           attributes: data.attributes,
-    //           attachments: data.attachments,
-    //           comments: data.comments,
-    //           requestId: requestId,
-    //           isLoading: false
-    //         });
-    //       })
-    //       .catch(error => console.log(error));
+    fetch(`/r_info/${requestId}`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          title: data.title,
+          status: data.status,
+          type: data.type_id,
+          description: data.description,
+          creationDate: data.creation_date,
+          updatedDate: data.modified_date,
+          warehouse: data.warehouse,
+          requestId: data.id,
+          isLoading: false
+        });
+      })
+      .catch(error => console.log(error));
   }
 
   //   handleSubmit = () => {

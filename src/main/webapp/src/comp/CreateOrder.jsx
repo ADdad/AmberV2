@@ -4,6 +4,8 @@ import { RadioGroup, Radio } from "react-radio-group";
 import { Checkbox, CheckboxGroup } from "react-checkbox-group";
 import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
+import Select from "react-select";
+import AsyncSelect from "react-select/lib/Async";
 
 class CreateOrder extends Component {
   constructor(props) {
@@ -14,11 +16,15 @@ class CreateOrder extends Component {
       title: "",
       myItems: [
         { id: "2das", model: "model1", producer: "producer1", country: "Ukr" },
-        { id: "5das", name: "model2", producer: "producer1", country: "Ukr" }
+        { id: "5das", model: "model2", producer: "producer1", country: "Ukr" }
       ],
-      resultItems: [{ itemId: 0, quantity: 0 }],
-      warehouses: [{ id: "123", adress: "someTHing", contactNumber: "09230" }],
-      warehouse: 0,
+      resultItems: [],
+      viewItems: [],
+      warehouses: [
+        { id: "djsal", adress: "dsajkljlk" },
+        { id: "djz", adress: "kdl" }
+      ],
+      warehouse: "",
       type: "",
       description: "",
       attachments: [],
@@ -28,6 +34,7 @@ class CreateOrder extends Component {
           name: "TestRadio",
           type: "radio",
           multiple: true,
+          mandatory: true,
           immutable: false,
           values: ["Test1", "Test2", "Test3"]
         },
@@ -36,6 +43,7 @@ class CreateOrder extends Component {
           name: "TestCheckbox",
           type: "checkbox",
           multiple: true,
+          mandatory: false,
           immutable: false,
           values: ["Test1", "Test2", "Test3"]
         },
@@ -44,6 +52,7 @@ class CreateOrder extends Component {
           name: "TestDate",
           type: "date",
           multiple: false,
+          mandatory: false,
           immutable: false,
           values: []
         },
@@ -52,6 +61,7 @@ class CreateOrder extends Component {
           name: "TestText",
           type: "Text",
           multiple: false,
+          mandatory: false,
           immutable: false,
           values: []
         }
@@ -78,6 +88,7 @@ class CreateOrder extends Component {
           warehouses: response.warehouses,
           myItems: response.equipment,
           type: type,
+          warehouse: response.warehouses[0].id,
           isLoading: false
         });
       })
@@ -128,6 +139,20 @@ class CreateOrder extends Component {
     return readyAttributes;
   };
 
+  getItemsOptions1 = () => {
+    let items = this.state.myItems.slice();
+    let result = [];
+    items.map(i => result.push({ label: this.itemName(i), value: i.id }));
+    return result;
+  };
+
+  getItemsOptions = items => {
+    let itemsLocal = items;
+    let result = [];
+    itemsLocal.map(i => result.push({ label: this.itemName(i), value: i.id }));
+    return result;
+  };
+
   sortAttributes = attributes => {
     let localAttributes = attributes;
     localAttributes.sort(function(a, b) {
@@ -141,12 +166,11 @@ class CreateOrder extends Component {
     return strName;
   };
 
-  resultItemEdit = (i, e) => {
-    let readyItems = this.state.resultItems.slice();
-    let editObject = readyItems[i];
-    editObject.itemId = e.target.value;
-    readyItems[i] = editObject;
-    this.setState({ resultItems: readyItems });
+  resultItemEdit = item => {
+    let myItemsLocal = this.state.resultItems;
+    let index = myItemsLocal.findIndex(p => p.id === item.value);
+    if (index == -1) myItemsLocal.push({ id: item.value, quantity: 0 });
+    this.setState({ myItems: myItemsLocal });
   };
   resultQuantityEdit = (i, e) => {
     let readyItems = this.state.resultItems.slice();
@@ -281,12 +305,27 @@ class CreateOrder extends Component {
     return /[.]/.exec(filename) ? /[^.]+$/.exec(filename)[0] : undefined;
   };
 
-  handleAdd = () => {
-    let readyItems = [
-      ...this.state.resultItems.slice(),
-      { itemId: 0, quantity: 0 }
-    ];
-    this.setState({ resultItems: readyItems });
+  handleRemove = index => {
+    let resItemsLocal = this.state.resultItems;
+    let viewItemsLocal = this.state.viewItems;
+    resItemsLocal.splice(index, 1);
+    viewItemsLocal.splice(index, 1);
+    this.setState({ resultItems: resItemsLocal, viewItems: viewItemsLocal });
+  };
+
+  handleRemoveAll = () => {
+    this.setState({ resultItems: [], viewItems: [] });
+  };
+
+  addItem = item => {
+    let resItemsLocal = this.state.resultItems;
+    let viewItemsLocal = this.state.viewItems;
+    let index = resItemsLocal.findIndex(p => p.id === item.value);
+    if (index == -1) {
+      resItemsLocal.push({ id: item.value, quantity: 0 });
+      viewItemsLocal.push(item.label);
+    }
+    this.setState({ resultItems: resItemsLocal, viewItems: viewItemsLocal });
   };
 
   returnButton = () => {
@@ -304,11 +343,6 @@ class CreateOrder extends Component {
     this.setState({ attachments: [] });
   };
 
-  handleDelete = () => {
-    let readyItems = this.state.resultItems.slice(0, -1);
-    this.setState({ resultItems: readyItems });
-  };
-
   handleCancel = () => {
     this.props.history.push("/dashboard");
   };
@@ -318,7 +352,48 @@ class CreateOrder extends Component {
       attachments: this.state.attachments.concat(files)
     });
   };
+
+  searchEquipment = inputValue => {
+    console.log(inputValue);
+    let result = [];
+    fetch(`/request/equipment/find/${inputValue}`)
+      .then(res => res.json())
+      .then(response => {
+        console.log(response);
+        result = response.equipment;
+      })
+      .catch(error => console.error("Error:", error));
+    console.log(result);
+    return this.getItemsOptions(result);
+  };
+
+  loadOptions = (input, callback) => {
+    if (!input) {
+      return callback([
+        { label: "Delhi", value: "DEL" },
+        { label: "Mumbai", value: "MUM" }
+      ]);
+    }
+    console.log(input);
+    return fetch(`/request/equipment/find/${input}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let options = [];
+        options = this.getItemsOptions(json.equipment);
+        console.log(json.equipment);
+        console.log("DATA:", options);
+        return callback(options);
+      });
+  };
+
   render() {
+    // if (this.state.resultItems.length === 0) {
+    //   this.setState({
+    //     resultItems: [{ id: this.state.myItems[0].id, quantity: 0 }]
+    //   });
+    // }
     const globalOptionalFields = [...this.state.optionalAttributes];
     let localOptionalFields = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
@@ -337,21 +412,11 @@ class CreateOrder extends Component {
     let items = [];
     for (let i = 0; i < this.state.resultItems.length; i++) {
       items.push(
-        <div key={i} className="form-row">
-          <div className="form-group col-md-8">
-            <label>Item</label>
-            <select
-              className="form-control"
-              onChange={e => this.resultItemEdit(i, e)}
-            >
-              {this.state.myItems.map(p => (
-                <option key={p.id} value={p.id}>
-                  {this.itemName(p)}
-                </option>
-              ))}
-            </select>
+        <div key={i} className="form-row border rounded m-2 col-md-11">
+          <div className="form-group col-md-8 mt-auto">
+            <p>{this.state.viewItems[i]}</p>
           </div>
-          <div className="form-group col-md-4">
+          <div className="form-group col-md-2 mt-auto">
             <label>Quantity</label>
             <input
               id="quantity"
@@ -364,9 +429,18 @@ class CreateOrder extends Component {
               onChange={e => this.resultQuantityEdit(i, e)}
             />
           </div>
+          <div className="form-group col-md-2 mt-auto">
+            <button
+              onClick={() => this.handleRemove(i)}
+              className="btn btn-lg btn-outline-danger"
+            >
+              Remove
+            </button>
+          </div>
         </div>
       );
     }
+
     return (
       <React.Fragment>
         <div className="container">
@@ -376,7 +450,7 @@ class CreateOrder extends Component {
             <h2>Create order</h2>
             <br />
             <label>{this.state.alert}</label>
-            {this.returnButton}
+            {/*this.returnButton*/}
             <br />
             <h2>Title: </h2>
             <input
@@ -400,7 +474,7 @@ class CreateOrder extends Component {
                 <label>Warehouse</label>
                 <select
                   className="form-control"
-                  onChange={e => this.setState({ warehouse: e.target.value })}
+                  onChange={p => this.setState({ warehouse: p.target.value })}
                 >
                   {this.state.warehouses.map(p => (
                     <option key={p.id} value={p.id}>
@@ -410,26 +484,32 @@ class CreateOrder extends Component {
                 </select>
               </div>
             </div>
-            {items}
-            <button
-              onClick={() => this.handleAdd()}
-              className="form-group col-md-3 btn btn-lg btn-outline-primary"
-            >
-              Add
-            </button>
-            <button
-              onClick={() => this.handleDelete()}
-              className={
-                this.state.num <= 0
-                  ? "form-group col-md-3 btn btn-lg btn-outline-danger disabled"
-                  : "form-group col-md-3 btn btn-lg btn-outline-danger"
-              }
-            >
-              Delete
-            </button>
-
             <div className="form-row">
-              <div className="form-group">
+              <div className="form-group col-md-9">
+                <h3>Items</h3>
+              </div>
+              <div className="form-group col-md-3">
+                <button
+                  onClick={() => this.handleRemoveAll()}
+                  className="btn btn-lg btn-outline-danger"
+                >
+                  Remove all
+                </button>
+              </div>
+            </div>
+            {items}
+            <div className="form-row">
+              <div className="form-group col-md-11">
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={this.loadOptions}
+                  onChange={this.addItem}
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group ">
                 <Dropzone
                   accept="image/*,.doc,.pdf"
                   onDrop={this.onPreviewDrop}

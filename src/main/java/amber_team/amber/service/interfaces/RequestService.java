@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface RequestService {
 
-    ResponseEntity getRequestInfo(RequestStatusChangeDto request);
+    ResponseEntity getRequestInfo(String id);
     ResponseEntity save(RequestSaveDto request);
     ResponseEntity open(RequestStatusChangeDto request);
     ResponseEntity cancel(RequestStatusChangeDto request);
@@ -18,4 +18,5 @@ public interface RequestService {
     ResponseEntity deliver(RequestStatusChangeDto request);
     ResponseEntity complete(RequestStatusChangeDto request);
     ResponseEntity creationData(String type);
+    ResponseEntity searchEquipment(String value);
 }

@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +46,7 @@ public class RequestDaoImpl implements RequestDao {
         Timestamp creationDate = Timestamp.valueOf(LocalDateTime.now());
 
         jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
-                creationDate, creationDate, request.getDescription(), false, request.getWarehouseId());
+                creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(), request.getTitle());
 
         Request result = new Request();
         result.setId(id);
@@ -158,27 +157,26 @@ public class RequestDaoImpl implements RequestDao {
 
 
     @Override
-    public ResponseEntity getRequestInfo(RequestStatusChangeDto request) {
+    public ResponseEntity getRequestInfo(Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        RequestInfoDto info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getRequestId()}, new RowMapper<RequestInfoDto>() {
+        RequestInfoDto info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getId()}, new RowMapper<RequestInfoDto>() {
             @Override
             public RequestInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
                 RequestInfoDto info = new RequestInfoDto();
+                info.setId(request.getId());
                 info.setWarehouse_id(resultSet.getString("warehouse_id"));
                 info.setExecutor_id(resultSet.getString("executor_id"));
                 info.setType_id(resultSet.getString(" type_id"));
                 info.setTitle(resultSet.getString("title"));
                 info.setStatus(resultSet.getString("status"));
-                info.setCreation_date(resultSet.getDate("creation_date").toLocalDate());
-                info.setModified_date(resultSet.getDate("modified_date").toLocalDate());
+                info.setCreation_date(resultSet.getTimestamp("creation_date"));
+                info.setModified_date(resultSet.getTimestamp("modified_date"));
                 info.setDescription(resultSet.getString("description"));
                 info.setArchive(resultSet.getBoolean("archive"));
                 return info;
             }
         });
 
-        List<String> attributes = jdbcTemplate.queryForList(SQLQueries.REQUEST_ATTRIBUTES_BY_ID, new Object[] {info.getRequest_id()}, String.class);
-        info.setAttributes(attributes);
         return ResponseEntity.ok(info);
     }
 }

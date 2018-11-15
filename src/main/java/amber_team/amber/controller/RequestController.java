@@ -20,10 +20,10 @@ public class RequestController {
     @Autowired
     private RequestService requestService;
 
-    @PreAuthorize("isAuthenticated() and (#request.getUsername() == principal.username or request.getUsername() == principal.username)")
-    @RequestMapping(value="/r_info", method = RequestMethod.GET)
-    public ResponseEntity<RequestInfoDto> getRequestInfo(RequestStatusChangeDto request){
-        return requestService.getRequestInfo(request);
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value="/r_info/{id}", method = RequestMethod.GET)
+    public ResponseEntity<RequestInfoDto> getRequestInfo(@PathVariable String id){
+        return requestService.getRequestInfo(id);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -36,6 +36,13 @@ public class RequestController {
     @RequestMapping(value="/request/create/{type}", method = RequestMethod.GET)
     public ResponseEntity<CreateOrderDto> creationData(@PathVariable String type){
         return requestService.creationData(type);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value="/request/equipment/find/{value}", method = RequestMethod.GET)
+    public ResponseEntity<EquipmentSearchDto> findEquipment(@PathVariable String value){
+        return requestService.searchEquipment(value);
+
     }
 
 

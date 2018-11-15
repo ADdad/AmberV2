@@ -21,7 +21,7 @@ public interface RequestDao {
     public ResponseEntity complete(RequestStatusChangeDto request);
     public List<AttributeDto> attributes(String type);
 
-    public ResponseEntity getRequestInfo(RequestStatusChangeDto principal);
+    public ResponseEntity getRequestInfo(Request principal);
 
 
 }

@@ -51,5 +51,25 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     }
 
+    @Override
+    public List<Equipment> search(String value) {
+        String formatValue = "%" + value + "%";
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<Equipment> equipment = jdbcTemplate.query(
+                SQLQueries.FIND_EQUIPMENT_BY_VALUE, new Object[]{formatValue, formatValue, formatValue},
+                new RowMapper<Equipment>() {
+                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Equipment c = new Equipment();
+                        c.setId(rs.getString(1));
+                        c.setModel(rs.getString(2));
+                        c.setProducer(rs.getString(3));
+                        c.setCountry(rs.getString(4));
+                        return c;
+                    }
+                });
+        return equipment;
+
+    }
+
 
 }

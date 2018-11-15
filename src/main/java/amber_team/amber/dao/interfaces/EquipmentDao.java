@@ -12,4 +12,5 @@ public interface EquipmentDao {
     Equipment getById(String id);
 
     List<Equipment> getAll();
+    List<Equipment> search(String value);
 }
