@@ -4,6 +4,8 @@ import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
+
 
 public interface RequestService {
 
@@ -19,4 +21,5 @@ public interface RequestService {
     ResponseEntity complete(RequestStatusChangeDto request);
     ResponseEntity creationData(String type);
     ResponseEntity searchEquipment(String value);
+    void archiveOldRequests(Date tenDaysBefore);
 }

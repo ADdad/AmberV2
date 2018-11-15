@@ -56,4 +56,8 @@ public class SQLQueries {
             "VALUES (?, ?, ?)";
     public static final String FIND_EQUIPMENT_BY_VALUE = "SELECT * FROM equipment " +
             "WHERE (model LIKE ?) OR (producer LIKE ?) OR (country LIKE ?)";
+    public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
+            " SET archive = true" +
+            " WHERE (status = 'Completed' OR status = 'Canceled') AND modified_date <= ?";
+
 }

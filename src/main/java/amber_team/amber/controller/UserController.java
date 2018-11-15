@@ -21,10 +21,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/signin")
-    public void sgnin(){}
-
-
+    
     @RequestMapping(value="/register", method = RequestMethod.POST)
     public ResponseEntity<User> saveUser(@RequestBody UserDto user){
         return  userService.save(user);

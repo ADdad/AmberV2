@@ -14,9 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import java.util.Date;
+
 
 @Service(value = "requestService")
 public class RequestServiceImpl implements RequestService {
+	
 
 
     @Autowired
@@ -33,7 +36,7 @@ public class RequestServiceImpl implements RequestService {
     private RequestEquipmentDao requestEquipmentDao;
 
 
-    @Override
+	@Override
     public ResponseEntity save(RequestSaveDto request) {
         Request newRequest = new Request();
         newRequest.setWarehouseId(request.getWarehouseId());
@@ -70,15 +73,15 @@ public class RequestServiceImpl implements RequestService {
 //		}
     }
 
-    @Override
-    public ResponseEntity open(RequestStatusChangeDto request) {
-        if (!openValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.open(request);
-        }
-    }
+	@Override
+	public ResponseEntity open(RequestStatusChangeDto request) {
+		if(!openValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.open(request);
+		}
+	}
 
     public ResponseEntity creationData(String type) {
         CreateOrderDto data = new CreateOrderDto();
@@ -94,76 +97,79 @@ public class RequestServiceImpl implements RequestService {
         return ResponseEntity.ok(result);
     }
 
+	@Override
+	public ResponseEntity cancel(RequestStatusChangeDto request) {
+		if(!cancelValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.cancel(request);
+		}
+	}
 
+	@Override
+	public ResponseEntity reject(RequestStatusChangeDto request) {
+		if(!rejectValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.reject(request);
+		}
+	}
+
+	@Override
+	public ResponseEntity review(RequestStatusChangeDto request) {
+		if(!reviewValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.review(request);
+		}
+	}
+
+	@Override
+	public ResponseEntity progress(RequestStatusChangeDto request) {
+		if(!progressValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.progress(request);
+		}
+	}
+
+	@Override
+	public ResponseEntity hold(RequestStatusChangeDto request) {
+		if(!holdValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.hold(request);
+		}
+	}
+
+	@Override
+	public ResponseEntity deliver(RequestStatusChangeDto request) {
+		if(!deliverValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.deliver(request);
+		}
+	}
+
+	@Override
+	public ResponseEntity complete(RequestStatusChangeDto request) {
+		if(!completeValidation(request)){
+			return ResponseEntity.badRequest()
+					.body(ErrorMessages.STATUS_ERROR);
+		} else {
+			return requestDao.complete(request);
+		}
+	}
 
     @Override
-    public ResponseEntity cancel(RequestStatusChangeDto request) {
-        if (!cancelValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.cancel(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity reject(RequestStatusChangeDto request) {
-        if (!rejectValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.reject(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity review(RequestStatusChangeDto request) {
-        if (!reviewValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.review(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity progress(RequestStatusChangeDto request) {
-        if (!progressValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.progress(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity hold(RequestStatusChangeDto request) {
-        if (!holdValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.hold(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity deliver(RequestStatusChangeDto request) {
-        if (!deliverValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.deliver(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity complete(RequestStatusChangeDto request) {
-        if (!completeValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.complete(request);
-        }
+    public void archiveOldRequests(Date tenDaysBefore) {
+        requestDao.archiveOldRequests(tenDaysBefore);
     }
 
     @Override
@@ -175,35 +181,39 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    private boolean openValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Rejected");
-    }
 
-    private boolean cancelValidation(RequestStatusChangeDto request) {
-        return !request.getStatus().equals("On Reviewing") && !request.getStatus().equals("Delivering") && !request.getStatus().equals("Completed");
-    }
 
-    private boolean rejectValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("On Reviewing");
-    }
 
-    private boolean reviewValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Open");
-    }
 
-    private boolean progressValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("On Reviewing") || request.getStatus().equals("On Hold");
-    }
+	private boolean openValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("Rejected");
+	}
 
-    private boolean holdValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("In Progress");
-    }
+	private boolean cancelValidation(RequestStatusChangeDto request) {
+		return !request.getStatus().equals("On Reviewing") && !request.getStatus().equals("Delivering") && !request.getStatus().equals("Completed");
+	}
 
-    private boolean deliverValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("In Progress");
-    }
+	private boolean rejectValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("On Reviewing");
+	}
 
-    private boolean completeValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Delivering");
-    }
+	private boolean reviewValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("Open");
+	}
+
+	private boolean progressValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("On Reviewing") || request.getStatus().equals("On Hold");
+	}
+
+	private boolean holdValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("In Progress");
+	}
+
+	private boolean deliverValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("In Progress");
+	}
+
+	private boolean completeValidation(RequestStatusChangeDto request) {
+		return request.getStatus().equals("Delivering");
+	}
 }

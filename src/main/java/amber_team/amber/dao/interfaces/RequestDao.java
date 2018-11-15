@@ -7,6 +7,8 @@ import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
+
 import java.util.List;
 
 public interface RequestDao {
@@ -23,5 +25,6 @@ public interface RequestDao {
 
     public ResponseEntity getRequestInfo(Request principal);
 
+    public void archiveOldRequests(Date tenDaysBefore);
 
 }

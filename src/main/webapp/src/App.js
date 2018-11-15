@@ -84,7 +84,7 @@ class App extends Component {
             <Route path="/order/:mode/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={AdminPage} />
             <Route path="/order" component={Order} />
-            <Route path="/error" component={ErrorPage} />
+            <Route component={ErrorPage} />
           </Switch>
         </div>
       </BrowserRouter>
