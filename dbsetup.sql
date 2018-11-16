@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS user_warehouses;
 DROP TABLE IF EXISTS warehouse_equipment;
-DROP TABLE IF EXISTS connected_requests;
 DROP TABLE IF EXISTS request_equipment;
 DROP TABLE IF EXISTS attributes_res_values;
 DROP TABLE IF EXISTS reserved_values;
@@ -17,25 +16,8 @@ DROP TABLE IF EXISTS request_types;
 DROP TABLE IF EXISTS equipment;
 DROP TABLE IF EXISTS warehouses;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS email_templates;
 
-DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS user_warehouses;
-DROP TABLE IF EXISTS warehouse_equipment;
-DROP TABLE IF EXISTS connected_requests;
-DROP TABLE IF EXISTS request_equipment;
-DROP TABLE IF EXISTS attributes_res_values;
-DROP TABLE IF EXISTS reserved_values;
-DROP TABLE IF EXISTS request_values;
-DROP TABLE IF EXISTS request_types_attributes;
-DROP TABLE IF EXISTS attributes;
-DROP TABLE IF EXISTS attribute_types;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS requests;
-DROP TABLE IF EXISTS request_types;
-DROP TABLE IF EXISTS equipment;
-DROP TABLE IF EXISTS warehouses;
-DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
 (
@@ -104,11 +86,6 @@ CREATE TABLE requests (
     archive bool NOT NULL
 );
 
-CREATE TABLE connected_requests (
-    order_request varchar(100) REFERENCES requests (id) NOT NULL,
-    connected_request varchar(100) REFERENCES requests (id) NOT NULL
-);
-
 CREATE TABLE request_equipment (
     request_id varchar(100) REFERENCES requests (id),
     equipment_id varchar(100) REFERENCES equipment (id),
@@ -165,6 +142,11 @@ CREATE TABLE attributes_res_values (
     CONSTRAINT attributes_res_values_pkey PRIMARY KEY (attr_id, value_id)
 );
 
+CREATE TABLE email_templates (
+  id varchar(100) PRIMARY KEY NOT NULL,
+  template varchar(300) NOT NULL
+)
+
 
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO roles (id, name) VALUES (2, 'ROLE_USER');
@@ -176,3 +158,6 @@ INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('1', 'u
 INSERT INTO user_roles (role_id, user_id) VALUES (1, '1');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '0083b40e-aed7-491b-be76-5e90c59e70b6');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '9f047c13-8790-45a7-91c5-6fa8859c4884');
+
+INSERT INTO email_templates (id, template) VALUES ('Registration', 'Hello %s, you have been registered in ''Amber warehouse system''!');
+INSERT INTO email_templates (id, template) VALUES ('Request_status_changed', 'Dear %s, your request ''%s'' changed status from %s to %s.');

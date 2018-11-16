@@ -4,8 +4,6 @@ package amber_team.amber.dao.implementation;
 import amber_team.amber.dao.interfaces.UserDao;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserInfoDto;
-import amber_team.amber.service.implementation.EmailServiceImpl;
-import amber_team.amber.util.EmailTexts;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +26,7 @@ public class UserDaoImpl implements UserDao {
     private DataSource dataSource;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private EmailServiceImpl emailService;
+
 
 
     public void setDataSource(DataSource dataSource){
@@ -53,7 +50,6 @@ public class UserDaoImpl implements UserDao {
             result.setFName(user.getFName());
             result.setSName(user.getSName());
             result.setEmail(user.getEmail());
-            emailService.sendSimpleMessage(user.getEmail(),"Registration", EmailTexts.REGISTERED);
             return ResponseEntity.ok(result);
         }
     }

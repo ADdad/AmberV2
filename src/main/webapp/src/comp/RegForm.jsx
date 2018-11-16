@@ -81,7 +81,7 @@ class RegForm extends Component {
     if (error) {
       this.setState({ alert: "Fields are not filled propperly" });
     } else {
-      this.setState({ alert: "Registring..." });
+      this.setState({ alert: "Registering..." });
       await fetch("/register", {
         method: "POST",
         body: JSON.stringify({

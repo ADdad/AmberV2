@@ -39,4 +39,6 @@ public class SQLQueries {
     public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
             " SET archive = true" +
             " WHERE (status = 'Completed' OR status = 'Canceled') AND modified_date <= ?";
+    public static final String GET_REGISTRATION_EMAIL_TEMPLATE = "SELECT template FROM email_templates WHERE id = 'Registration'";
+    public static final String GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE = "SELECT template FROM email_templates WHERE id = 'Request_status_changed'";
 }
