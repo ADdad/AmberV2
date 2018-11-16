@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service(value = "attachmentsService")
 public class AttachmentsServiceImpl implements AttachmentsService {
-    private static final String MAIN_PATH = "./src/main/resources/";
+    private static final String MAIN_PATH = "./src/main/resources/attachments/";
 
     @Override
     public ResponseEntity uploadAttachments(List<MultipartFile> files, String requestId) throws IOException {
