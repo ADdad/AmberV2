@@ -1,5 +1,6 @@
 package amber_team.amber.dao.interfaces;
 
+import amber_team.amber.model.dto.EquipmentSearchDto;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Warehouse;
 
@@ -13,4 +14,5 @@ public interface EquipmentDao {
 
     List<Equipment> getAll();
     List<Equipment> search(String value);
+    List<Equipment> getLimited(int limit);
 }

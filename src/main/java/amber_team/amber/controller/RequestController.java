@@ -4,12 +4,22 @@ package amber_team.amber.controller;
 
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.service.interfaces.AttachmentsService;
 import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -17,8 +27,13 @@ import java.util.List;
 @RestController
 public class RequestController {
 
+
+
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private AttachmentsService attachmentsService;
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value="/r_info/{id}", method = RequestMethod.GET)
@@ -93,4 +108,11 @@ public class RequestController {
     public ResponseEntity<RequestInfoDto> complete(RequestStatusChangeDto request){
         return requestService.complete(request);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value="/request/create/attachments/{requestId}", method = RequestMethod.POST)
+        public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile, @PathVariable String requestId) throws IOException {
+        return attachmentsService.uploadAttachments(Arrays.asList(multipartFile), requestId);
+        }
+
 }

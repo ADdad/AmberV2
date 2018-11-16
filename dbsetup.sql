@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS user_warehouses;
 DROP TABLE IF EXISTS warehouse_equipment;
-DROP TABLE IF EXISTS connected_requests;
 DROP TABLE IF EXISTS request_equipment;
 DROP TABLE IF EXISTS attributes_res_values;
 DROP TABLE IF EXISTS reserved_values;
@@ -154,3 +153,56 @@ INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('1', 'u
 INSERT INTO user_roles (role_id, user_id) VALUES (1, '1');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '0083b40e-aed7-491b-be76-5e90c59e70b6');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '9f047c13-8790-45a7-91c5-6fa8859c4884');
+
+INSERT INTO equipment (id, model, producer, country) VALUES ('3456387', 'model1', 'producer1', 'Ukraine');
+INSERT INTO equipment (id, model, producer, country) VALUES ('dkljsal231', 'model2', 'producer2', 'Germany');
+INSERT INTO equipment (id, model, producer, country) VALUES ('jkd730', 'model3', 'producer3', 'United Kingdom');
+INSERT INTO equipment (id, model, producer, country) VALUES ('4kjld3', 'model4', 'producer1', 'Poland');
+INSERT INTO equipment (id, model, producer, country) VALUES ('jkls94', 'model5', 'producer2', 'Ukraine');
+INSERT INTO equipment (id, model, producer, country) VALUES ('jlkf4924', 'model6', 'producer1', 'Poland');
+
+INSERT INTO request_types (id, name) VALUES ('iruds213', 'order');
+INSERT INTO request_types (id, name) VALUES ('78923df', 'refund');
+INSERT INTO request_types (id, name) VALUES ('7593jhhd', 'replenishment');
+
+INSERT INTO attribute_types (id, name) VALUES ('jdklsa39f', 'select');
+INSERT INTO attribute_types (id, name) VALUES ('80943jld', 'radio');
+INSERT INTO attribute_types (id, name) VALUES ('j77gcj', 'text');
+INSERT INTO attribute_types (id, name) VALUES ('lkciuod', 'checkbox');
+INSERT INTO attribute_types (id, name) VALUES ('jclud', 'date');
+
+INSERT INTO attributes (id, attr_type_id, name, multiple) VALUES ('ioyera', 'j77gcj', 'Pet name', false);
+INSERT INTO attributes (id, attr_type_id, name, multiple) VALUES ('809jjsd', '80943jld', 'Type of pet', true);
+INSERT INTO attributes (id, attr_type_id, name, multiple) VALUES ('djliui', 'jdklsa39f', 'Best sport', true);
+INSERT INTO attributes (id, attr_type_id, name, multiple) VALUES ('djliuijljds', 'lkciuod', 'Favorite languages', true);
+INSERT INTO attributes (id, attr_type_id, name, multiple) VALUES ('uio89h4f', 'jclud', 'Birth ', false);
+
+INSERT INTO request_types_attributes (req_type_id, attr_id, mandatory, immutable)  VALUES ('iruds213', 'ioyera', true , false );
+INSERT INTO request_types_attributes (req_type_id, attr_id, mandatory, immutable)  VALUES ('iruds213', '809jjsd', false, false );
+INSERT INTO request_types_attributes (req_type_id, attr_id, mandatory, immutable)  VALUES ('iruds213', 'djliui', false, false );
+INSERT INTO request_types_attributes (req_type_id, attr_id, mandatory, immutable)  VALUES ('iruds213', 'djliuijljds', false, false );
+INSERT INTO request_types_attributes (req_type_id, attr_id, mandatory, immutable)  VALUES ('iruds213', 'uio89h4f', false, false );
+
+INSERT INTO reserved_values (id, value_content) VALUES ('djslka344', 'Animal');
+INSERT INTO reserved_values (id, value_content) VALUES ('jlkdyv', 'Ficus');
+INSERT INTO reserved_values (id, value_content) VALUES ('78tjvh', 'Cybersport');
+INSERT INTO reserved_values (id, value_content) VALUES ('jlkvy3888', 'Football');
+INSERT INTO reserved_values (id, value_content) VALUES ('jyyf', 'Soccer');
+INSERT INTO reserved_values (id, value_content) VALUES ('77893fhvv', 'C++');
+INSERT INTO reserved_values (id, value_content) VALUES ('j6789', 'Java');
+INSERT INTO reserved_values (id, value_content) VALUES ('poiiuooif', 'JavaScript');
+
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('809jjsd', 'djslka344');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('809jjsd', 'jlkdyv');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliui', '78tjvh');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliui', 'jlkvy3888');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliui', 'jyyf');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliuijljds', '77893fhvv');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliuijljds', 'j6789');
+INSERT INTO attributes_res_values (attr_id, value_id) VALUES ('djliuijljds', 'poiiuooif');
+
+INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd', 'Main str, Kiev, Ukraine', '835-55-35');
+INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd2', 'Second str, Kiev, Ukraine', '825-55-35');
+INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd3', 'Momo str, Lviv, Ukraine', '835-5885-35');
+INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd4', 'Down str, New York, USA', '835-5335-35');
+

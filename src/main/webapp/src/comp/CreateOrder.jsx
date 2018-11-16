@@ -6,25 +6,25 @@ import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
 import AsyncSelect from "react-select/lib/Async";
+import AsyncPaginate from "react-select-async-paginate";
 
 class CreateOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      initialized: false,
       userId: "",
+      orderId: "",
       alert: "",
       title: "",
-      myItems: [
-        { id: "2das", model: "model1", producer: "producer1", country: "Ukr" },
-        { id: "5das", model: "model2", producer: "producer1", country: "Ukr" }
-      ],
+      myItems: [],
       resultItems: [],
       viewItems: [],
       warehouses: [
         { id: "djsal", adress: "dsajkljlk" },
         { id: "djz", adress: "kdl" }
       ],
-      warehouse: "",
+      warehouseId: "",
       type: "",
       description: "",
       attachments: [],
@@ -41,7 +41,7 @@ class CreateOrder extends Component {
         {
           id: "2233",
           name: "TestCheckbox",
-          type: "checkbox",
+          type: "select",
           multiple: true,
           mandatory: false,
           immutable: false,
@@ -67,11 +67,86 @@ class CreateOrder extends Component {
         }
       ],
       oAttributesValues: [],
-      resultOptionalAttributes: []
+      resultOptionalAttributes: [],
+      alertFiles: ""
     };
   }
 
+  hasMandatory = () => {
+    for (let i = 0; i < this.state.optionalAttributes.length; i++) {
+      if (this.state.optionalAttributes[i].mandatory) return true;
+    }
+    return false;
+  };
+
+  validate = () => {
+    let localValues = this.state.oAttributesValues;
+    let resultItemsLocal = this.state.resultItems;
+    let localAlert = "";
+    let validated = true;
+    if (
+      typeof this.state.title === "undefined" ||
+      this.state.title == null ||
+      this.state.title == ""
+    ) {
+      validated = false;
+      localAlert += "Enter title\n";
+    }
+    if (
+      typeof this.state.description === "undefined" ||
+      this.state.description == null ||
+      this.state.description == ""
+    ) {
+      validated = false;
+      localAlert += "Enter description\n";
+    }
+    if (
+      typeof this.state.warehouseId === "undefined" ||
+      this.state.warehouseId == null ||
+      this.state.warehouseId == ""
+    ) {
+      validated = false;
+      localAlert += "Chose warehouse\n";
+    }
+    if (this.hasMandatory() && localValues.length < 1) {
+      validated = false;
+      localAlert += "Enter mandatory attributes\n";
+    }
+    for (let i = 0; i < localValues.length; i++) {
+      if (
+        this.state.optionalAttributes[i].mandatory &&
+        (typeof localValues[i] === "undefined" ||
+          localValues[i] == null ||
+          localValues[i] == "")
+      ) {
+        validated = false;
+        localAlert +=
+          "Enter value " + this.state.optionalAttributes[i].name + "\n";
+      }
+    }
+    if (resultItemsLocal.length < 1) {
+      localAlert += "Enter some items\n";
+      validated = false;
+    } else {
+      for (let i = 0; i < resultItemsLocal.length; i++) {
+        if (resultItemsLocal[i].quantity < 1) {
+          localAlert += "Quantity of items cant be less than 1\n";
+          validated = false;
+          break;
+        }
+      }
+    }
+    let newAlert = localAlert.split("\n").map((item, i) => (
+      <p key={i} className="text-danger">
+        {item}
+      </p>
+    ));
+    this.setState({ alert: newAlert });
+    return validated;
+  };
+
   componentDidMount() {
+    this.setState({ isLoading: true });
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
@@ -89,63 +164,90 @@ class CreateOrder extends Component {
           myItems: response.equipment,
           type: type,
           warehouse: response.warehouses[0].id,
-          isLoading: false
+          isLoading: false,
+          initialized: true
         });
       })
       .catch(error => console.error("Error:", error));
   }
 
   handleSubmit = () => {
-    const readyAttributes = this.compileAdditionalAttributes();
-    fetch("/request/save", {
-      method: "POST",
-      body: JSON.stringify({
-        creatorId: this.state.userId,
-        title: this.state.title,
-        description: this.state.description,
-        type: this.state.type,
-        warehouseId: this.state.warehouse,
-        items: this.state.resultItems,
-        attributes: readyAttributes
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ alert: "Succesfuly ordered" });
-          console.log("Success:", JSON.stringify(res));
-          console.log(res.status);
-        } else {
-          this.setState({ alert: "Something went wrong" });
-          console.log(JSON.stringify(res));
+    if (this.validate()) {
+      const readyAttributes = this.compileAdditionalAttributes();
+      fetch("/request/save", {
+        method: "POST",
+        body: JSON.stringify({
+          creatorId: this.state.userId,
+          title: this.state.title,
+          description: this.state.description,
+          type: this.state.type,
+          warehouseId: this.state.warehouseId,
+          items: this.state.resultItems,
+          attributes: readyAttributes,
+          offset: new Date().getTimezoneOffset()
+        }),
+        headers: {
+          "Content-Type": "application/json"
         }
       })
-      .catch(error => {
-        console.error("Error:", error);
-        this.setState({ alert: "Bad idea" });
+        .then(response => response.json())
+        .then(data => {
+          this.uploadFiles(data.id);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          this.setState({ alert: "Bad idea" });
+        });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
+
+  uploadFiles = orderId => {
+    let files = this.state.attachments;
+    let data = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      data.append("files", files[i]);
+    }
+    fetch(`/request/create/attachments/${orderId}`, {
+      method: "POST",
+      body: data
+    })
+      .then(response => {
+        this.setState({ error: "", msg: "Sucessfully uploaded file" });
+      })
+      .catch(err => {
+        this.setState({ error: err });
       });
+    this.props.history.push("/dashboard");
   };
 
   compileAdditionalAttributes = () => {
     let readyAttributes = [];
-    for (let i = 0; i < this.state.attributes; i++) {
+    for (let i = 0; i < this.state.optionalAttributes.length; i++) {
       readyAttributes.push({
-        id: this.state.attributes[i].id,
+        id: this.state.optionalAttributes[i].id,
         value: this.state.oAttributesValues[i]
       });
     }
     return readyAttributes;
   };
 
-  getItemsOptions1 = () => {
-    let items = this.state.myItems.slice();
-    let result = [];
-    items.map(i => result.push({ label: this.itemName(i), value: i.id }));
-    return result;
+  initReactSelect = () => {
+    if (this.state.initialized)
+      return (
+        <div className="form-row">
+          <div className="form-group col-md-11">
+            <AsyncSelect
+              cacheOptions
+              defaultOptions={this.getItemsOptions(this.state.myItems)}
+              loadOptions={this.loadOptions}
+              onChange={this.addItem}
+            />
+          </div>
+        </div>
+      );
   };
-
   getItemsOptions = items => {
     let itemsLocal = items;
     let result = [];
@@ -185,15 +287,22 @@ class CreateOrder extends Component {
     name,
     multiple,
     values,
+    mandatory,
     immutable,
     index
   ) => {
+    if (mandatory) name += "*";
     switch (type) {
       case "select": {
+        if (
+          this.state.oAttributesValues.length < 1 ||
+          this.state.oAttributesValues[index] == null
+        )
+          this.changeOptionalValue(index, values[0]);
         return (
           <div className="form-row">
             <div className="form-group">
-              <label>{name}: </label>
+              <label>{name} </label>
               <select
                 className="form-control"
                 onChange={p => this.changeOptionalValue(index, p.target.value)}
@@ -328,17 +437,6 @@ class CreateOrder extends Component {
     this.setState({ resultItems: resItemsLocal, viewItems: viewItemsLocal });
   };
 
-  returnButton = () => {
-    return (
-      <button
-        className="form-group col-md-3 btn btn-lg btn-outline-success"
-        onClick={this.context.router.history.push(`/dashboard`)}
-      >
-        To main page
-      </button>
-    );
-  };
-
   handleClearFiles = () => {
     this.setState({ attachments: [] });
   };
@@ -348,33 +446,33 @@ class CreateOrder extends Component {
   };
 
   onPreviewDrop = files => {
-    this.setState({
-      attachments: this.state.attachments.concat(files)
-    });
+    if (files.length + this.state.attachments.length > 6) {
+      this.setState({
+        alertFiles: "You can load only 6 files\n"
+      });
+    } else {
+      this.setState({
+        alertFiles: "",
+        attachments: this.state.attachments.concat(files)
+      });
+    }
   };
 
-  searchEquipment = inputValue => {
-    console.log(inputValue);
-    let result = [];
-    fetch(`/request/equipment/find/${inputValue}`)
-      .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        result = response.equipment;
-      })
-      .catch(error => console.error("Error:", error));
-    console.log(result);
-    return this.getItemsOptions(result);
+  getWarehouseOptions = () => {
+    let res = [];
+    this.state.warehouses.map(w => res.push({ value: w.id, label: w.adress }));
+    return res;
+  };
+
+  handleWarehouseChange = selectedWarehouse => {
+    this.setState({ warehouseId: selectedWarehouse.value });
   };
 
   loadOptions = (input, callback) => {
-    if (!input) {
-      return callback([
-        { label: "Delhi", value: "DEL" },
-        { label: "Mumbai", value: "MUM" }
-      ]);
+    if (!input || input.length < 3) {
+      return callback(this.getItemsOptions(this.state.myItems));
     }
-    console.log(input);
+
     return fetch(`/request/equipment/find/${input}`)
       .then(response => {
         return response.json();
@@ -382,18 +480,11 @@ class CreateOrder extends Component {
       .then(json => {
         let options = [];
         options = this.getItemsOptions(json.equipment);
-        console.log(json.equipment);
-        console.log("DATA:", options);
         return callback(options);
       });
   };
 
   render() {
-    // if (this.state.resultItems.length === 0) {
-    //   this.setState({
-    //     resultItems: [{ id: this.state.myItems[0].id, quantity: 0 }]
-    //   });
-    // }
     const globalOptionalFields = [...this.state.optionalAttributes];
     let localOptionalFields = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
@@ -403,6 +494,7 @@ class CreateOrder extends Component {
           globalOptionalFields[i].name,
           globalOptionalFields[i].multiple,
           globalOptionalFields[i].values,
+          globalOptionalFields[i].mandatory,
           globalOptionalFields[i].immutable,
           i
         )
@@ -449,10 +541,11 @@ class CreateOrder extends Component {
             <br />
             <h2>Create order</h2>
             <br />
-            <label>{this.state.alert}</label>
-            {/*this.returnButton*/}
+            {this.state.alert}
+
             <br />
             <h2>Title: </h2>
+
             <input
               className="form-control col-md-4"
               onChange={p => this.setState({ title: p.target.value })}
@@ -470,20 +563,15 @@ class CreateOrder extends Component {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group">
+              <div className="form-group col-md-5">
                 <label>Warehouse</label>
-                <select
-                  className="form-control"
-                  onChange={p => this.setState({ warehouse: p.target.value })}
-                >
-                  {this.state.warehouses.map(p => (
-                    <option key={p.id} value={p.id}>
-                      {p.adress}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                  onChange={this.handleWarehouseChange}
+                  options={this.getWarehouseOptions()}
+                />
               </div>
             </div>
+
             <div className="form-row">
               <div className="form-group col-md-9">
                 <h3>Items</h3>
@@ -498,18 +586,11 @@ class CreateOrder extends Component {
               </div>
             </div>
             {items}
-            <div className="form-row">
-              <div className="form-group col-md-11">
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={this.loadOptions}
-                  onChange={this.addItem}
-                />
-              </div>
-            </div>
+            {this.initReactSelect()}
+
             <div className="form-row">
               <div className="form-group ">
+                <p className="text-danger">{this.state.alertFiles}</p>
                 <Dropzone
                   accept="image/*,.doc,.pdf"
                   onDrop={this.onPreviewDrop}

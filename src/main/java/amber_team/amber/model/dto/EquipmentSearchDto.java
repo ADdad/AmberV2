@@ -6,6 +6,15 @@ import java.util.List;
 
 public class EquipmentSearchDto {
     private List<Equipment> equipment;
+    private boolean hasMore;
+
+    public boolean isHasMore() {
+        return hasMore;
+    }
+
+    public void setHasMore(boolean hasMore) {
+        this.hasMore = hasMore;
+    }
 
     public List<Equipment> getEquipment() {
         return equipment;

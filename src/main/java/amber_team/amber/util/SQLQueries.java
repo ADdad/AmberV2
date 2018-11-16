@@ -18,11 +18,11 @@ public class SQLQueries {
             "FROM roles " +
             "INNER JOIN user_roles ON roles.id = user_roles.role_id " +
             "WHERE user_roles.user_id=?";
-    public static final String TYPE_BY_ID = "SELECT * "+
-            "FROM request_types "+
+    public static final String TYPE_BY_ID = "SELECT * " +
+            "FROM request_types " +
             "WHERE id=? ORDER BY creation_date DESC LIMIT 1";
-    public static final String TYPE_BY_NAME = "SELECT * "+
-            "FROM request_types "+
+    public static final String TYPE_BY_NAME = "SELECT * " +
+            "FROM request_types " +
             "WHERE name=? ORDER BY creation_date DESC LIMIT 1";
     public static final String ADD_NEW_REQUEST = "INSERT INTO requests " +
             "(id, creator_id, req_type_id, status, creation_date, modified_date, description, archive, warehouse_id, title) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -39,7 +39,7 @@ public class SQLQueries {
             " title, status, creation_date, modified_date, description, archive " +
             "FROM requests " +
             "WHERE requests.id = ?";
-//    public static final String REQUEST_ATTRIBUTES_BY_ID = "SELECT attributes.name AS name, attribute_types.name AS type, string_value, date_value, decimal_value " +
+    //    public static final String REQUEST_ATTRIBUTES_BY_ID = "SELECT attributes.name AS name, attribute_types.name AS type, string_value, date_value, decimal_value " +
 //            "FROM request_values INNER JOIN (SELECT * FROM attributes INNER JOIN attribute_types ON attributes.attr_type_id=attribute_types.id) AS A1 ON request_values.attr_id=A1.id " +
 //            "WHERE request_id = ?";
     public static final String REQUEST_ATTRIBUTES_BY_TYPE = "SELECT A4.id AS id, A4.name AS name, A3.name AS type, attr_order AS order, multiple, mandatory, immutable " +
@@ -50,14 +50,14 @@ public class SQLQueries {
             "WHERE attr_id=?";
     public static final String GET_ALL_WAREHOUSES = "SELECT * FROM warehouses";
     public static final String GET_ALL_EQUIPMENT = "SELECT * FROM equipment";
+    public static final String GET_LIMITED_EQUIPMENT = "SELECT * FROM equipment LIMIT ?";
     public static final String ADD_REQUEST_ATTRIBUTE = "INSERT INTO request_values(request_id, attr_id, string_value) " +
             "VALUES (?, ?, ?)";
     public static final String ADD_REQUEST_EQUIPMENT = "INSERT INTO request_equipment(request_id, equipment_id, quantity) " +
             "VALUES (?, ?, ?)";
     public static final String FIND_EQUIPMENT_BY_VALUE = "SELECT * FROM equipment " +
-            "WHERE (model LIKE ?) OR (producer LIKE ?) OR (country LIKE ?)";
+            "WHERE (model LIKE ?) OR (producer LIKE ?) OR (country LIKE ?) LIMIT 50";
     public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
             " SET archive = true" +
             " WHERE (status = 'Completed' OR status = 'Canceled') AND modified_date <= ?";
-
 }

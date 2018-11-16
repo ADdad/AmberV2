@@ -1,6 +1,7 @@
 package amber_team.amber.dao.implementation;
 
 import amber_team.amber.dao.interfaces.EquipmentDao;
+import amber_team.amber.model.dto.EquipmentSearchDto;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,24 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 });
         return equipment;
 
+    }
+
+    @Override
+    public List<Equipment> getLimited(int limit) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<Equipment> equipment = jdbcTemplate.query(
+                SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit} ,
+                new RowMapper<Equipment>() {
+                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Equipment c = new Equipment();
+                        c.setId(rs.getString(1));
+                        c.setModel(rs.getString(2));
+                        c.setProducer(rs.getString(3));
+                        c.setCountry(rs.getString(4));
+                        return c;
+                    }
+                });
+        return equipment;
     }
 
 

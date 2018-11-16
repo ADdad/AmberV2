@@ -21,6 +21,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.5",
     "react-select": "^2.1.1",
+    "react-select-async-paginate": "^0.2.0",
     "react-stormpath": "^2.0.1"
   },
   "scripts": {

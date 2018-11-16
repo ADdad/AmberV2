@@ -24,6 +24,7 @@ public class RequestValuesDaoImpl implements RequestValuesDao {
 
     @Override
     public void save(AttributeSaveDto attr, String request_id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update(SQLQueries.ADD_REQUEST_ATTRIBUTE, request_id, attr.getId(), attr.getValue());
     }
 }

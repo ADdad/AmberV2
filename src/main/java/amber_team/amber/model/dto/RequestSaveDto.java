@@ -1,5 +1,7 @@
 package amber_team.amber.model.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public class RequestSaveDto {
@@ -11,8 +13,25 @@ public class RequestSaveDto {
     private List<AttributeSaveDto> attributes;
     private List<EquipmentDto> items;
     private String warehouseId;
+    private int offset;
 
+    public MultipartFile[] getAttachments() {
+        return attachments;
+    }
 
+    public void setAttachments(MultipartFile[] attachments) {
+        this.attachments = attachments.clone();
+    }
+
+    private MultipartFile[] attachments;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
     public String getTitle() {
         return title;

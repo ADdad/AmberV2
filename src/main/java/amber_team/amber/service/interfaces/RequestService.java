@@ -1,5 +1,6 @@
 package amber_team.amber.service.interfaces;
 
+import amber_team.amber.model.dto.EquipmentSearchDto;
 import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +23,5 @@ public interface RequestService {
     ResponseEntity creationData(String type);
     ResponseEntity searchEquipment(String value);
     void archiveOldRequests(Date tenDaysBefore);
+
 }

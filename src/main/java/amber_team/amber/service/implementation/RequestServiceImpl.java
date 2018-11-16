@@ -9,6 +9,7 @@ import amber_team.amber.model.entities.Request;
 import amber_team.amber.service.interfaces.RequestService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -45,19 +46,18 @@ public class RequestServiceImpl implements RequestService {
         newRequest.setCreatorId(request.getCreatorId());
         newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
         Request finalRequest = requestDao.save(newRequest);
-
-        for (AttributeSaveDto attribute :
+		for (AttributeSaveDto attribute :
                 request.getAttributes()) {
             requestValuesDao.save(attribute, finalRequest.getId());
         }
-
 
         for (EquipmentDto equipmentDto :
                 request.getItems()) {
             requestEquipmentDao.save(equipmentDto, finalRequest.getId());
         }
 
-        return ResponseEntity.ok(finalRequest);
+        return new ResponseEntity<>(finalRequest,
+				HttpStatus.OK);
 
 
 //		if(request.getTitle().isEmpty()) {
@@ -87,8 +87,8 @@ public class RequestServiceImpl implements RequestService {
         CreateOrderDto data = new CreateOrderDto();
         data.setAttributes(requestDao.attributes(type));
         data.setWarehouses(warehouseDao.getAll());
-        data.setEquipment(equipmentDao.getAll());
-        return ResponseEntity.ok(data);
+        data.setEquipment(equipmentDao.getLimited(25));
+		return ResponseEntity.ok(data);
     }
 
     public ResponseEntity searchEquipment(String value){
@@ -172,17 +172,14 @@ public class RequestServiceImpl implements RequestService {
         requestDao.archiveOldRequests(tenDaysBefore);
     }
 
-    @Override
+
+	@Override
     public ResponseEntity getRequestInfo(String id) {
         Request request = new Request();
         request.setId(id);
         //TODO Send string to method
         return requestDao.getRequestInfo(request);
     }
-
-
-
-
 
 
 	private boolean openValidation(RequestStatusChangeDto request) {
