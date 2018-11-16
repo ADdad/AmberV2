@@ -7,6 +7,7 @@ import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.service.interfaces.UserService;
+import amber_team.amber.util.EmailTexts;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.RegExp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
 
+	@Autowired
+	private EmailServiceImpl emailService;
+
 
 	@Override
     public ResponseEntity save(UserDto user) {
@@ -47,6 +51,7 @@ public class UserServiceImpl implements UserService {
 			newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 			newUser.setFName(user.getFirstName());
 			newUser.setSName(user.getSecondName());
+			emailService.sendRegistrationMessage(user.getEmail(),user.getFirstName());
 			return userDao.save(newUser);
 		}
     }
@@ -56,8 +61,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUserInfo(principal);
 	}
 
-	private boolean checkForNotNull(String email, String password, String fname, String sname){
-		return !(email.equals("") || password.equals("") || fname.equals("") || sname.equals(""));
+	private boolean checkForNotNull(String email, String password, String firstName, String secondName){
+		return !(email.isEmpty() || password.isEmpty() || firstName.isEmpty() || secondName.isEmpty());
 	}
 
     private boolean checkConfirmPass(String password, String confirm){

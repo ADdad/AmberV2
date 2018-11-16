@@ -16,15 +16,17 @@ DROP TABLE IF EXISTS request_types;
 DROP TABLE IF EXISTS equipment;
 DROP TABLE IF EXISTS warehouses;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS email_templates;
+
 
 CREATE TABLE users
 (
-  id varchar(100) NOT NULL PRIMARY KEY,
-  email varchar(60) NOT NULL,
-  password varchar(255) NOT NULL,
-  f_name varchar(40) NOT NULL,
-  s_name varchar(40) NOT NULL,
-  enabled smallint NOT NULL
+    id varchar(100) NOT NULL PRIMARY KEY,
+    email varchar(60) NOT NULL,
+    password varchar(255) NOT NULL,
+    f_name varchar(40) NOT NULL,
+    s_name varchar(40) NOT NULL,
+    enabled smallint NOT NULL
 );
 
 CREATE TABLE roles (
@@ -141,6 +143,11 @@ CREATE TABLE attributes_res_values (
     CONSTRAINT attributes_res_values_pkey PRIMARY KEY (attr_id, value_id)
 );
 
+CREATE TABLE email_templates (
+  id varchar(100) PRIMARY KEY NOT NULL,
+  template varchar(300) NOT NULL
+);
+
 
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO roles (id, name) VALUES (2, 'ROLE_USER');
@@ -153,6 +160,11 @@ INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('1', 'u
 INSERT INTO user_roles (role_id, user_id) VALUES (1, '1');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '0083b40e-aed7-491b-be76-5e90c59e70b6');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '9f047c13-8790-45a7-91c5-6fa8859c4884');
+
+INSERT INTO email_templates (id, template) VALUES ('Registration', 'Hello %s, you have been registered in ''Amber warehouse system''!');
+INSERT INTO email_templates (id, template) VALUES ('Request_status_changed', 'Dear %s, your request ''%s'' changed status from %s to %s.');
+INSERT INTO email_templates (id, template) VALUES ('User_roles_changed', 'Dear %s, your role list has been changed. This is new list of your roles: %s.');
+
 
 INSERT INTO equipment (id, model, producer, country) VALUES ('3456387', 'model1', 'producer1', 'Ukraine');
 INSERT INTO equipment (id, model, producer, country) VALUES ('dkljsal231', 'model2', 'producer2', 'Germany');

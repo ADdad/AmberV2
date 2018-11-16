@@ -6,6 +6,8 @@ import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.dto.RequestSaveDto;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.service.interfaces.RequestService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,11 +169,10 @@ public class RequestServiceImpl implements RequestService {
 		}
 	}
 
-    @Override
-    public void archiveOldRequests(Date tenDaysBefore) {
-        requestDao.archiveOldRequests(tenDaysBefore);
-    }
-
+	@Override
+	public void archiveOldRequests() {
+		requestDao.archiveOldRequests();
+	}
 
 	@Override
     public ResponseEntity getRequestInfo(String id) {
@@ -180,6 +181,8 @@ public class RequestServiceImpl implements RequestService {
         //TODO Send string to method
         return requestDao.getRequestInfo(request);
     }
+
+
 
 
 	private boolean openValidation(RequestStatusChangeDto request) {

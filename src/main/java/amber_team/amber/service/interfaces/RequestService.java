@@ -20,8 +20,7 @@ public interface RequestService {
     ResponseEntity hold(RequestStatusChangeDto request);
     ResponseEntity deliver(RequestStatusChangeDto request);
     ResponseEntity complete(RequestStatusChangeDto request);
+    void archiveOldRequests();
     ResponseEntity creationData(String type);
     ResponseEntity searchEquipment(String value);
-    void archiveOldRequests(Date tenDaysBefore);
-
 }
