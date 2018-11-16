@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class EmailServiceImpl  {
 
@@ -13,16 +15,6 @@ public class EmailServiceImpl  {
     public JavaMailSender emailSender;
     @Autowired
     public EmailDao emailDao;
-
-    private void sendSimpleMessage(
-            String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        emailSender.send(message);
-
-    }
 
     public void sendRegistrationMessage(String to, String firstName) {
         String registrationTemplate = emailDao.getRegistrationTemplate();
@@ -38,4 +30,21 @@ public class EmailServiceImpl  {
         sendSimpleMessage(to,subject,text);
     }
 
+    public void sendUserRolesChanged(String to, String firstName, List<String> newRoles) {
+        String userRolesChangedTemplate = emailDao.getUserRolesChangedTemplate();
+        String roles = String.join(", ",newRoles);
+        String text = String.format(userRolesChangedTemplate, firstName, roles);
+        String subject = "Your roles list has been changed!";
+        sendSimpleMessage(to, subject, text);
+    }
+
+    private void sendSimpleMessage(
+            String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        emailSender.send(message);
+
+    }
 }

@@ -33,4 +33,11 @@ public class EmailDaoImpl implements EmailDao {
         String requestStatusChangedTemplate = jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE,String.class);
         return requestStatusChangedTemplate;
     }
+
+    @Override
+    public String getUserRolesChangedTemplate() {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        String userRolesChangedTemplate = jdbcTemplate.queryForObject(SQLQueries.GET_USER_ROLES_CHANGED_EMAIL_TEMPLATE, String.class);
+        return userRolesChangedTemplate;
+    }
 }

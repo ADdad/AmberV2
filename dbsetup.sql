@@ -161,3 +161,4 @@ INSERT INTO user_roles (role_id, user_id) VALUES (2, '9f047c13-8790-45a7-91c5-6f
 
 INSERT INTO email_templates (id, template) VALUES ('Registration', 'Hello %s, you have been registered in ''Amber warehouse system''!');
 INSERT INTO email_templates (id, template) VALUES ('Request_status_changed', 'Dear %s, your request ''%s'' changed status from %s to %s.');
+INSERT INTO email_templates (id, template) VALUES ('User_roles_changed', 'Dear %s, your role list has been changed. This is new list of your roles: %s.');
