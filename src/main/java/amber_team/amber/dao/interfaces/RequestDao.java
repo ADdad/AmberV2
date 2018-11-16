@@ -21,6 +21,6 @@ public interface RequestDao {
 
     public ResponseEntity getRequestInfo(RequestStatusChangeDto principal);
 
-    public void archiveOldRequests(Date tenDaysBefore);
+    public void archiveOldRequests();
 
 }

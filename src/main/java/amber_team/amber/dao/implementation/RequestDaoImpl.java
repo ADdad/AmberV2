@@ -151,10 +151,10 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public void archiveOldRequests(Date tenDaysBefore) {
+    public void archiveOldRequests() {
         log.info("Archiving old requests for {}", dateFormat.format(new Date()));
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.ARCHIVE_OLD_REQUESTS, new Object[] {tenDaysBefore});
+        jdbcTemplate.update(SQLQueries.ARCHIVE_OLD_REQUESTS);
         log.info("Archiving ended on {}", dateFormat.format(new Date()));
     }
 }

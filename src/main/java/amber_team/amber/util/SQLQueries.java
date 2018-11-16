@@ -38,7 +38,7 @@ public class SQLQueries {
             "WHERE requests.id = ?";
     public static final String ARCHIVE_OLD_REQUESTS = "UPDATE requests" +
             " SET archive = true" +
-            " WHERE (status = 'Completed' OR status = 'Canceled') AND modified_date <= ?";
+            " WHERE (status = 'Completed' OR status = 'Canceled') AND modified_date <= (CURRENT_DATE - interval '10 days')";
     public static final String GET_REGISTRATION_EMAIL_TEMPLATE = "SELECT template FROM email_templates WHERE id = 'Registration'";
     public static final String GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE = "SELECT template FROM email_templates WHERE id = 'Request_status_changed'";
     public static final String GET_USER_ROLES_CHANGED_EMAIL_TEMPLATE = "SELECT template FROM email_templates WHERE id = 'User_roles_changed'";

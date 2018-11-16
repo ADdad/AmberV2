@@ -120,8 +120,8 @@ public class RequestServiceImpl implements RequestService {
 	}
 
 	@Override
-	public void archiveOldRequests(Date tenDaysBefore) {
-		requestDao.archiveOldRequests(tenDaysBefore);
+	public void archiveOldRequests() {
+		requestDao.archiveOldRequests();
 	}
 
 	@Override

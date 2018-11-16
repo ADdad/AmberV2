@@ -19,5 +19,5 @@ public interface RequestService {
     ResponseEntity hold(RequestStatusChangeDto request);
     ResponseEntity deliver(RequestStatusChangeDto request);
     ResponseEntity complete(RequestStatusChangeDto request);
-    void archiveOldRequests(Date tenDaysBefore);
+    void archiveOldRequests();
 }
