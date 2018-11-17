@@ -9,5 +9,7 @@ import java.util.List;
 public interface AttachmentsService {
 
     ResponseEntity uploadAttachments(List<MultipartFile> files, String requestId) throws IOException;
-    ResponseEntity downloadAttachments(String requestId);
+    ResponseEntity<byte[]> downloadAttachment(String requestId, String filename) throws IOException;
+    ResponseEntity listFiles(String requestId);
+    ResponseEntity<byte[]> downloadAsZIP(String requestId);
 }

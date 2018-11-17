@@ -143,33 +143,112 @@ class OrderReview extends Component {
     const { requestId } = this.props.match.params;
     const { mode } = this.props.match.params;
     this.setState({ requestId: requestId, mode: mode });
-    //     fetch("/userinfo")
-    //       .then(response => response.json())
-    //       .then(data => {
-    //         this.setState({
-    //           userId: data.id,
-    //           userRoles: data.roles
-    //         });
-    //       })
-    //       .catch(error => console.log(error));
+    fetch(`/attachments/list/${requestId}`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ attachments: data.listFiles });
+      })
+      .catch(error => console.log(error));
 
-    fetch(`/r_info/${requestId}`)
+    fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
         this.setState({
-          title: data.title,
-          status: data.status,
-          type: data.type_id,
-          description: data.description,
-          creationDate: data.creation_date,
-          updatedDate: data.modified_date,
-          warehouse: data.warehouse,
-          requestId: data.id,
-          isLoading: false
+          userId: data.id,
+          userRoles: data.roles,
+          requestId: requestId
         });
       })
       .catch(error => console.log(error));
+
+    // fetch(`/r_info/${requestId}`)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     this.setState({
+    //       title: data.title,
+    //       status: data.status,
+    //       type: data.type_id,
+    //       description: data.description,
+    //       creationDate: data.creation_date,
+    //       updatedDate: data.modified_date,
+    //       warehouse: data.warehouse,
+    //       requestId: data.id,
+    //       isLoading: false
+    //     });
+    //   })
+    //   .catch(error => console.log(error));
   }
+
+  handleDownloadFile = name => {
+    fetch(`/attachments/${this.state.requestId}?filename=${name}`).then(
+      response => {
+        const filename = response.headers
+          .get("Content-Disposition")
+          .split("filename=")[1];
+        response.blob().then(blob => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.click();
+        });
+      }
+    );
+  };
+
+  handleDownloadAll = () => {
+    fetch(`/attachments/zip/${this.state.requestId}`).then(response => {
+      const filename = response.headers
+        .get("Content-Disposition")
+        .split("filename=")[1];
+      response.blob().then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+      });
+    });
+  };
+
+  attachmentsList = () => {
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">File name</th>
+            <th scope="col">File size</th>
+            <th scope="col">
+              <button
+                className="btn btn-lg btn-outline-danger"
+                onClick={this.handleDownloadAll}
+              >
+                Download all
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.attachments.map(p => (
+            <tr key={p.filename}>
+              <td>{p.filename}</td>
+              <td>{p.fileSize}</td>
+              <td>
+                <button
+                  className="btn btn-lg btn-outline-primary"
+                  onClick={() => {
+                    this.handleDownloadFile(p.filename);
+                  }}
+                >
+                  Download
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
 
   //   handleSubmit = () => {
   //     fetch("/postOrder", {
@@ -184,6 +263,11 @@ class OrderReview extends Component {
   //       .catch(error => console.error("Error:", error));
   //   };
   render() {
+    let attachmetsListLocal = "";
+    if (this.state.attachments.length > 0) {
+      attachmetsListLocal = this.attachmentsList();
+    }
+
     return (
       <React.Fragment>
         <div className="container">
@@ -243,9 +327,8 @@ class OrderReview extends Component {
             <div className="form-row">
               <div className="form-group">{this.additionalAttributes()}</div>
             </div>
-
+            {attachmetsListLocal}
             {this.buttonsSpace()}
-            <Attachments attachments={this.state.attachments} />
             <br />
             <br />
             <h2>Comments</h2>

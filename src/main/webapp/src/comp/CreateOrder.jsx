@@ -153,7 +153,6 @@ class CreateOrder extends Component {
         this.setState({ userId: data.id });
       })
       .catch(error => console.log(error));
-
     const type = this.props.match.params.type;
     fetch(`/request/create/${type}`)
       .then(res => res.json())

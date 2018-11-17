@@ -142,4 +142,4 @@ src/main/webapp/node_modules
 ### Frontend build ###
 src/main/webapp/build
 ### Attachments files ###
-src/main/resources/attachments/
+src/main/resources/attachments/*
