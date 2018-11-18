@@ -1,23 +1,43 @@
 package amber_team.amber.model.dto;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class RequestInfoDto {
 
     private String username;
-    private String request_id;
+    private String id;
     private String warehouse_id;
     private String creator_id;
     private String executor_id;
     private String type_id;
     private String title;
     private String status;
-    private LocalDate creation_date;
-    private LocalDate modified_date;
+    private Timestamp creation_date;
+    private Timestamp modified_date;
     private String description;
     private boolean archive;
-    private List<String> attributes;
+    private List<AttributeDto> attributes;
+
+    public Timestamp getCreation_date() {
+        return creation_date;
+    }
+
+    public void setCreation_date(Timestamp creation_date) {
+        this.creation_date = creation_date;
+    }
+
+    public Timestamp getModified_date() {
+        return modified_date;
+    }
+
+    public void setModified_date(Timestamp modified_date) {
+        this.modified_date = modified_date;
+    }
+
+    public void setAttributes(List<AttributeDto> attributes) {
+        this.attributes = attributes;
+    }
 
     public String getUsername() {
         return username;
@@ -27,12 +47,12 @@ public class RequestInfoDto {
         this.username = username;
     }
 
-    public String getRequest_id() {
-        return request_id;
+    public String getId() {
+        return id;
     }
 
-    public void setRequest_id(String request_id) {
-        this.request_id = request_id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getWarehouse_id() {
@@ -83,21 +103,6 @@ public class RequestInfoDto {
         this.status = status;
     }
 
-    public LocalDate getCreation_date() {
-        return creation_date;
-    }
-
-    public void setCreation_date(LocalDate creation_date) {
-        this.creation_date = creation_date;
-    }
-
-    public LocalDate getModified_date() {
-        return modified_date;
-    }
-
-    public void setModified_date(LocalDate modified_date) {
-        this.modified_date = modified_date;
-    }
 
     public String getDescription() {
         return description;
@@ -115,11 +120,5 @@ public class RequestInfoDto {
         this.archive = archive;
     }
 
-    public List<String> getAttributes() {
-        return attributes;
-    }
 
-    public void setAttributes(List<String> attributes) {
-        this.attributes = attributes;
-    }
 }

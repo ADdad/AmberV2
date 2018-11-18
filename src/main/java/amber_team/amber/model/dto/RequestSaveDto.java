@@ -1,21 +1,36 @@
 package amber_team.amber.model.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public class RequestSaveDto {
 
-    private String username;
+    private String creatorId;
     private String title;
     private String description;
-    private String typeId;
-    private List<String> attributes;
+    private String type;
+    private List<AttributeSaveDto> attributes;
+    private List<EquipmentDto> items;
+    private String warehouseId;
+    private int offset;
 
-    public String getUsername() {
-        return username;
+    public MultipartFile[] getAttachments() {
+        return attachments;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAttachments(MultipartFile[] attachments) {
+        this.attachments = attachments.clone();
+    }
+
+    private MultipartFile[] attachments;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 
     public String getTitle() {
@@ -34,19 +49,45 @@ public class RequestSaveDto {
         this.description = description;
     }
 
-    public String getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
-    }
-
-    public List<String> getAttributes() {
+    public List<AttributeSaveDto> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<String> attributes) {
+    public void setAttributes(List<AttributeSaveDto> attributes) {
+
         this.attributes = attributes;
     }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<EquipmentDto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<EquipmentDto> items) {
+        this.items = items;
+    }
+
+    public String getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(String warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
 }

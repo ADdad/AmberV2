@@ -67,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .loginProcessingUrl("/perform_login")
                 .defaultSuccessUrl("/dashboard", true)
-                //.failureUrl("/index.html?error=true")
                 .and()
                 .logout().logoutSuccessUrl("/login")
                 .and().csrf().disable();

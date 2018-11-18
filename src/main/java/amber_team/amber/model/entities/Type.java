@@ -1,5 +1,6 @@
 package amber_team.amber.model.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -7,7 +8,7 @@ public class Type {
 
     private String id;
     private String name;
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
     private Map<AttrType, TypeProperties> attrTypes;
 
     public String getId() {
@@ -26,11 +27,11 @@ public class Type {
         this.name = name;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 

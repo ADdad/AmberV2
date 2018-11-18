@@ -18,11 +18,7 @@ class OrderEdit extends Component {
         { id: "dlla", name: "model5, producer4" },
         { id: "740jf", name: "model6, producer2" }
       ],
-      resultItems: [
-        { itemId: "740jf", quantity: 5 },
-        { itemId: "6747", quantity: 8 },
-        { itemId: "79842", quantity: 12 }
-      ],
+      resultItems: [],
       warehouses: [1, 2, 3, 4, 5],
       warehouse: 2,
       type: "",
@@ -59,9 +55,14 @@ class OrderEdit extends Component {
           values: []
         }
       ],
-      oAttributesValues: ["Test1", "Test2|Test3"]
+      oAttributesValues: []
     };
   }
+
+  timezone = () => {
+    let datet = new Date().getTimezoneOffset();
+    console.log(datet);
+  };
 
   resultItemEdit = (i, e) => {
     let readyItems = this.state.resultItems.slice();
@@ -258,6 +259,9 @@ class OrderEdit extends Component {
       .catch(error => console.error("Error:", error));
   };
   render() {
+    {
+      this.timezone();
+    }
     const globalOptionalFields = [...this.state.optionalAttributes];
     let localOptionalFields = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
