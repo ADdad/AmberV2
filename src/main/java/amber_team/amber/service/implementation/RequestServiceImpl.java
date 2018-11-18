@@ -1,24 +1,27 @@
-package amber_team.amber.service;
+package amber_team.amber.service.implementation;
 
 
 
-import amber_team.amber.dao.IRequestDao;
-import amber_team.amber.model.Request;
-import amber_team.amber.model.RequestSaveDto;
-import amber_team.amber.model.RequestStatusChangeDto;
+import amber_team.amber.dao.interfaces.RequestDao;
+import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.dto.RequestSaveDto;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
+import amber_team.amber.service.interfaces.RequestService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 
 @Service(value = "requestService")
-public class RequestServiceImpl implements IRequestService {
+public class RequestServiceImpl implements RequestService {
 	
 
 
 	@Autowired
-	private IRequestDao requestDao;
+	private RequestDao requestDao;
 
 
 	@Override
@@ -30,8 +33,8 @@ public class RequestServiceImpl implements IRequestService {
 			Request newRequest = new Request();
 			newRequest.setTitle(request.getTitle());
 			newRequest.setDescription(request.getDescription());
-			newRequest.setType_id(request.getType_id());
-			newRequest.setAttributes(request.getAttributes());
+			newRequest.setTypeId(request.getTypeId());
+			//todo setAttrbutes
 			return requestDao.save(newRequest);
 		}
     }
@@ -114,6 +117,11 @@ public class RequestServiceImpl implements IRequestService {
 		} else {
 			return requestDao.complete(request);
 		}
+	}
+
+	@Override
+	public void archiveOldRequests(Date tenDaysBefore) {
+		requestDao.archiveOldRequests(tenDaysBefore);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package amber_team.amber.model;
+package amber_team.amber.model.dto;
 
 import java.util.List;
 

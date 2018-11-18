@@ -1,11 +1,13 @@
-package amber_team.amber.service;
+package amber_team.amber.service.interfaces;
 
-import amber_team.amber.model.RequestSaveDto;
-import amber_team.amber.model.RequestStatusChangeDto;
+import amber_team.amber.model.dto.RequestSaveDto;
+import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
 
-public interface IRequestService {
+
+public interface RequestService {
 
     ResponseEntity getRequestInfo(RequestStatusChangeDto request);
     ResponseEntity save(RequestSaveDto request);
@@ -17,4 +19,5 @@ public interface IRequestService {
     ResponseEntity hold(RequestStatusChangeDto request);
     ResponseEntity deliver(RequestStatusChangeDto request);
     ResponseEntity complete(RequestStatusChangeDto request);
+    void archiveOldRequests(Date tenDaysBefore);
 }

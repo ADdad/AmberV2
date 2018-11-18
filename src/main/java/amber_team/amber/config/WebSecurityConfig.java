@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             request.login(username, password);
         } catch (ServletException e) {
-            //LOGGER.error("Error while login ", e);
+            System.out.println("Error while login "+e);
         }
     }
 

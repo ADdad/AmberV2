@@ -1,8 +1,9 @@
-package amber_team.amber.dao;
+package amber_team.amber.dao.implementation;
 
 
-import amber_team.amber.model.User;
-import amber_team.amber.model.UserInfoDto;
+import amber_team.amber.dao.interfaces.UserDao;
+import amber_team.amber.model.entities.User;
+import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository(value = "userDao")
-public class UserDaoImpl implements IUserDao {
+public class UserDaoImpl implements UserDao {
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -42,11 +43,11 @@ public class UserDaoImpl implements IUserDao {
             int role_id = 2; //Role_User
             int enabled = 1;
             jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSecondName(), user.getFirstName(), enabled, id, role_id});
+                    user.getSName(), user.getFName(), enabled, id, role_id});
             User result = new User();
             result.setId(id);
-            result.setFirstName(user.getFirstName());
-            result.setSecondName(user.getSecondName());
+            result.setFName(user.getFName());
+            result.setSName(user.getSName());
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
         }
