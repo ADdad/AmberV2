@@ -18,25 +18,6 @@ DROP TABLE IF EXISTS equipment;
 DROP TABLE IF EXISTS warehouses;
 DROP TABLE IF EXISTS users;
 
-DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS user_warehouses;
-DROP TABLE IF EXISTS warehouse_equipment;
-DROP TABLE IF EXISTS connected_requests;
-DROP TABLE IF EXISTS request_equipment;
-DROP TABLE IF EXISTS attributes_res_values;
-DROP TABLE IF EXISTS reserved_values;
-DROP TABLE IF EXISTS request_values;
-DROP TABLE IF EXISTS request_types_attributes;
-DROP TABLE IF EXISTS attributes;
-DROP TABLE IF EXISTS attribute_types;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS requests;
-DROP TABLE IF EXISTS request_types;
-DROP TABLE IF EXISTS equipment;
-DROP TABLE IF EXISTS warehouses;
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users
 (
     id VARCHAR (100) NOT NULL PRIMARY KEY,

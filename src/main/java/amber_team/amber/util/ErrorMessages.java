@@ -7,4 +7,5 @@ public class ErrorMessages {
     public static final String INVALID_EMAIL = "{ErrorMessage : 'Your email is not valid'}";
     public static final String EMPTY_TITLE = "{ErrorMessage : 'Request title is empty!'}";
     public static final String STATUS_ERROR = "{ErrorMessage : 'This status change is prohibited!'}";
+    public static final String EMPTY_LIST = "{ErrorMessage : 'The list you are trying to set is empty'}";
 }
