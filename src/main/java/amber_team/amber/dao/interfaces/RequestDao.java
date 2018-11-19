@@ -7,8 +7,6 @@ import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Date;
-
 import java.util.List;
 
 public interface RequestDao {
@@ -21,9 +19,8 @@ public interface RequestDao {
     public ResponseEntity hold(RequestStatusChangeDto request);
     public ResponseEntity deliver(RequestStatusChangeDto request);
     public ResponseEntity complete(RequestStatusChangeDto request);
-    public List<AttributeDto> attributes(String type);
 
-    public ResponseEntity getRequestInfo(Request principal);
+    public Request getRequestInfo(String requestId);
 
     public void archiveOldRequests();
 

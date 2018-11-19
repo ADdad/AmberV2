@@ -226,6 +226,7 @@ class CreateOrder extends Component {
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
       readyAttributes.push({
         id: this.state.optionalAttributes[i].id,
+        type: this.state.optionalAttributes[i].type,
         value: this.state.oAttributesValues[i]
       });
     }

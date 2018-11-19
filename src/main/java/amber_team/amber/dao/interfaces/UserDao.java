@@ -10,4 +10,5 @@ import java.security.Principal;
 public interface UserDao {
     public ResponseEntity save (User user);
     public ResponseEntity getUserInfo(Principal principal);
+    User getById(String id);
 }

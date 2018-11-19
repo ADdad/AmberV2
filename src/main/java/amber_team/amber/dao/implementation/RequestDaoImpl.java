@@ -3,9 +3,8 @@ package amber_team.amber.dao.implementation;
 
 import amber_team.amber.dao.interfaces.RequestDao;
 import amber_team.amber.model.dto.AttributeDto;
-import amber_team.amber.model.entities.Request;
-import amber_team.amber.model.dto.RequestInfoDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
+import amber_team.amber.model.entities.Request;
 import amber_team.amber.util.SQLQueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,7 @@ public class RequestDaoImpl implements RequestDao {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-    public Request save(Request request) {
+    public amber_team.amber.model.entities.Request save(amber_team.amber.model.entities.Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         String id = UUID.randomUUID().toString();
@@ -119,65 +118,32 @@ public class RequestDaoImpl implements RequestDao {
         return ResponseEntity.ok(request);
     }
 
-    @Override
-    public List<AttributeDto> attributes(String type) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        List<AttributeDto> attributeDtoList = jdbcTemplate.query(
-                SQLQueries.REQUEST_ATTRIBUTES_BY_TYPE,
-                new Object[] {type},
-                new RowMapper<AttributeDto>() {
-                    public AttributeDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        AttributeDto c = new AttributeDto();
-                        c.setId(rs.getString(1));
-                        c.setName(rs.getString(2));
-                        c.setType(rs.getString(3));
-                        c.setOrder(rs.getInt(4));
-                        c.setMultiple(rs.getBoolean(5));
-                        c.setMandatory(rs.getBoolean(6));
-                        c.setImmutable(rs.getBoolean(7));
-                        return c;
-                    }
-                });
-        for (AttributeDto attr:
-             attributeDtoList) {
-            getAttributeValues(attr, jdbcTemplate);
-        }
-        return attributeDtoList;
-    }
 
-    public void getAttributeValues(AttributeDto attr, JdbcTemplate jdbcTemplate){
-        List<String> values = jdbcTemplate.query(SQLQueries.RESERVED_VALUES_FOR_ATTRIBUTE_ID, new Object[] {attr.getId()} , new RowMapper<String>(){
-            public String mapRow(ResultSet rs, int rowNum)
-                    throws SQLException {
-                return rs.getString(1);
-            }
-        });
-        attr.setValues(values);
-    }
 
 
     @Override
-    public ResponseEntity getRequestInfo(Request request) {
+    public Request getRequestInfo(String requestId) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        RequestInfoDto info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getId()}, new RowMapper<RequestInfoDto>() {
+        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {requestId}, new RowMapper<Request>() {
             @Override
-            public RequestInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
-                RequestInfoDto info = new RequestInfoDto();
-                info.setId(request.getId());
-                info.setWarehouse_id(resultSet.getString("warehouse_id"));
-                info.setExecutor_id(resultSet.getString("executor_id"));
-                info.setType_id(resultSet.getString(" type_id"));
+            public Request mapRow(ResultSet resultSet, int i) throws SQLException {
+                Request info = new Request();
+                info.setId(requestId);
+                info.setWarehouseId(resultSet.getString("warehouse_id"));
+                info.setCreatorId(resultSet.getString("creator_id"));
+                info.setExecutorId(resultSet.getString("executor_id"));
+                info.setTypeId(resultSet.getString("req_type_id"));
                 info.setTitle(resultSet.getString("title"));
                 info.setStatus(resultSet.getString("status"));
-                info.setCreation_date(resultSet.getTimestamp("creation_date"));
-                info.setModified_date(resultSet.getTimestamp("modified_date"));
+                info.setCreationDate(resultSet.getTimestamp("creation_date"));
+                info.setModifiedDate(resultSet.getTimestamp("modified_date"));
                 info.setDescription(resultSet.getString("description"));
                 info.setArchive(resultSet.getBoolean("archive"));
                 return info;
             }
         });
 
-        return ResponseEntity.ok(info);
+        return info;
     }
 
     @Override

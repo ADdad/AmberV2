@@ -1,51 +1,87 @@
 package amber_team.amber.model.dto;
 
+import amber_team.amber.model.entities.*;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 public class RequestInfoDto {
 
-    private String username;
     private String id;
-    private String warehouse_id;
-    private String creator_id;
-    private String executor_id;
-    private String type_id;
+    private Warehouse warehouse;
+    private User creator;
+    private User executor;
+    private Type type;
     private String title;
     private String status;
-    private Timestamp creation_date;
-    private Timestamp modified_date;
+    private Timestamp creationDate;
+    private Timestamp modifiedDate;
     private String description;
     private boolean archive;
-    private List<AttributeDto> attributes;
+    private List<AttributeInfoDto> attributes;
+    private List<Comment> comments;
+    private List<EquipmentInfoDto> equipment;
 
-    public Timestamp getCreation_date() {
-        return creation_date;
+    public List<EquipmentInfoDto> getEquipment() {
+        return equipment;
     }
 
-    public void setCreation_date(Timestamp creation_date) {
-        this.creation_date = creation_date;
+    public void setEquipment(List<EquipmentInfoDto> equipment) {
+        this.equipment = equipment;
     }
 
-    public Timestamp getModified_date() {
-        return modified_date;
+    public User getCreator() {
+        return creator;
     }
 
-    public void setModified_date(Timestamp modified_date) {
-        this.modified_date = modified_date;
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
-    public void setAttributes(List<AttributeDto> attributes) {
-        this.attributes = attributes;
+    public User getExecutor() {
+        return executor;
     }
 
-    public String getUsername() {
-        return username;
+    public void setExecutor(User executor) {
+        this.executor = executor;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public Timestamp getCreationDate() {
+        return creationDate;
     }
+
+    public void setCreationDate(Timestamp creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Timestamp getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Timestamp modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public RequestInfoDto() {}
+
+    public RequestInfoDto(Request request){
+        this.id = request.getId();
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.status= request.getStatus();
+        this.archive = request.isArchive();
+        this.creationDate = request.getCreationDate();
+        this.modifiedDate = request.getModifiedDate();
+    }
+
 
     public String getId() {
         return id;
@@ -55,36 +91,20 @@ public class RequestInfoDto {
         this.id = id;
     }
 
-    public String getWarehouse_id() {
-        return warehouse_id;
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 
-    public void setWarehouse_id(String warehouse_id) {
-        this.warehouse_id = warehouse_id;
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
-    public String getCreator_id() {
-        return creator_id;
+    public Type getType() {
+        return type;
     }
 
-    public void setCreator_id(String creator_id) {
-        this.creator_id = creator_id;
-    }
-
-    public String getExecutor_id() {
-        return executor_id;
-    }
-
-    public void setExecutor_id(String executor_id) {
-        this.executor_id = executor_id;
-    }
-
-    public String getType_id() {
-        return type_id;
-    }
-
-    public void setType_id(String type_id) {
-        this.type_id = type_id;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getTitle() {
@@ -103,7 +123,6 @@ public class RequestInfoDto {
         this.status = status;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -120,5 +139,11 @@ public class RequestInfoDto {
         this.archive = archive;
     }
 
+    public List<AttributeInfoDto> getAttributes() {
+        return attributes;
+    }
 
+    public void setAttributes(List<AttributeInfoDto> attributes) {
+        this.attributes = attributes;
+    }
 }

@@ -44,11 +44,11 @@ public class UserDaoImpl implements UserDao {
             int role_id = 2; //Role_User
             int enabled = 1;
             jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSName(), user.getFName(), enabled, id, role_id});
+                    user.getSecondName(), user.getFirstName(), enabled, id, role_id});
             User result = new User();
             result.setId(id);
-            result.setFName(user.getFName());
-            result.setSName(user.getSName());
+            result.setFirstName(user.getFirstName());
+            result.setSecondName(user.getSecondName());
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
         }
@@ -71,6 +71,24 @@ public class UserDaoImpl implements UserDao {
         List<String> roles = jdbcTemplate.queryForList(SQLQueries.USER_ROLES_BY_ID, new Object[] {info.getId()}, String.class);
         info.setRoles(roles);
         return ResponseEntity.ok(info);
+    }
+
+    @Override
+    public User getById(String id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        User info = jdbcTemplate.queryForObject(SQLQueries.GET_USER_BY_ID, new Object[]{id}, new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                User info = new User();
+                info.setId(resultSet.getString("id"));
+                info.setEmail(resultSet.getString("email"));
+                info.setFirstName(resultSet.getString("f_name"));
+                info.setSecondName(resultSet.getString("s_name"));
+                info.setPassword(resultSet.getString("password"));
+                return info;
+            }
+        });
+        return info;
     }
 
     private boolean checkEmailAviability(String email){

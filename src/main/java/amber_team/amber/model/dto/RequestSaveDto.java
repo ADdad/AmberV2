@@ -10,7 +10,7 @@ public class RequestSaveDto {
     private String title;
     private String description;
     private String type;
-    private List<AttributeSaveDto> attributes;
+    private List<AttributeInfoDto> attributes;
     private List<EquipmentDto> items;
     private String warehouseId;
     private int offset;
@@ -49,11 +49,11 @@ public class RequestSaveDto {
         this.description = description;
     }
 
-    public List<AttributeSaveDto> getAttributes() {
+    public List<AttributeInfoDto> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<AttributeSaveDto> attributes) {
+    public void setAttributes(List<AttributeInfoDto> attributes) {
 
         this.attributes = attributes;
     }

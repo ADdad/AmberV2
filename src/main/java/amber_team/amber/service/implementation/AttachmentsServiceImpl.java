@@ -77,6 +77,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
 
     @Override
     public ResponseEntity listFiles(String requestId) {
+        if (Files.notExists(Paths.get(MAIN_PATH + requestId))) return ResponseEntity.ok(new ListFilesDto());
         List<FileInfoDto> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(MAIN_PATH + requestId))) {
             paths

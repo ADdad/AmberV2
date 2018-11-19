@@ -3,7 +3,6 @@ import Comment from "./Comment";
 import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
-import Attachments from "./Attachments";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
@@ -40,20 +39,7 @@ class OrderReview extends Component {
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",
       attachments: [],
-      comments: [
-        {
-          id: 1,
-          authorName: "Admin",
-          date: "01.05.2012",
-          textComment: "Correct that"
-        },
-        {
-          id: 2,
-          authorName: "Andrew",
-          date: "02.05.2012",
-          textComment: "Corrected"
-        }
-      ],
+      comments: [],
       executors: [
         { id: 5, firstName: "Andrew", secondName: "Lobinski" },
         { id: 4, firstName: "Nan", secondName: "Kek" }
@@ -96,15 +82,7 @@ class OrderReview extends Component {
 
     let renderAttributes = [];
     localAttributes.map(a => {
-      if (a.values.length == 1) {
-        renderAttributes.push({ name: a.name, value: a.values[0] });
-      } else {
-        let str = "|";
-        a.values.map(v => {
-          str += v + "|";
-        });
-        renderAttributes.push({ name: a.name, value: str });
-      }
+      renderAttributes.push({ name: a.name, value: a.value });
     });
 
     return (
@@ -161,22 +139,27 @@ class OrderReview extends Component {
       })
       .catch(error => console.log(error));
 
-    // fetch(`/r_info/${requestId}`)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     this.setState({
-    //       title: data.title,
-    //       status: data.status,
-    //       type: data.type_id,
-    //       description: data.description,
-    //       creationDate: data.creation_date,
-    //       updatedDate: data.modified_date,
-    //       warehouse: data.warehouse,
-    //       requestId: data.id,
-    //       isLoading: false
-    //     });
-    //   })
-    //   .catch(error => console.log(error));
+    fetch(`/request/info/${requestId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          title: data.title,
+          status: data.status,
+          type: data.type,
+          description: data.description,
+          creationDate: data.creationDate,
+          updatedDate: data.modifiedDate,
+          warehouse: data.warehouse,
+          creator: data.creator,
+          executor: data.executor,
+          attributes: data.attributes,
+          comments: data.comments,
+          equipment: data.equipment,
+          isLoading: false
+        });
+      })
+      .catch(error => console.log(error));
   }
 
   handleDownloadFile = name => {
@@ -250,21 +233,37 @@ class OrderReview extends Component {
     );
   };
 
-  //   handleSubmit = () => {
-  //     fetch("/postOrder", {
-  //       method: "POST",
-  //       body: JSON.stringify(this.state),
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       }
-  //     })
-  //       .then(res => res.json())
-  //       .then(response => console.log("Success:", JSON.stringify(response)))
-  //       .catch(error => console.error("Error:", error));
-  //   };
+  renderComments = () => {
+    if (
+      this.state.attachments != null &&
+      typeof this.state.attachments !== "undefined" &&
+      this.state.comments.length > 0
+    ) {
+      return (
+        <div className="form-row">
+          <div className="form-group">
+            <h2>Comments</h2>
+            {this.state.comments.map(comment => (
+              <Comment
+                key={comment.id}
+                date={comment.creationDate}
+                authorName={comment.user.email}
+                textComment={comment.text}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    } else return <div />;
+  };
+
   render() {
     let attachmetsListLocal = "";
-    if (this.state.attachments.length > 0) {
+    if (
+      this.state.attachments != null &&
+      typeof this.state.attachments !== "undefined" &&
+      this.state.attachments.length > 0
+    ) {
       attachmetsListLocal = this.attachmentsList();
     }
 
@@ -277,12 +276,7 @@ class OrderReview extends Component {
             <br />
             <br />
             <br />
-            <h2>Title: {this.state.status} </h2>
-            <input
-              className="form-control col-md-4"
-              onChange={p => this.setState({ status: p.target.value })}
-              hidden
-            />
+            <h2>Title: {this.state.title} </h2>
             <h4 className="form-group">
               Status:
               <span className="badge badge-primary m-2">
@@ -291,9 +285,11 @@ class OrderReview extends Component {
             </h4>
             <h4>
               Type:{" "}
-              <span className="badge badge-info m-2">{this.state.type}</span>{" "}
+              <span className="badge badge-info m-2">
+                {this.state.type.name}
+              </span>{" "}
             </h4>
-            {/* <form className="md-form"> */}
+
             <div className="form-row">
               <div className="form-group mr-2">
                 <label className="">
@@ -317,7 +313,7 @@ class OrderReview extends Component {
             <div className="form-row">
               <h4 className="form-group">
                 Warehouse:
-                <span className="m-2">{this.state.warehouse}</span>
+                <span className="m-2">{this.state.warehouse.adress}</span>
               </h4>
             </div>
 
@@ -330,17 +326,8 @@ class OrderReview extends Component {
             {attachmetsListLocal}
             {this.buttonsSpace()}
             <br />
+            {this.renderComments()}
             <br />
-            <h2>Comments</h2>
-            {this.state.comments.map(comment => (
-              <Comment
-                key={comment.id}
-                date={comment.date}
-                authorName={comment.authorName}
-                textComment={comment.textComment}
-              />
-            ))}
-            {/* </form> */}
           </div>
         </div>
       </React.Fragment>

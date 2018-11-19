@@ -49,8 +49,8 @@ public class UserServiceImpl implements UserService {
 			User newUser = new User();
 			newUser.setEmail(user.getEmail());
 			newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-			newUser.setFName(user.getFirstName());
-			newUser.setSName(user.getSecondName());
+			newUser.setFirstName(user.getFirstName());
+			newUser.setSecondName(user.getSecondName());
 			emailService.sendRegistrationMessage(user.getEmail(),user.getFirstName());
 			return userDao.save(newUser);
 		}

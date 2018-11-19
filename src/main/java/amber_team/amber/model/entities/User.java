@@ -12,8 +12,8 @@ public class User {
     private String email;
     @JsonIgnore
     private String password;
-    private String fName;
-    private String sName;
+    private String firstName;
+    private String secondName;
     // todo add comments to service
     private List<Comment> comments;
 
@@ -42,20 +42,20 @@ public class User {
         this.password = password;
     }
 
-    public String getFName() {
-        return fName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFName(String fName) {
-        this.fName = fName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getSName() {
-        return sName;
+    public String getSecondName() {
+        return secondName;
     }
 
-    public void setSName(String sName) {
-        this.sName = sName;
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
     public List<Comment> getComments() {

@@ -2,26 +2,17 @@ package amber_team.amber.controller;
 
 
 import amber_team.amber.model.dto.*;
-import amber_team.amber.model.entities.Request;
 import amber_team.amber.service.interfaces.AttachmentsService;
 import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -36,14 +27,14 @@ public class RequestController {
     private AttachmentsService attachmentsService;
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/r_info/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/request/info/{id}", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> getRequestInfo(@PathVariable String id) {
         return requestService.getRequestInfo(id);
     }
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/request/save", method = RequestMethod.POST)
-    public ResponseEntity<Request> save(@RequestBody RequestSaveDto request) {
+    public ResponseEntity<amber_team.amber.model.entities.Request> save(@RequestBody RequestSaveDto request) {
         return requestService.save(request);
     }
 

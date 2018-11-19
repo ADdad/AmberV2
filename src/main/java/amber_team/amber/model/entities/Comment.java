@@ -1,5 +1,8 @@
 package amber_team.amber.model.entities;
 
+import amber_team.amber.model.dto.CommentDto;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Comment {
@@ -8,7 +11,23 @@ public class Comment {
     private Request request;
     private User user;
     private String text;
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
+
+    public Comment() {
+    }
+
+    public Comment(CommentDto commentDto){
+        this.id = commentDto.getId();
+        this.text = commentDto.getText();
+        this.creationDate = commentDto.getCreationDate();
+    }
+
+    public Comment(CommentDto commentDto, User user){
+        this.id = commentDto.getId();
+        this.text = commentDto.getText();
+        this.creationDate = commentDto.getCreationDate();
+        this.user = user;
+    }
 
     public String getId() {
         return id;
@@ -42,11 +61,11 @@ public class Comment {
         this.text = text;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 }

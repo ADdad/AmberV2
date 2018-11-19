@@ -1,15 +1,18 @@
 package amber_team.amber.dao.implementation;
 
 import amber_team.amber.dao.interfaces.EquipmentDao;
-import amber_team.amber.model.dto.EquipmentSearchDto;
+import amber_team.amber.model.dto.EquipmentDto;
+import amber_team.amber.model.dto.EquipmentInfoDto;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +25,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Override
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -88,6 +91,75 @@ public class EquipmentDaoImpl implements EquipmentDao {
                     }
                 });
         return equipment;
+    }
+
+    @Override
+    public void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String request_id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        jdbcTemplate.batchUpdate(SQLQueries.ADD_REQUEST_EQUIPMENT, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                EquipmentDto equipmentDto = equipmentDtos.get(i);
+                ps.setString(1,request_id);
+                ps.setString(2, equipmentDto.getId());
+                ps.setInt(3, equipmentDto.getQuantity() );
+            }
+
+            @Override
+            public int getBatchSize() {
+                return equipmentDtos.size();
+            }
+        });
+    }
+
+    @Override
+    public void addEquipmentToWarehouse(List<EquipmentDto> equipmentDtoList, String warehouse_id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        jdbcTemplate.batchUpdate(SQLQueries.ADD_WAREHOUSE_EQUIPMENT, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                EquipmentDto equipmentDto = equipmentDtoList.get(i);
+                ps.setString(1,warehouse_id);
+                ps.setString(2, equipmentDto.getId());
+                ps.setInt(3, equipmentDto.getQuantity() );
+            }
+
+            @Override
+            public int getBatchSize() {
+                return equipmentDtoList.size();
+            }
+        });
+    }
+
+
+    @Override
+    public List<EquipmentInfoDto> getRequestEquipment(String requestId) {
+
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<EquipmentInfoDto> equipment = jdbcTemplate.query(
+                SQLQueries.GET_REQUEST_EQUIPMENT, new Object[]{requestId} ,
+                new RowMapper<EquipmentInfoDto>() {
+                    public EquipmentInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        EquipmentInfoDto c = new EquipmentInfoDto();
+                        c.setId(rs.getString("id"));
+                        c.setModel(rs.getString("model"));
+                        c.setProducer(rs.getString("producer"));
+                        c.setCountry(rs.getString("country"));
+                        c.setQuantity(rs.getInt("quantity"));
+                        return c;
+                    }
+                });
+        return equipment;
+
+    }
+
+    @Override
+    public List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId) {
+        return null;
     }
 
 
