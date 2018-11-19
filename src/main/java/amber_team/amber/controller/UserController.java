@@ -1,7 +1,5 @@
 package amber_team.amber.controller;
 
-
-
 import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
@@ -12,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

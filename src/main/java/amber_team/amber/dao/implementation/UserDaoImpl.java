@@ -2,6 +2,7 @@ package amber_team.amber.dao.implementation;
 
 
 import amber_team.amber.dao.interfaces.UserDao;
+import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.util.ErrorMessages;
@@ -17,7 +18,9 @@ import javax.sql.DataSource;
 import java.security.Principal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository(value = "userDao")
