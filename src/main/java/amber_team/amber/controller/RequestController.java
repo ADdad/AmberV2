@@ -74,16 +74,10 @@ public class RequestController {
         return requestService.cancel(request);
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/request/review}", method = RequestMethod.POST)
-    public ResponseEntity<Request> review(@RequestParam("id") String id) {
-        //TODO add date modified change
-        return requestService.review(id);
-    }
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/request", method = RequestMethod.PUT)
-    public ResponseEntity<Request> changeRequest(@RequestBody Request request) {
+    public ResponseEntity<Request> changeRequest(@RequestBody MyRequestStatusChangeDto request) {
         return requestService.changeStatus(request);
     }
 
@@ -121,6 +115,7 @@ public class RequestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/request/create/attachments/{requestId}", method = RequestMethod.POST)
     public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile, @PathVariable String requestId) throws IOException {
+        if(multipartFile.length < 1) return (ResponseEntity) ResponseEntity.notFound();
         return attachmentsService.uploadAttachments(Arrays.asList(multipartFile), requestId);
     }
 

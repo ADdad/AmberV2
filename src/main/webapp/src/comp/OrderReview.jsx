@@ -34,15 +34,21 @@ class OrderReview extends Component {
         { name: "Additional2", order: 2, values: ["Test", "Test2"] }
       ],
       warehouse: 0,
+      alert: "",
       type: "Order",
       status: "On reviewing",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",
       attachments: [],
-      comments: [],
+      comments: null,
       executors: [
-        { id: "jdkls", firstName: "jkdls", secondName: "mmmcjd", email: "djis" }
+        {
+          id: "djlkas",
+          firstName: "jdlkasd",
+          secondName: "djklsa",
+          email: "Jjlk"
+        }
       ],
       executorId: null,
       mode: ""
@@ -79,8 +85,17 @@ class OrderReview extends Component {
             <div className="form-group col-md-4">
               <h4>Executor</h4>
               <Select
-                onChange={this.handleWarehouseChange}
+                onChange={this.handleExecutorChange}
                 options={this.getExecutorsOptions()}
+                value={{
+                  value: this.state.executors[0].id,
+                  label:
+                    this.state.executors[0].firstName +
+                    " " +
+                    this.state.executors[0].secondName +
+                    ", " +
+                    this.state.executors[0].email
+                }}
               />
             </div>
           </div>
@@ -114,6 +129,46 @@ class OrderReview extends Component {
       }
     }
   };
+
+  componentWillMount() {
+    const { requestId } = this.props.match.params;
+    const { mode } = this.props.match.params;
+    this.setState({ requestId: requestId, mode: mode });
+
+    fetch("/userinfo")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          userId: data.id,
+          userRoles: data.roles,
+          requestId: requestId
+        });
+      })
+      .catch(error => console.log(error));
+
+    fetch(`/request/info/${requestId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          title: data.title,
+          status: data.status,
+          type: data.type,
+          description: data.description,
+          creationDate: data.creationDate,
+          updatedDate: data.modifiedDate,
+          warehouse: data.warehouse,
+          creator: data.creator,
+          executor: data.executor,
+          attributes: data.attributes,
+          comments: data.comments,
+          equipment: data.equipment,
+          isLoading: false
+        });
+        this.loadExecutors();
+      })
+      .catch(error => console.log(error));
+  }
 
   additionalAttributes = () => {
     let localAttributes = this.state.attributes;
@@ -161,47 +216,10 @@ class OrderReview extends Component {
   };
 
   componentDidMount() {
-    const { requestId } = this.props.match.params;
-    const { mode } = this.props.match.params;
-    this.setState({ requestId: requestId, mode: mode });
-    fetch(`/attachments/list/${requestId}`)
+    fetch(`/attachments/list/${this.props.match.params.requestId}`)
       .then(response => response.json())
       .then(data => {
         this.setState({ attachments: data.listFiles });
-      })
-      .catch(error => console.log(error));
-
-    fetch("/userinfo")
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-          userId: data.id,
-          userRoles: data.roles,
-          requestId: requestId
-        });
-      })
-      .catch(error => console.log(error));
-
-    fetch(`/request/info/${requestId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          title: data.title,
-          status: data.status,
-          type: data.type,
-          description: data.description,
-          creationDate: data.creationDate,
-          updatedDate: data.modifiedDate,
-          warehouse: data.warehouse,
-          creator: data.creator,
-          executor: data.executor,
-          attributes: data.attributes,
-          comments: data.comments,
-          equipment: data.equipment,
-          isLoading: false
-        });
-        this.loadExecutors();
       })
       .catch(error => console.log(error));
   }
@@ -377,16 +395,16 @@ class OrderReview extends Component {
               </h4>
             </div>
 
-            {this.choseExecutor()}
+            {this.state.executors != null && this.choseExecutor()}
             <h3>Order items</h3>
             <ItemsList equipment={this.state.equipment} />
             <div className="form-row">
               <div className="form-group">{this.additionalAttributes()}</div>
             </div>
             {attachmetsListLocal}
-            {this.buttonsSpace()}
+            {this.state.status !== "" && this.buttonsSpace()}
             <br />
-            {this.renderComments()}
+            {this.comments != null && this.renderComments()}
             <br />
           </div>
         </div>

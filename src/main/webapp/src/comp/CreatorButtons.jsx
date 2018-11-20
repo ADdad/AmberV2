@@ -29,6 +29,11 @@ class CreatorButtons extends Component {
         localButtons.push({ value: "Cancel", type: "danger" });
         break;
       }
+      case "Rejected": {
+        localButtons.push({ value: "Edit", type: "success" });
+        localButtons.push({ value: "Cancel", type: "danger" });
+        break;
+      }
       case "In progress": {
         localButtons.push({ value: "Cancel", type: "danger" });
         break;

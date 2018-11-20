@@ -1,11 +1,9 @@
 package amber_team.amber.service.implementation;
 
 
-import amber_team.amber.dao.implementation.RequestDaoImpl;
 import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Comment;
-import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -104,8 +101,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ResponseEntity<Request> changeStatus(Request request) {
-       Request requestNew = requestDao.update(request);
+    public ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request) {
+       Request requestNew = new Request();
+       requestNew.setId(request.getRequestId());
+       requestNew.setExecutorId(request.getExecutorId());
+       requestNew.setStatus(request.getStatus());
+       requestNew = requestDao.update(requestNew);
         return ResponseEntity.ok(requestNew);
     }
 

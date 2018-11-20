@@ -1,13 +1,8 @@
 package amber_team.amber.service.interfaces;
 
-import amber_team.amber.model.dto.EquipmentSearchDto;
-import amber_team.amber.model.dto.RequestSaveDto;
-import amber_team.amber.model.dto.RequestStatusChangeDto;
-import amber_team.amber.model.dto.UserListDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Request;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Date;
 
 
 public interface RequestService {
@@ -28,5 +23,5 @@ public interface RequestService {
 
     ResponseEntity getWarehouseExecutors(String warehouseId);
 
-    ResponseEntity<Request> changeStatus(Request request);
+    ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request);
 }

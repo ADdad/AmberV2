@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import Popup from "react-popup";
+
 class ExecutorButtons extends Component {
   state = {
     buttons: [],
@@ -11,12 +13,13 @@ class ExecutorButtons extends Component {
   handleClick = name => {
     console.log(name);
 
+
     fetch("/request", {
       method: "PUT",
       body: JSON.stringify({
-        status: name.toLowerCase(),
+        status: name,
         executorId: this.props.executorId,
-        id: this.props.requestId
+        requestId: this.props.requestId
       }),
       headers: {
         "Content-Type": "application/json"
@@ -34,6 +37,8 @@ class ExecutorButtons extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props.userRoles);
+    console.log(this.props.status);
     this.initButtons();
   }
 
@@ -47,25 +52,49 @@ class ExecutorButtons extends Component {
     let localButtons = [];
     switch (status) {
       case "Opened": {
-        localButtons.push({ value: "Review", type: "success" });
+        localButtons.push({
+          value: "Review",
+          type: "success",
+          status: "On reviewing"
+        });
         break;
       }
       case "On reviewing": {
-        localButtons.push({ value: "Approve", type: "success" });
-        localButtons.push({ value: "Reject", type: "danger" });
+        localButtons.push({
+          value: "Approve",
+          type: "success",
+          status: "In progress"
+        });
+        localButtons.push({
+          value: "Reject",
+          type: "danger",
+          status: "Rejected"
+        });
         break;
       }
       case "In progress": {
-        localButtons.push({ value: "Send", type: "success" });
-        localButtons.push({ value: "Hold", type: "danger" });
+        localButtons.push({
+          value: "Send",
+          type: "success",
+          status: "Delivering"
+        });
+        localButtons.push({ value: "Hold", type: "danger", status: "On hold" });
         break;
       }
       case "On hold": {
-        localButtons.push({ value: "Back to execute", type: "success" });
+        localButtons.push({
+          value: "Back to execute",
+          type: "success",
+          status: "In progress"
+        });
         break;
       }
       case "Delivering": {
-        localButtons.push({ value: "Cancel delivering", type: "danger" });
+        localButtons.push({
+          value: "Cancel delivering",
+          type: "danger",
+          status: "In progress"
+        });
         break;
       }
       default: {
@@ -95,7 +124,7 @@ class ExecutorButtons extends Component {
         {buttonsLoc.map(p => (
           <button
             className={this.getButtonClasses(p.type)}
-            onClick={() => this.handleClick(p.value)}
+            onClick={() => this.handleClick(p.status)}
             key={p.value}
           >
             {p.value}
