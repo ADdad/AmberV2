@@ -25,8 +25,7 @@ public interface RequestService {
     void archiveOldRequests();
     ResponseEntity creationData(String type);
     ResponseEntity searchEquipment(String value);
-
+    ResponseEntity unavailableEquipmentByRequestId(String requestId);
     ResponseEntity getWarehouseExecutors(String warehouseId);
-
     ResponseEntity<Request> changeStatus(Request request);
 }
