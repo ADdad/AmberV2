@@ -53,6 +53,7 @@ public class SQLQueries {
     public static final String GET_ALL_WAREHOUSES = "SELECT * FROM warehouses";
     public static final String GET_ALL_EQUIPMENT = "SELECT * FROM equipment";
     public static final String GET_LIMITED_EQUIPMENT = "SELECT * FROM equipment LIMIT ?";
+    public static final String GET_EQUIPMENT_BY_ID = "SELECT * FROM equipment WHERE id = ?";
     public static final String ADD_REQUEST_ATTRIBUTE = "INSERT INTO request_values(request_id, attr_id, string_value, date_value, decimal_value) " +
             "VALUES (?, ?, ?, ?, ?)";
     public static final String ADD_REQUEST_EQUIPMENT = "INSERT INTO request_equipment(request_id, equipment_id, quantity) " +
@@ -75,6 +76,11 @@ public class SQLQueries {
             "VALUES (?, ?, ?)";
     public static final String GET_REQUEST_EQUIPMENT = "SELECT E1.id AS id, E1.model AS model, E1.producer AS producer, E1.country AS country, E2.quantity AS quantity " +
             "FROM equipment AS E1 INNER JOIN request_equipment AS E2 on E1.id = E2.equipment_id " +
+            "WHERE request_id = ?";
+    public static final String GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE = "SELECT e.id AS id, re.quantity-we.quantity AS quantity_diff " +
+            "FROM request_equipment AS re " +
+            "INNER JOIN equipment AS e ON e.id = re.equipment_id " +
+            "INNER JOIN warehouse_equipment AS we ON e.id = we.equipment_id " +
             "WHERE request_id = ?";
     public static final String GET_WAREHOUSE_EXECUTORS = "SELECT DISTINCT id, f_name, s_name, email " +
             "FROM user_warehouses uw INNER JOIN (users AS U1 INNER JOIN user_roles u on U1.id = u.user_id) AS u2 ON uw.user_id=u2.user_id " +

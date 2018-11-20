@@ -94,6 +94,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public ResponseEntity<EquipmentListDto> unavailableEquipmentByRequestId(String requestId) {
+        //TODO filter out negative quantity equipment
+        EquipmentListDto equipmentListDto = new EquipmentListDto();
+        equipmentListDto.setList(equipmentDao.getUnavailableEquipmentQuantity(requestId));
+        return ResponseEntity.ok(equipmentListDto);
+    }
+
+    @Override
     public ResponseEntity<UserListDto> getWarehouseExecutors(String warehouseId) {
         UserListDto userListDto = new UserListDto();
         userListDto.setList(warehouseDao.getExecutors(warehouseId));
