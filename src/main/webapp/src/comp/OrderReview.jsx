@@ -10,7 +10,7 @@ class OrderReview extends Component {
     this.state = {
       requestId: 0,
       userId: 2,
-      userRoles: ["ROLE_ADMIN", "User", "ROLE_KEEPER"],
+      userRoles: ["ROLE_ADMIN", "USER_ROLE", "ROLE_KEEPER"],
       creator: { id: 2, firstName: "Den", secondName: "Star" },
       title: "Example1",
       equipment: [
@@ -36,20 +36,13 @@ class OrderReview extends Component {
       warehouse: 0,
       alert: "",
       type: "Order",
-      status: "On reviewing",
+      status: "",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",
       attachments: [],
       comments: null,
-      executors: [
-        {
-          id: "djlkas",
-          firstName: "jdlkasd",
-          secondName: "djklsa",
-          email: "Jjlk"
-        }
-      ],
+      executors: null,
       executorId: null,
       mode: ""
     };
@@ -206,7 +199,12 @@ class OrderReview extends Component {
       }
       case "created": {
         if (this.state.creator.id == this.state.userId)
-          return <CreatorButtons status={this.state.status} />;
+          return (
+            <CreatorButtons
+              requestId={this.state.requestId}
+              status={this.state.status}
+            />
+          );
         else return <h3>Sorry, you can just view that</h3>;
       }
       default: {

@@ -25,36 +25,7 @@ class OrderEdit extends Component {
       description: "TestDesctiption",
       attachments: [],
       files: [],
-      optionalAttributes: [
-        {
-          name: "TestRadio",
-          type: "radio",
-          multiple: true,
-          immutable: false,
-          values: ["Test1", "Test2", "Test3"]
-        },
-        {
-          name: "TestCheckbox",
-          type: "checkbox",
-          multiple: true,
-          immutable: false,
-          values: ["Test1", "Test2", "Test3"]
-        },
-        {
-          name: "TestDate",
-          type: "date",
-          multiple: false,
-          immutable: false,
-          values: []
-        },
-        {
-          name: "TestText",
-          type: "Text",
-          multiple: false,
-          immutable: false,
-          values: []
-        }
-      ],
+      optionalAttributes: null,
       oAttributesValues: []
     };
   }

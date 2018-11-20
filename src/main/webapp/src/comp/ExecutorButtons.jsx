@@ -1,24 +1,21 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import Popup from "react-popup";
 
 class ExecutorButtons extends Component {
   state = {
     buttons: [],
+    confirmation: false,
     noButtons: false,
     adminStates: ["Opened", "On reviewing"],
     keeperStates: ["In progress", "On hold", "Delivering"]
   };
 
-  handleClick = name => {
-    console.log(name);
-
-
+  handleReject = () => {
     fetch("/request", {
       method: "PUT",
       body: JSON.stringify({
-        status: name,
-        executorId: this.props.executorId,
+        status: "Rejected",
+        executorId: null,
         requestId: this.props.requestId
       }),
       headers: {
@@ -27,13 +24,41 @@ class ExecutorButtons extends Component {
     })
       .then(response => response.json())
       .then(data => {
+        this.props.history.goBack();
         console.log(data);
       })
       .catch(error => {
         console.error("Error:", error);
       });
+  };
 
-    //this.props.history.goBack();
+  handleClick = name => {
+    console.log(name);
+
+    if (name === "Rejected") {
+      this.setState({ confirmation: true });
+    } else {
+      fetch("/request", {
+        method: "PUT",
+        body: JSON.stringify({
+          status: name,
+          executorId: this.props.executorId,
+          requestId: this.props.requestId
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+
+      this.props.history.goBack();
+    }
   };
 
   componentDidMount() {
@@ -104,6 +129,40 @@ class ExecutorButtons extends Component {
     this.setState({ buttons: localButtons });
   };
 
+  handleBack = () => {
+    this.setState({ confirmation: false });
+    // let path = "/order/view/" + this.props.requestId;
+    // this.props.history.push(path);
+  };
+
+  commentField = () => {
+    return (
+      <div className="form-row">
+        <div className="form-group col-md-8">
+          <label>Comment</label>
+          <textarea
+            className="form-control"
+            id="exampleFormControlTextarea1"
+            rows="5"
+            onChange={p => this.setState({ comment: p.target.value })}
+          />
+        </div>
+        <button
+          className={this.getButtonClasses("success")}
+          onClick={() => this.handleBack()}
+        >
+          Back to review
+        </button>
+        <button
+          className={this.getButtonClasses("danger")}
+          onClick={() => this.handleReject()}
+        >
+          Reject
+        </button>
+      </div>
+    );
+  };
+
   render() {
     if (
       !(
@@ -116,6 +175,10 @@ class ExecutorButtons extends Component {
       )
     )
       return <h3>Sorry, you can just view that</h3>;
+
+    if (this.state.confirmation) {
+      return this.commentField();
+    }
 
     if (this.state.noButtons) return <h3>Sorry, you can just view that</h3>;
     const buttonsLoc = this.state.buttons;
