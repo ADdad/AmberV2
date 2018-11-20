@@ -2,6 +2,7 @@ package amber_team.amber.controller;
 
 
 import amber_team.amber.model.dto.*;
+import amber_team.amber.model.entities.Request;
 import amber_team.amber.service.interfaces.AttachmentsService;
 import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -34,8 +36,14 @@ public class RequestController {
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/request/save", method = RequestMethod.POST)
-    public ResponseEntity<amber_team.amber.model.entities.Request> save(@RequestBody RequestSaveDto request) {
+    public ResponseEntity<Request> save(@RequestBody RequestSaveDto request) {
         return requestService.save(request);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "/request/executors/{warehouseId}", method = RequestMethod.GET)
+    public ResponseEntity<UserListDto> getExecutors(@PathVariable String warehouseId) {
+        return requestService.getWarehouseExecutors(warehouseId);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -52,6 +60,8 @@ public class RequestController {
     }
 
 
+
+
     @PreAuthorize("isAuthenticated() and #request.getUsername() == principal.username")
     @RequestMapping(value = "/r_open", method = RequestMethod.GET)
     public ResponseEntity<RequestInfoDto> open(RequestStatusChangeDto request) {
@@ -65,10 +75,18 @@ public class RequestController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/r_review", method = RequestMethod.GET)
-    public ResponseEntity<RequestInfoDto> review(RequestStatusChangeDto request) {
-        return requestService.review(request);
+    @RequestMapping(value = "/request/review}", method = RequestMethod.POST)
+    public ResponseEntity<Request> review(@RequestParam("id") String id) {
+        //TODO add date modified change
+        return requestService.review(id);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "/request", method = RequestMethod.PUT)
+    public ResponseEntity<Request> changeRequest(@RequestBody Request request) {
+        return requestService.changeStatus(request);
+    }
+
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/r_reject", method = RequestMethod.GET)

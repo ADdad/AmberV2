@@ -1,6 +1,8 @@
 package amber_team.amber.dao.interfaces;
 
+import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.entities.Equipment;
+import amber_team.amber.model.entities.User;
 import amber_team.amber.model.entities.Warehouse;
 
 import javax.sql.DataSource;
@@ -12,4 +14,6 @@ public interface WarehouseDao {
     Warehouse getById(String id);
 
     List<Warehouse> getAll();
+
+    List<UserInfoDto> getExecutors(String warehouseId);
 }

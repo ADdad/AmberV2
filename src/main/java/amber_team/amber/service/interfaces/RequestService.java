@@ -3,6 +3,8 @@ package amber_team.amber.service.interfaces;
 import amber_team.amber.model.dto.EquipmentSearchDto;
 import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
+import amber_team.amber.model.dto.UserListDto;
+import amber_team.amber.model.entities.Request;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
@@ -15,7 +17,7 @@ public interface RequestService {
     ResponseEntity open(RequestStatusChangeDto request);
     ResponseEntity cancel(RequestStatusChangeDto request);
     ResponseEntity reject(RequestStatusChangeDto request);
-    ResponseEntity review(RequestStatusChangeDto request);
+    ResponseEntity review(String requestId);
     ResponseEntity progress(RequestStatusChangeDto request);
     ResponseEntity hold(RequestStatusChangeDto request);
     ResponseEntity deliver(RequestStatusChangeDto request);
@@ -23,4 +25,8 @@ public interface RequestService {
     void archiveOldRequests();
     ResponseEntity creationData(String type);
     ResponseEntity searchEquipment(String value);
+
+    ResponseEntity getWarehouseExecutors(String warehouseId);
+
+    ResponseEntity<Request> changeStatus(Request request);
 }

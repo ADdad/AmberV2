@@ -86,7 +86,7 @@ public class RequestServiceImpl implements RequestService {
         CreateOrderDto data = new CreateOrderDto();
         data.setAttributes(attributesDao.getAttributesOfType(type));
         data.setWarehouses(warehouseDao.getAll());
-        data.setEquipment(equipmentDao.getLimited(25));
+        data.setEquipment(equipmentDao.getLimited(20));
         return ResponseEntity.ok(data);
     }
 
@@ -94,6 +94,19 @@ public class RequestServiceImpl implements RequestService {
         EquipmentSearchDto result = new EquipmentSearchDto();
         result.setEquipment(equipmentDao.search(value));
         return ResponseEntity.ok(result);
+    }
+
+    @Override
+    public ResponseEntity<UserListDto> getWarehouseExecutors(String warehouseId) {
+        UserListDto userListDto = new UserListDto();
+        userListDto.setList(warehouseDao.getExecutors(warehouseId));
+        return ResponseEntity.ok(userListDto);
+    }
+
+    @Override
+    public ResponseEntity<Request> changeStatus(Request request) {
+       Request requestNew = requestDao.update(request);
+        return ResponseEntity.ok(requestNew);
     }
 
     @Override
@@ -117,13 +130,20 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ResponseEntity review(RequestStatusChangeDto request) {
-        if (!reviewValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.review(request);
-        }
+    public ResponseEntity review(String requestId) {
+
+        Request request = new Request();
+        request.setId(requestId);
+        request.setStatus("On reviewing");
+        request = requestDao.update(request);
+return ResponseEntity.ok(request);
+
+//        if (!reviewValidation(request)) {
+//            return ResponseEntity.badRequest()
+//                    .body(ErrorMessages.STATUS_ERROR);
+//        } else {
+//            return requestDao.review(request);
+//        }
     }
 
     @Override

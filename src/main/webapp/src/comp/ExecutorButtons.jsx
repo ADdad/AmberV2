@@ -9,12 +9,32 @@ class ExecutorButtons extends Component {
   };
 
   handleClick = name => {
-    //this.props.history.push("/dashboard");
+    console.log(name);
+
+    fetch("/request", {
+      method: "PUT",
+      body: JSON.stringify({
+        status: name.toLowerCase(),
+        executorId: this.props.executorId,
+        id: this.props.requestId
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+
+    //this.props.history.goBack();
   };
 
   componentDidMount() {
     this.initButtons();
-    console.log(this.props.status);
   }
 
   getButtonClasses = type => {
@@ -58,11 +78,11 @@ class ExecutorButtons extends Component {
   render() {
     if (
       !(
-        this.props.userRoles.includes("Admin") &&
+        this.props.userRoles.includes("ROLE_ADMIN") &&
         this.state.adminStates.includes(this.props.status)
       ) &&
       !(
-        this.props.userRoles.includes("Keeper") &&
+        this.props.userRoles.includes("ROLE_KEEPER") &&
         this.state.keeperStates.includes(this.props.status)
       )
     )
@@ -75,7 +95,7 @@ class ExecutorButtons extends Component {
         {buttonsLoc.map(p => (
           <button
             className={this.getButtonClasses(p.type)}
-            onClick={this.handleClick(p.value)}
+            onClick={() => this.handleClick(p.value)}
             key={p.value}
           >
             {p.value}

@@ -3,13 +3,14 @@ import Comment from "./Comment";
 import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
+import Select from "react-select";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
       requestId: 0,
       userId: 2,
-      userRoles: ["Admin", "User", "Keeper"],
+      userRoles: ["ROLE_ADMIN", "User", "ROLE_KEEPER"],
       creator: { id: 2, firstName: "Den", secondName: "Star" },
       title: "Example1",
       equipment: [
@@ -34,43 +35,83 @@ class OrderReview extends Component {
       ],
       warehouse: 0,
       type: "Order",
-      status: "Opened",
+      status: "On reviewing",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
       description: "Adjkahskjdhs",
       attachments: [],
       comments: [],
       executors: [
-        { id: 5, firstName: "Andrew", secondName: "Lobinski" },
-        { id: 4, firstName: "Nan", secondName: "Kek" }
+        { id: "jdkls", firstName: "jkdls", secondName: "mmmcjd", email: "djis" }
       ],
-      executorId: 0,
+      executorId: null,
       mode: ""
     };
   }
 
+  getExecutorsOptions = () => {
+    let res = [];
+    console.log(this.state.executors);
+    this.state.executors.map(e =>
+      res.push({
+        value: e.id,
+        label: e.firstName + " " + e.secondName + ", " + e.email
+      })
+    );
+    return res;
+  };
+
+  handleExecutorChange = selectedExecutor => {
+    this.setState({ executorId: selectedExecutor.value });
+  };
+
   choseExecutor = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("Admin" && this.state.mode === "view")
+      this.state.userRoles.includes("ROLE_ADMIN") &&
+      this.state.mode === "view"
     ) {
-      return (
-        <div className="form-row">
-          <div className="form-group">
-            <h4>Executor</h4>
-            <select
-              className="form-control"
-              onChange={e => this.setState({ executorId: e.target.value })}
-            >
-              {this.state.executors.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.firstName + " " + p.secondName}
-                </option>
-              ))}
-            </select>
+      if (this.state.executors.length < 1) {
+        return <h4>Executors: that warehouse haven`t executors</h4>;
+      } else {
+        return (
+          <div className="form-row">
+            <div className="form-group col-md-4">
+              <h4>Executor</h4>
+              <Select
+                onChange={this.handleWarehouseChange}
+                options={this.getExecutorsOptions()}
+              />
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
+    } else {
+      if (
+        this.state.executor != null &&
+        typeof this.state.executor !== "undefined"
+      ) {
+        return (
+          <div className="form-row">
+            <div className="form-group">
+              <h4>
+                Executor:{" "}
+                {this.state.executor.firstName +
+                  " " +
+                  this.state.executor.secondName}
+              </h4>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="form-row">
+            <div className="form-group">
+              <h4>Executor: not chosen</h4>
+            </div>
+          </div>
+        );
+      }
     }
   };
 
@@ -103,6 +144,8 @@ class OrderReview extends Component {
           <ExecutorButtons
             userRoles={this.state.userRoles}
             status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
           />
         );
       }
@@ -158,9 +201,26 @@ class OrderReview extends Component {
           equipment: data.equipment,
           isLoading: false
         });
+        this.loadExecutors();
       })
       .catch(error => console.log(error));
   }
+
+  loadExecutors = () => {
+    if (
+      this.state.status === "On reviewing" &&
+      this.state.userRoles.includes("ROLE_ADMIN") &&
+      this.state.mode === "view"
+    ) {
+      fetch(`/request/executors/${this.state.warehouse.id}`)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ executors: data.list });
+          console.log("Executors", data);
+        })
+        .catch(error => console.log(error));
+    }
+  };
 
   handleDownloadFile = name => {
     fetch(`/attachments/${this.state.requestId}?filename=${name}`).then(

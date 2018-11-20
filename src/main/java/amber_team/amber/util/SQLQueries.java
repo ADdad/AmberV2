@@ -41,7 +41,7 @@ public class SQLQueries {
             "SET executor_id = ?, status = ?, modified_date = ?" +
             "WHERE id = ?";
     public static final String REQUEST_INFO_BY_ID = "SELECT warehouse_id, creator_id, executor_id, req_type_id," +
-            " title, status, creation_date, modified_date, description, archive " +
+            " title, status, creation_date, modified_date, description, archive, connected_request " +
             "FROM requests " +
             "WHERE requests.id = ?";
     public static final String REQUEST_ATTRIBUTES_BY_TYPE = "SELECT A4.id AS id, A4.name AS name, A3.name AS type, attr_order AS order, multiple, mandatory, immutable " +
@@ -76,4 +76,10 @@ public class SQLQueries {
     public static final String GET_REQUEST_EQUIPMENT = "SELECT E1.id AS id, E1.model AS model, E1.producer AS producer, E1.country AS country, E2.quantity AS quantity " +
             "FROM equipment AS E1 INNER JOIN request_equipment AS E2 on E1.id = E2.equipment_id " +
             "WHERE request_id = ?";
+    public static final String GET_WAREHOUSE_EXECUTORS = "SELECT DISTINCT id, f_name, s_name, email " +
+            "FROM user_warehouses uw INNER JOIN (users AS U1 INNER JOIN user_roles u on U1.id = u.user_id) AS u2 ON uw.user_id=u2.user_id " +
+            "WHERE role_id = (SELECT id FROM roles WHERE name = 'ROLE_KEEPER') AND uw.warehouse_id = ?";
+    public static final String UPDATE_REQUEST = "UPDATE requests SET warehouse_id = ?, creator_id = ?, executor_id = ?, req_type_id = ?, connected_request = ?, title = ?, status = ?, creation_date = ?, modified_date = ?, description = ?, archive = ? " +
+            "WHERE id = ?";
+
 }

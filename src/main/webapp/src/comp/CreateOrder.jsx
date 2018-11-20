@@ -6,7 +6,6 @@ import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
 import AsyncSelect from "react-select/lib/Async";
-import AsyncPaginate from "react-select-async-paginate";
 
 class CreateOrder extends Component {
   constructor(props) {

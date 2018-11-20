@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.RequestDao;
 import amber_team.amber.model.dto.AttributeDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.util.MergeReflectionUtil;
 import amber_team.amber.util.SQLQueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,22 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
+    public Request update(Request request){
+        Request oldRequest = this.getRequestInfo(request.getId());
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        Request newRequest = null;
+        try {
+            newRequest = MergeReflectionUtil.mergeObjects(request, oldRequest);
+            jdbcTemplate.update(SQLQueries.UPDATE_REQUEST, newRequest.getWarehouseId(), newRequest.getCreatorId(), newRequest.getExecutorId(), newRequest.getTypeId(), newRequest.getConnectedRequestId(), newRequest.getTitle(), newRequest.getStatus(), newRequest.getCreationDate(), newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(), newRequest.getId());
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        return newRequest;
+    }
+
+
+
+    @Override
     public ResponseEntity progress(RequestStatusChangeDto request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID, request.getStatus(), request.getExecutorId(),
@@ -135,6 +152,7 @@ public class RequestDaoImpl implements RequestDao {
                 info.setTypeId(resultSet.getString("req_type_id"));
                 info.setTitle(resultSet.getString("title"));
                 info.setStatus(resultSet.getString("status"));
+                info.setConnectedRequestId(resultSet.getString("connected_request"));
                 info.setCreationDate(resultSet.getTimestamp("creation_date"));
                 info.setModifiedDate(resultSet.getTimestamp("modified_date"));
                 info.setDescription(resultSet.getString("description"));

@@ -19,7 +19,7 @@ public interface RequestDao {
     public ResponseEntity hold(RequestStatusChangeDto request);
     public ResponseEntity deliver(RequestStatusChangeDto request);
     public ResponseEntity complete(RequestStatusChangeDto request);
-
+    public Request update(Request request);
     public Request getRequestInfo(String requestId);
 
     public void archiveOldRequests();
