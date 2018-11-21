@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 			newUser.setSecondName(user.getSecondName());
 			emailService.sendRegistrationMessage(user.getEmail(),user.getFirstName());
 			return userDao.save(newUser);
+
 		}
     }
 

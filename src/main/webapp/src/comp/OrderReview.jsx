@@ -12,7 +12,7 @@ class OrderReview extends Component {
       userId: 2,
       userRoles: ["ROLE_ADMIN", "USER_ROLE", "ROLE_KEEPER"],
       creator: { id: 2, firstName: "Den", secondName: "Star" },
-      title: "Example1",
+      title: "",
       equipment: [
         {
           id: 1,
@@ -35,17 +35,19 @@ class OrderReview extends Component {
       ],
       warehouse: 0,
       alert: "",
+      executorAlert: "",
       type: "Order",
       status: "",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
-      description: "Adjkahskjdhs",
+      description: "",
       attachments: [],
       comments: null,
       executors: null,
       executorId: null,
       mode: ""
     };
+    this.executorAlert = this.executorAlert.bind(this);
   }
 
   getExecutorsOptions = () => {
@@ -60,6 +62,11 @@ class OrderReview extends Component {
     return res;
   };
 
+  executorAlert = value => {
+    this.setState({ executorAlert: value });
+    window.scrollTo(0, 0);
+  };
+
   handleExecutorChange = selectedExecutor => {
     this.setState({ executorId: selectedExecutor.value });
   };
@@ -67,8 +74,7 @@ class OrderReview extends Component {
   choseExecutor = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("ROLE_ADMIN") &&
-      this.state.mode === "view"
+      this.state.userRoles.includes("ROLE_ADMIN")
     ) {
       if (this.state.executors.length < 1) {
         return <h4>Executors: that warehouse haven`t executors</h4>;
@@ -125,8 +131,7 @@ class OrderReview extends Component {
 
   componentWillMount() {
     const { requestId } = this.props.match.params;
-    const { mode } = this.props.match.params;
-    this.setState({ requestId: requestId, mode: mode });
+    this.setState({ requestId: requestId });
 
     fetch("/userinfo")
       .then(response => response.json())
@@ -139,7 +144,9 @@ class OrderReview extends Component {
       })
       .catch(error => console.log(error));
 
-    fetch(`/request/info/${requestId}`)
+    fetch(`/request/${requestId}`, {
+      method: "GET"
+    })
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -186,31 +193,34 @@ class OrderReview extends Component {
   };
 
   buttonsSpace = () => {
-    switch (this.state.mode) {
-      case "view": {
-        return (
+    if (this.state.creator.id == this.state.userId) {
+      return (
+        <React.Fragment>
+          <ExecutorButtons
+            userId={this.state.userId}
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
+            validateComment={this.executorAlert}
+          />
+          <CreatorButtons
+            requestId={this.state.requestId}
+            status={this.state.status}
+          />
+        </React.Fragment>
+      );
+    } else
+      return (
+        <React.Fragment>
           <ExecutorButtons
             userRoles={this.state.userRoles}
             status={this.state.status}
             requestId={this.state.requestId}
             executorId={this.state.executorId}
           />
-        );
-      }
-      case "created": {
-        if (this.state.creator.id == this.state.userId)
-          return (
-            <CreatorButtons
-              requestId={this.state.requestId}
-              status={this.state.status}
-            />
-          );
-        else return <h3>Sorry, you can just view that</h3>;
-      }
-      default: {
-        return <h3>Sorry, you can just view that</h3>;
-      }
-    }
+        </React.Fragment>
+      );
   };
 
   componentDidMount() {
@@ -349,6 +359,7 @@ class OrderReview extends Component {
           <div className="container">
             <br />
             <br />
+            <h4 className="text-danger">{this.state.executorAlert}</h4>
             <br />
             <br />
             <br />

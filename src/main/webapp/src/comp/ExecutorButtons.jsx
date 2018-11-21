@@ -7,34 +7,38 @@ class ExecutorButtons extends Component {
     confirmation: false,
     noButtons: false,
     adminStates: ["Opened", "On reviewing"],
-    keeperStates: ["In progress", "On hold", "Delivering"]
+    keeperStates: ["In progress", "On hold", "Delivering"],
+    comment: null
   };
 
   handleReject = () => {
-    fetch("/request", {
-      method: "PUT",
-      body: JSON.stringify({
-        status: "Rejected",
-        executorId: null,
-        requestId: this.props.requestId
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.props.history.goBack();
-        console.log(data);
+    if (this.commentValidation()) {
+      fetch("/request", {
+        method: "PUT",
+        body: JSON.stringify({
+          status: "Rejected",
+          executorId: null,
+          requestId: this.props.requestId,
+          userId: this.props.userId,
+          commentText: this.state.comment
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
       })
-      .catch(error => {
-        console.error("Error:", error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          this.props.history.push("/dashboard");
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
   };
 
   handleClick = name => {
-    console.log(name);
-
+    console.log("Name", name);
     if (name === "Rejected") {
       this.setState({ confirmation: true });
     } else {
@@ -43,7 +47,9 @@ class ExecutorButtons extends Component {
         body: JSON.stringify({
           status: name,
           executorId: this.props.executorId,
-          requestId: this.props.requestId
+          requestId: this.props.requestId,
+          userId: null,
+          commentText: null
         }),
         headers: {
           "Content-Type": "application/json"
@@ -56,8 +62,8 @@ class ExecutorButtons extends Component {
         .catch(error => {
           console.error("Error:", error);
         });
-
-      this.props.history.goBack();
+      if (name !== "On reviewing") this.props.history.push("/dashboard");
+      else window.location.reload();
     }
   };
 
@@ -72,8 +78,17 @@ class ExecutorButtons extends Component {
     return classes + type;
   };
 
+  commentValidation = () => {
+    if (this.state.comment == null || this.state.comment.trim() == "") {
+      this.props.validateComment("Comment is empty");
+      return false;
+    }
+    return true;
+  };
+
   initButtons = () => {
     let status = this.props.status;
+    console.log("Init buttons", status);
     let localButtons = [];
     switch (status) {
       case "Opened": {
@@ -137,29 +152,33 @@ class ExecutorButtons extends Component {
 
   commentField = () => {
     return (
-      <div className="form-row">
-        <div className="form-group col-md-8">
-          <label>Comment</label>
-          <textarea
-            className="form-control"
-            id="exampleFormControlTextarea1"
-            rows="5"
-            onChange={p => this.setState({ comment: p.target.value })}
-          />
+      <React.Fragment>
+        <div className="form-row">
+          <div className="form-group col-md-8">
+            <label>Comment</label>
+            <textarea
+              className="form-control"
+              id="exampleFormControlTextarea1"
+              rows="5"
+              onChange={p => this.setState({ comment: p.target.value })}
+            />
+          </div>
         </div>
-        <button
-          className={this.getButtonClasses("success")}
-          onClick={() => this.handleBack()}
-        >
-          Back to review
-        </button>
-        <button
-          className={this.getButtonClasses("danger")}
-          onClick={() => this.handleReject()}
-        >
-          Reject
-        </button>
-      </div>
+        <div className="form-row">
+          <button
+            className={this.getButtonClasses("success")}
+            onClick={() => this.handleBack()}
+          >
+            Back to review
+          </button>
+          <button
+            className={this.getButtonClasses("danger")}
+            onClick={() => this.handleReject()}
+          >
+            Reject
+          </button>
+        </div>
+      </React.Fragment>
     );
   };
 
@@ -180,7 +199,7 @@ class ExecutorButtons extends Component {
       return this.commentField();
     }
 
-    if (this.state.noButtons) return <h3>Sorry, you can just view that</h3>;
+    if (this.state.noButtons) return <h3 />;
     const buttonsLoc = this.state.buttons;
     return (
       <div className="form-row">
