@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.RequestDao;
 import amber_team.amber.model.dto.AttributeDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.util.MergeReflectionUtil;
 import amber_team.amber.util.SQLQueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class RequestDaoImpl implements RequestDao {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-    public amber_team.amber.model.entities.Request save(amber_team.amber.model.entities.Request request) {
+    public Request create(Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         String id = UUID.randomUUID().toString();
@@ -61,80 +62,38 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public ResponseEntity open(RequestStatusChangeDto request) {
+    public Request update(Request request){
+        Request oldRequest = this.getById(request);
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_CREATOR_ID, request.getCreatorId(), request.getStatus(),
-                LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity cancel(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity review(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity reject(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity progress(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID, request.getStatus(), request.getExecutorId(),
-                LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity hold(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity deliver(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity complete(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
+        Request newRequest = null;
+        try {
+            newRequest = MergeReflectionUtil.mergeObjects(request, oldRequest);
+            jdbcTemplate.update(SQLQueries.UPDATE_REQUEST, newRequest.getWarehouseId(), newRequest.getCreatorId(), newRequest.getExecutorId(), newRequest.getTypeId(), newRequest.getConnectedRequestId(), newRequest.getTitle(), newRequest.getStatus(), newRequest.getCreationDate(), newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(), newRequest.getId());
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        return newRequest;
     }
 
 
 
 
     @Override
-    public Request getRequestInfo(String requestId) {
+    public Request getById(Request request) {
+
         jdbcTemplate = new JdbcTemplate(dataSource);
-        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {requestId}, new RowMapper<Request>() {
+        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getId()}, new RowMapper<Request>() {
             @Override
             public Request mapRow(ResultSet resultSet, int i) throws SQLException {
                 Request info = new Request();
-                info.setId(requestId);
+                info.setId(request.getId());
                 info.setWarehouseId(resultSet.getString("warehouse_id"));
                 info.setCreatorId(resultSet.getString("creator_id"));
                 info.setExecutorId(resultSet.getString("executor_id"));
                 info.setTypeId(resultSet.getString("req_type_id"));
                 info.setTitle(resultSet.getString("title"));
                 info.setStatus(resultSet.getString("status"));
+                info.setConnectedRequestId(resultSet.getString("connected_request"));
                 info.setCreationDate(resultSet.getTimestamp("creation_date"));
                 info.setModifiedDate(resultSet.getTimestamp("modified_date"));
                 info.setDescription(resultSet.getString("description"));

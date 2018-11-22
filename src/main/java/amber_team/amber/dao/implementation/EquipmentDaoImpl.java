@@ -31,9 +31,21 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
-    public Equipment getById(String id){
-
-        return  null;
+    public Equipment getById(String id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        Equipment equipment = jdbcTemplate.queryForObject(
+                SQLQueries.GET_EQUIPMENT_BY_ID, new Object[]{id},
+                new RowMapper<Equipment>() {
+                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Equipment c = new Equipment();
+                        c.setId(rs.getString(1));
+                        c.setModel(rs.getString(2));
+                        c.setProducer(rs.getString(3));
+                        c.setCountry(rs.getString(4));
+                        return c;
+                    }
+                });
+        return equipment;
     }
 
     @Override
@@ -79,7 +91,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     public List<Equipment> getLimited(int limit) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<Equipment> equipment = jdbcTemplate.query(
-                SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit} ,
+                SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit},
                 new RowMapper<Equipment>() {
                     public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Equipment c = new Equipment();
@@ -102,9 +114,9 @@ public class EquipmentDaoImpl implements EquipmentDao {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 EquipmentDto equipmentDto = equipmentDtos.get(i);
-                ps.setString(1,request_id);
+                ps.setString(1, request_id);
                 ps.setString(2, equipmentDto.getId());
-                ps.setInt(3, equipmentDto.getQuantity() );
+                ps.setInt(3, equipmentDto.getQuantity());
             }
 
             @Override
@@ -123,9 +135,9 @@ public class EquipmentDaoImpl implements EquipmentDao {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 EquipmentDto equipmentDto = equipmentDtoList.get(i);
-                ps.setString(1,warehouse_id);
+                ps.setString(1, warehouse_id);
                 ps.setString(2, equipmentDto.getId());
-                ps.setInt(3, equipmentDto.getQuantity() );
+                ps.setInt(3, equipmentDto.getQuantity());
             }
 
             @Override
@@ -141,7 +153,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<EquipmentInfoDto> equipment = jdbcTemplate.query(
-                SQLQueries.GET_REQUEST_EQUIPMENT, new Object[]{requestId} ,
+                SQLQueries.GET_REQUEST_EQUIPMENT, new Object[]{requestId},
                 new RowMapper<EquipmentInfoDto>() {
                     public EquipmentInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                         EquipmentInfoDto c = new EquipmentInfoDto();
@@ -159,7 +171,24 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId) {
+        //TODO
         return null;
+    }
+
+    @Override
+    public List<EquipmentDto> getUnavailableEquipmentQuantity(String requestId) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<EquipmentDto> equipment = jdbcTemplate.query(
+                SQLQueries.GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE, new Object[]{requestId},
+                new RowMapper<EquipmentDto>() {
+                    public EquipmentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        EquipmentDto c = new EquipmentDto();
+                        c.setId(rs.getString("id"));
+                        c.setQuantity(rs.getInt("quantity_diff"));
+                        return c;
+                    }
+                });
+        return equipment;
     }
 
 

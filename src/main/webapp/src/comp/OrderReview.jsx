@@ -3,76 +3,154 @@ import Comment from "./Comment";
 import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
+import Select from "react-select";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
       requestId: 0,
-      userId: 2,
-      userRoles: ["Admin", "User", "Keeper"],
-      creator: { id: 2, firstName: "Den", secondName: "Star" },
-      title: "Example1",
-      equipment: [
-        {
-          id: 1,
-          country: "Ukraine",
-          producer: "Roshen",
-          model: "Candy",
-          quantity: 20
-        },
-        {
-          id: 2,
-          country: "Ukraine",
-          producer: "Roshen",
-          model: "Marshmello",
-          quantity: 26
-        }
-      ],
-      attributes: [
-        { name: "Additional", order: 3, values: ["Test"] },
-        { name: "Additional2", order: 2, values: ["Test", "Test2"] }
-      ],
+      userId: 0,
+      userRoles: ["ROLE_ADMIN", "USER_ROLE", "ROLE_KEEPER"],
+      creator: null,
+      title: "",
+      equipment: [],
+      attributes: [],
       warehouse: 0,
+      alert: "",
+      executorAlert: "",
       type: "Order",
-      status: "Opened",
+      status: "",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
-      description: "Adjkahskjdhs",
+      description: "",
       attachments: [],
-      comments: [],
-      executors: [
-        { id: 5, firstName: "Andrew", secondName: "Lobinski" },
-        { id: 4, firstName: "Nan", secondName: "Kek" }
-      ],
-      executorId: 0,
+      comments: null,
+      executors: null,
+      executorId: null,
       mode: ""
     };
+    this.executorAlert = this.executorAlert.bind(this);
   }
+
+  getExecutorsOptions = () => {
+    let res = [];
+    console.log(this.state.executors);
+    this.state.executors.map(e =>
+      res.push({
+        value: e.id,
+        label: e.firstName + " " + e.secondName + ", " + e.email
+      })
+    );
+    return res;
+  };
+
+  executorAlert = value => {
+    this.setState({ executorAlert: value });
+    window.scrollTo(0, 0);
+  };
+
+  handleExecutorChange = selectedExecutor => {
+    this.setState({ executorId: selectedExecutor.value });
+  };
 
   choseExecutor = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("Admin" && this.state.mode === "view")
+      this.state.userRoles.includes("ROLE_ADMIN")
     ) {
-      return (
-        <div className="form-row">
-          <div className="form-group">
-            <h4>Executor</h4>
-            <select
-              className="form-control"
-              onChange={e => this.setState({ executorId: e.target.value })}
-            >
-              {this.state.executors.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.firstName + " " + p.secondName}
-                </option>
-              ))}
-            </select>
+      if (this.state.executors.length < 1) {
+        return <h4>Executors: that warehouse haven`t executors</h4>;
+      } else {
+        return (
+          <div className="form-row">
+            <div className="form-group col-md-4">
+              <h4>Executor</h4>
+              <Select
+                onChange={this.handleExecutorChange}
+                options={this.getExecutorsOptions()}
+                value={{
+                  value: this.state.executors[0].id,
+                  label:
+                    this.state.executors[0].firstName +
+                    " " +
+                    this.state.executors[0].secondName +
+                    ", " +
+                    this.state.executors[0].email
+                }}
+              />
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
+    } else {
+      if (
+        this.state.executor != null &&
+        typeof this.state.executor !== "undefined"
+      ) {
+        return (
+          <div className="form-row">
+            <div className="form-group">
+              <h4>
+                Executor:{" "}
+                {this.state.executor.firstName +
+                  " " +
+                  this.state.executor.secondName}
+              </h4>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="form-row">
+            <div className="form-group">
+              <h4>Executor: not chosen</h4>
+            </div>
+          </div>
+        );
+      }
     }
   };
+
+  componentWillMount() {
+    const { requestId } = this.props.match.params;
+    this.setState({ requestId: requestId });
+
+    fetch("/userinfo")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          userId: data.id,
+          userRoles: data.roles,
+          requestId: requestId
+        });
+      })
+      .catch(error => console.log(error));
+
+    fetch(`/request/${requestId}`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          title: data.title,
+          status: data.status,
+          type: data.type,
+          description: data.description,
+          creationDate: data.creationDate,
+          updatedDate: data.modifiedDate,
+          warehouse: data.warehouse,
+          creator: data.creator,
+          executor: data.executor,
+          attributes: data.attributes,
+          comments: data.comments,
+          equipment: data.equipment,
+          isLoading: false
+        });
+        this.loadExecutors();
+      })
+      .catch(error => console.log(error));
+  }
 
   additionalAttributes = () => {
     let localAttributes = this.state.attributes;
@@ -97,70 +175,60 @@ class OrderReview extends Component {
   };
 
   buttonsSpace = () => {
-    switch (this.state.mode) {
-      case "view": {
-        return (
+    if (this.state.creator.id == this.state.userId) {
+      return (
+        <React.Fragment>
+          <ExecutorButtons
+            userId={this.state.userId}
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
+            validateComment={this.executorAlert}
+          />
+          <CreatorButtons
+            requestId={this.state.requestId}
+            status={this.state.status}
+          />
+        </React.Fragment>
+      );
+    } else
+      return (
+        <React.Fragment>
           <ExecutorButtons
             userRoles={this.state.userRoles}
             status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
           />
-        );
-      }
-      case "created": {
-        if (this.state.creator.id == this.state.userId)
-          return <CreatorButtons status={this.state.status} />;
-        else return <h3>Sorry, you can just view that</h3>;
-      }
-      default: {
-        return <h3>Sorry, you can just view that</h3>;
-      }
-    }
+        </React.Fragment>
+      );
   };
 
   componentDidMount() {
-    const { requestId } = this.props.match.params;
-    const { mode } = this.props.match.params;
-    this.setState({ requestId: requestId, mode: mode });
-    fetch(`/attachments/list/${requestId}`)
+    fetch(`/attachments/list/${this.props.match.params.requestId}`)
       .then(response => response.json())
       .then(data => {
         this.setState({ attachments: data.listFiles });
       })
       .catch(error => console.log(error));
-
-    fetch("/userinfo")
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-          userId: data.id,
-          userRoles: data.roles,
-          requestId: requestId
-        });
-      })
-      .catch(error => console.log(error));
-
-    fetch(`/request/info/${requestId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          title: data.title,
-          status: data.status,
-          type: data.type,
-          description: data.description,
-          creationDate: data.creationDate,
-          updatedDate: data.modifiedDate,
-          warehouse: data.warehouse,
-          creator: data.creator,
-          executor: data.executor,
-          attributes: data.attributes,
-          comments: data.comments,
-          equipment: data.equipment,
-          isLoading: false
-        });
-      })
-      .catch(error => console.log(error));
   }
+
+  loadExecutors = () => {
+    if (
+      this.state.status === "On reviewing" &&
+      this.state.userRoles.includes("ROLE_ADMIN") &&
+      this.state.mode === "view"
+    ) {
+      fetch(`/request/executors/${this.state.warehouse.id}`)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ executors: data.list });
+          console.log("Executors", data);
+        })
+        .catch(error => console.log(error));
+    }
+  };
 
   handleDownloadFile = name => {
     fetch(`/attachments/${this.state.requestId}?filename=${name}`).then(
@@ -234,11 +302,7 @@ class OrderReview extends Component {
   };
 
   renderComments = () => {
-    if (
-      this.state.attachments != null &&
-      typeof this.state.attachments !== "undefined" &&
-      this.state.comments.length > 0
-    ) {
+    if (this.state.comments.length > 0) {
       return (
         <div className="form-row">
           <div className="form-group">
@@ -273,6 +337,7 @@ class OrderReview extends Component {
           <div className="container">
             <br />
             <br />
+            <h4 className="text-danger">{this.state.executorAlert}</h4>
             <br />
             <br />
             <br />
@@ -317,16 +382,16 @@ class OrderReview extends Component {
               </h4>
             </div>
 
-            {this.choseExecutor()}
+            {this.state.executors != null && this.choseExecutor()}
             <h3>Order items</h3>
             <ItemsList equipment={this.state.equipment} />
             <div className="form-row">
               <div className="form-group">{this.additionalAttributes()}</div>
             </div>
             {attachmetsListLocal}
-            {this.buttonsSpace()}
+            {this.state.status !== "" && this.buttonsSpace()}
             <br />
-            {this.renderComments()}
+            {this.state.comments != null && this.renderComments()}
             <br />
           </div>
         </div>

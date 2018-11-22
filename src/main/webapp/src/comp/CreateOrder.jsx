@@ -6,7 +6,6 @@ import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
 import AsyncSelect from "react-select/lib/Async";
-import AsyncPaginate from "react-select-async-paginate";
 
 class CreateOrder extends Component {
   constructor(props) {
@@ -173,7 +172,7 @@ class CreateOrder extends Component {
   handleSubmit = () => {
     if (this.validate()) {
       const readyAttributes = this.compileAdditionalAttributes();
-      fetch("/request/save", {
+      fetch("/request", {
         method: "POST",
         body: JSON.stringify({
           creatorId: this.state.userId,
@@ -191,7 +190,11 @@ class CreateOrder extends Component {
       })
         .then(response => response.json())
         .then(data => {
-          this.uploadFiles(data.id);
+          if (this.state.attachments.length > 0) {
+            this.uploadFiles(data.id);
+          } else {
+            this.props.history.push("/dashboard");
+          }
         })
         .catch(error => {
           console.error("Error:", error);
@@ -592,7 +595,7 @@ class CreateOrder extends Component {
               <div className="form-group ">
                 <p className="text-danger">{this.state.alertFiles}</p>
                 <Dropzone
-                  accept="image/*,.doc,.pdf"
+                  accept="image/*, .doc, .pdf, .docx"
                   onDrop={this.onPreviewDrop}
                 >
                   Drop an image, get a preview!

@@ -12,7 +12,10 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository(value = "commentDao")
 public class CommentDaoImpl implements CommentDao {
@@ -23,10 +26,9 @@ public class CommentDaoImpl implements CommentDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
 
 
     @Override
@@ -37,6 +39,17 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public List<Comment> getAll() {
         return null;
+    }
+
+    public void create(Comment comment) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        String id = UUID.randomUUID().toString();
+
+        Timestamp creationDate = Timestamp.valueOf(LocalDateTime.now());
+
+        jdbcTemplate.update(SQLQueries.ADD_NEW_COMMENT, id, comment.getRequest().getId(), comment.getUser().getId(), comment.getText(), creationDate);
+
     }
 
     @Override

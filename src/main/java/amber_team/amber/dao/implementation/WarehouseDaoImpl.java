@@ -1,6 +1,7 @@
 package amber_team.amber.dao.implementation;
 
 import amber_team.amber.dao.interfaces.WarehouseDao;
+import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Warehouse;
 import amber_team.amber.util.SQLQueries;
@@ -60,6 +61,24 @@ public class WarehouseDaoImpl implements WarehouseDao {
                 });
         return warehouseList;
 
+    }
+
+    @Override
+    public List<UserInfoDto> getExecutors(String warehouseId) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<UserInfoDto> userInfoDtos = jdbcTemplate.query(
+                SQLQueries.GET_WAREHOUSE_EXECUTORS, new Object[]{warehouseId},
+                new RowMapper<UserInfoDto>() {
+                    public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        UserInfoDto c = new UserInfoDto();
+                        c.setId(rs.getString("id"));
+                       c.setFirstName(rs.getString("f_name"));
+                       c.setSecondName(rs.getString("s_name"));
+                       c.setEmail(rs.getString("email"));
+                        return c;
+                    }
+                });
+        return userInfoDtos;
     }
 
 

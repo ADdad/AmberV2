@@ -15,16 +15,22 @@ public class Request {
     private String typeId;
     private String title;
     private String status;
+    private String connectedRequestId;
     private Timestamp creationDate;
     private Timestamp modifiedDate;
     private String description;
     private boolean archive;
-    // todo add attributes to service
     private List<Attribute> attributes;
-    // todo add equipment to service
     private Map<Equipment, Integer> equipment;
-    // todo add comments to service
     private List<Comment> comments;
+
+    public String getConnectedRequestId() {
+        return connectedRequestId;
+    }
+
+    public void setConnectedRequestId(String connectedRequestId) {
+        this.connectedRequestId = connectedRequestId;
+    }
 
     public String getId() {
         return id;

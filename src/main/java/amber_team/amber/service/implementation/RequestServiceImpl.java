@@ -1,16 +1,13 @@
 package amber_team.amber.service.implementation;
 
 
-import amber_team.amber.dao.implementation.RequestDaoImpl;
 import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Comment;
-import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.service.interfaces.RequestService;
-import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -50,8 +46,8 @@ public class RequestServiceImpl implements RequestService {
         newRequest.setTitle(request.getTitle());
         newRequest.setCreatorId(request.getCreatorId());
         newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
-        Request finalRequest = requestDao.save(newRequest);
-        attributesDao.addAttributeValueToRequest(request.getAttributes(), finalRequest.getId());
+        Request finalRequest = requestDao.create(newRequest);
+        attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
 
@@ -68,25 +64,23 @@ public class RequestServiceImpl implements RequestService {
 //			newRequest.setDescription(request.getDescription());
 //			newRequest.setTypeId(request.getTypeId());
 //			//todo setAttrbutes
-//			return requestDao.save(newRequest);
+//			return requestDao.create(newRequest);
 //		}
     }
 
-    @Override
-    public ResponseEntity open(RequestStatusChangeDto request) {
-        if (!openValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.open(request);
-        }
+    List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
+        List<AttributeInfoDto> result = attributeInfoDtos.stream()
+                .filter(attribute -> attribute.getValue() != null)
+                .collect(Collectors.toList());
+        return result;
     }
+
 
     public ResponseEntity creationData(String type) {
         CreateOrderDto data = new CreateOrderDto();
         data.setAttributes(attributesDao.getAttributesOfType(type));
         data.setWarehouses(warehouseDao.getAll());
-        data.setEquipment(equipmentDao.getLimited(25));
+        data.setEquipment(equipmentDao.getLimited(20));
         return ResponseEntity.ok(data);
     }
 
@@ -97,74 +91,40 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ResponseEntity cancel(RequestStatusChangeDto request) {
-        if (!cancelValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.cancel(request);
-        }
+    public ResponseEntity<EquipmentListDto> unavailableEquipmentByRequestId(String requestId) {
+        //TODO filter out negative quantity equipment
+        EquipmentListDto equipmentListDto = new EquipmentListDto();
+        equipmentListDto.setList(equipmentDao.getUnavailableEquipmentQuantity(requestId));
+        return ResponseEntity.ok(equipmentListDto);
     }
 
     @Override
-    public ResponseEntity reject(RequestStatusChangeDto request) {
-        if (!rejectValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.reject(request);
-        }
+    public ResponseEntity<UserListDto> getWarehouseExecutors(String warehouseId) {
+        UserListDto userListDto = new UserListDto();
+        userListDto.setList(warehouseDao.getExecutors(warehouseId));
+        return ResponseEntity.ok(userListDto);
     }
 
     @Override
-    public ResponseEntity review(RequestStatusChangeDto request) {
-        if (!reviewValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.review(request);
+    public ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request) {
+        Request requestNew = new Request();
+        requestNew.setId(request.getRequestId());
+        requestNew.setExecutorId(request.getExecutorId());
+        requestNew.setStatus(request.getStatus());
+        requestNew = requestDao.update(requestNew);
+
+
+        if (request.getCommentText() != null) {
+            Comment newComment = new Comment();
+            newComment.setText(request.getCommentText());
+            newComment.setUser(userDao.getById(request.getUserId()));
+            newComment.setRequest(requestDao.getById(requestDao.getById(requestNew)));
+            commentDao.create(newComment);
         }
+
+        return ResponseEntity.ok(requestNew);
     }
 
-    @Override
-    public ResponseEntity progress(RequestStatusChangeDto request) {
-        if (!progressValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.progress(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity hold(RequestStatusChangeDto request) {
-        if (!holdValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.hold(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity deliver(RequestStatusChangeDto request) {
-        if (!deliverValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.deliver(request);
-        }
-    }
-
-    @Override
-    public ResponseEntity complete(RequestStatusChangeDto request) {
-        if (!completeValidation(request)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.STATUS_ERROR);
-        } else {
-            return requestDao.complete(request);
-        }
-    }
 
     @Override
     public void archiveOldRequests() {
@@ -173,8 +133,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ResponseEntity getRequestInfo(String id) {
-        Request request = requestDao.getRequestInfo(id);
+        Request request = new Request();
         request.setId(id);
+        request = requestDao.getById(request);
         RequestInfoDto requestInfoDto = new RequestInfoDto(request);
         requestInfoDto.setWarehouse(warehouseDao.getById(request.getWarehouseId()));
         requestInfoDto.setType(requestTypeDao.getById(request.getTypeId()));

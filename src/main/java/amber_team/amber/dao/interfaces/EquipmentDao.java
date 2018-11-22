@@ -17,5 +17,5 @@ public interface EquipmentDao {
     void addEquipmentToWarehouse(List<EquipmentDto> equipmentDtoList, String warehouse_id);
     List<EquipmentInfoDto> getRequestEquipment(String requestId);
     List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId);
-
+    List<EquipmentDto> getUnavailableEquipmentQuantity(String requestId);
 }
