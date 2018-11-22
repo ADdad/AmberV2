@@ -5,7 +5,7 @@ public class MyRequestStatusChangeDto {
     private String executorId;
     private String status;
     private String userId;
-    private String commmentText;
+    private String commentText;
 
     public String getUserId() {
         return userId;
@@ -15,12 +15,12 @@ public class MyRequestStatusChangeDto {
         this.userId = userId;
     }
 
-    public String getCommmentText() {
-        return commmentText;
+    public String getCommentText() {
+        return commentText;
     }
 
-    public void setCommmentText(String commmentText) {
-        this.commmentText = commmentText;
+    public void setCommentText(String commmentText) {
+        this.commentText = commmentText;
     }
 
     public String getRequestId() {

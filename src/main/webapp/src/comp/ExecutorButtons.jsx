@@ -8,7 +8,8 @@ class ExecutorButtons extends Component {
     noButtons: false,
     adminStates: ["Opened", "On reviewing"],
     keeperStates: ["In progress", "On hold", "Delivering"],
-    comment: null
+    comment: null,
+    commentStatus: ""
   };
 
   handleReject = () => {
@@ -16,7 +17,7 @@ class ExecutorButtons extends Component {
       fetch("/request", {
         method: "PUT",
         body: JSON.stringify({
-          status: "Rejected",
+          status: this.state.commentStatus,
           executorId: null,
           requestId: this.props.requestId,
           userId: this.props.userId,
@@ -39,8 +40,8 @@ class ExecutorButtons extends Component {
 
   handleClick = name => {
     console.log("Name", name);
-    if (name === "Rejected") {
-      this.setState({ confirmation: true });
+    if (name === "Rejected" || name === "On hold") {
+      this.setState({ confirmation: true, commentStatus: name });
     } else {
       fetch("/request", {
         method: "PUT",
@@ -175,7 +176,7 @@ class ExecutorButtons extends Component {
             className={this.getButtonClasses("danger")}
             onClick={() => this.handleReject()}
           >
-            Reject
+            {this.state.commentStatus}
           </button>
         </div>
       </React.Fragment>

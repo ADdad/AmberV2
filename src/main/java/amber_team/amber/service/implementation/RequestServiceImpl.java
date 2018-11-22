@@ -8,7 +8,6 @@ import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.dto.RequestSaveDto;
 import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.service.interfaces.RequestService;
-import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,8 +46,8 @@ public class RequestServiceImpl implements RequestService {
         newRequest.setTitle(request.getTitle());
         newRequest.setCreatorId(request.getCreatorId());
         newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
-        Request finalRequest = requestDao.save(newRequest);
-        attributesDao.addAttributeValueToRequest(request.getAttributes(), finalRequest.getId());
+        Request finalRequest = requestDao.create(newRequest);
+        attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
 
@@ -65,8 +64,15 @@ public class RequestServiceImpl implements RequestService {
 //			newRequest.setDescription(request.getDescription());
 //			newRequest.setTypeId(request.getTypeId());
 //			//todo setAttrbutes
-//			return requestDao.save(newRequest);
+//			return requestDao.create(newRequest);
 //		}
+    }
+
+    List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
+        List<AttributeInfoDto> result = attributeInfoDtos.stream()
+                .filter(attribute -> attribute.getValue() != null)
+                .collect(Collectors.toList());
+        return result;
     }
 
 
@@ -101,19 +107,20 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request) {
-       Request requestNew = new Request();
-       requestNew.setId(request.getRequestId());
-       requestNew.setExecutorId(request.getExecutorId());
-       requestNew.setStatus(request.getStatus());
-       requestNew = requestDao.update(requestNew);
+        Request requestNew = new Request();
+        requestNew.setId(request.getRequestId());
+        requestNew.setExecutorId(request.getExecutorId());
+        requestNew.setStatus(request.getStatus());
+        requestNew = requestDao.update(requestNew);
 
-       if(request.getCommmentText() != null){
-           Comment newComment = new Comment();
-            newComment.setText(request.getCommmentText());
+
+        if (request.getCommentText() != null) {
+            Comment newComment = new Comment();
+            newComment.setText(request.getCommentText());
             newComment.setUser(userDao.getById(request.getUserId()));
-            newComment.setRequest(requestDao.getRequestInfo(request.getRequestId()));
-           // commentDao.create(newComment);
-       }
+            newComment.setRequest(requestDao.getById(requestDao.getById(requestNew)));
+            commentDao.create(newComment);
+        }
 
         return ResponseEntity.ok(requestNew);
     }
@@ -126,8 +133,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ResponseEntity getRequestInfo(String id) {
-        Request request = requestDao.getRequestInfo(id);
+        Request request = new Request();
         request.setId(id);
+        request = requestDao.getById(request);
         RequestInfoDto requestInfoDto = new RequestInfoDto(request);
         requestInfoDto.setWarehouse(warehouseDao.getById(request.getWarehouseId()));
         requestInfoDto.setType(requestTypeDao.getById(request.getTypeId()));

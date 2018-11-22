@@ -9,30 +9,12 @@ class OrderReview extends Component {
     super(props);
     this.state = {
       requestId: 0,
-      userId: 2,
+      userId: 0,
       userRoles: ["ROLE_ADMIN", "USER_ROLE", "ROLE_KEEPER"],
-      creator: { id: 2, firstName: "Den", secondName: "Star" },
+      creator: null,
       title: "",
-      equipment: [
-        {
-          id: 1,
-          country: "Ukraine",
-          producer: "Roshen",
-          model: "Candy",
-          quantity: 20
-        },
-        {
-          id: 2,
-          country: "Ukraine",
-          producer: "Roshen",
-          model: "Marshmello",
-          quantity: 26
-        }
-      ],
-      attributes: [
-        { name: "Additional", order: 3, values: ["Test"] },
-        { name: "Additional2", order: 2, values: ["Test", "Test2"] }
-      ],
+      equipment: [],
+      attributes: [],
       warehouse: 0,
       alert: "",
       executorAlert: "",
@@ -320,11 +302,7 @@ class OrderReview extends Component {
   };
 
   renderComments = () => {
-    if (
-      this.state.attachments != null &&
-      typeof this.state.attachments !== "undefined" &&
-      this.state.comments.length > 0
-    ) {
+    if (this.state.comments.length > 0) {
       return (
         <div className="form-row">
           <div className="form-group">
@@ -413,7 +391,7 @@ class OrderReview extends Component {
             {attachmetsListLocal}
             {this.state.status !== "" && this.buttonsSpace()}
             <br />
-            {this.comments != null && this.renderComments()}
+            {this.state.comments != null && this.renderComments()}
             <br />
           </div>
         </div>

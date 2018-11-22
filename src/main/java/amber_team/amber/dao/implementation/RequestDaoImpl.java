@@ -42,7 +42,7 @@ public class RequestDaoImpl implements RequestDao {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-    public amber_team.amber.model.entities.Request save(amber_team.amber.model.entities.Request request) {
+    public Request create(Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         String id = UUID.randomUUID().toString();
@@ -62,37 +62,8 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public ResponseEntity open(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_CREATOR_ID, request.getCreatorId(), request.getStatus(),
-                LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity cancel(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity review(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity reject(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
     public Request update(Request request){
-        Request oldRequest = this.getRequestInfo(request.getId());
+        Request oldRequest = this.getById(request);
         jdbcTemplate = new JdbcTemplate(dataSource);
         Request newRequest = null;
         try {
@@ -106,46 +77,16 @@ public class RequestDaoImpl implements RequestDao {
 
 
 
-    @Override
-    public ResponseEntity progress(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS_AND_EXECUTOR_ID, request.getStatus(), request.getExecutorId(),
-                LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
 
     @Override
-    public ResponseEntity hold(RequestStatusChangeDto request) {
+    public Request getById(Request request) {
+
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity deliver(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-    @Override
-    public ResponseEntity complete(RequestStatusChangeDto request) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(SQLQueries.CHANGE_REQUEST_STATUS, request.getStatus(), LocalDate.now(), request.getRequestId());
-        return ResponseEntity.ok(request);
-    }
-
-
-
-
-    @Override
-    public Request getRequestInfo(String requestId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {requestId}, new RowMapper<Request>() {
+        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getId()}, new RowMapper<Request>() {
             @Override
             public Request mapRow(ResultSet resultSet, int i) throws SQLException {
                 Request info = new Request();
-                info.setId(requestId);
+                info.setId(request.getId());
                 info.setWarehouseId(resultSet.getString("warehouse_id"));
                 info.setCreatorId(resultSet.getString("creator_id"));
                 info.setExecutorId(resultSet.getString("executor_id"));
