@@ -19,52 +19,12 @@ class CreateOrder extends Component {
       myItems: [],
       resultItems: [],
       viewItems: [],
-      warehouses: [
-        { id: "djsal", adress: "dsajkljlk" },
-        { id: "djz", adress: "kdl" }
-      ],
+      warehouses: [],
       warehouseId: "",
       type: "",
       description: "",
       attachments: [],
-      optionalAttributes: [
-        {
-          id: "ejklwq",
-          name: "TestRadio",
-          type: "radio",
-          multiple: true,
-          mandatory: true,
-          immutable: false,
-          values: ["Test1", "Test2", "Test3"]
-        },
-        {
-          id: "2233",
-          name: "TestCheckbox",
-          type: "select",
-          multiple: true,
-          mandatory: false,
-          immutable: false,
-          values: ["Test1", "Test2", "Test3"]
-        },
-        {
-          id: "dka",
-          name: "TestDate",
-          type: "date",
-          multiple: false,
-          mandatory: false,
-          immutable: false,
-          values: []
-        },
-        {
-          id: "djlkjfdl",
-          name: "TestText",
-          type: "Text",
-          multiple: false,
-          mandatory: false,
-          immutable: false,
-          values: []
-        }
-      ],
+      optionalAttributes: [],
       oAttributesValues: [],
       resultOptionalAttributes: [],
       alertFiles: ""
@@ -271,12 +231,6 @@ class CreateOrder extends Component {
     return strName;
   };
 
-  resultItemEdit = item => {
-    let myItemsLocal = this.state.resultItems;
-    let index = myItemsLocal.findIndex(p => p.id === item.value);
-    if (index == -1) myItemsLocal.push({ id: item.value, quantity: 0 });
-    this.setState({ myItems: myItemsLocal });
-  };
   resultQuantityEdit = (i, e) => {
     let readyItems = this.state.resultItems.slice();
     let editObject = readyItems[i];
@@ -413,10 +367,6 @@ class CreateOrder extends Component {
     this.changeOptionalValue(index, checkBoxValues);
   };
 
-  getFileExtension1 = filename => {
-    return /[.]/.exec(filename) ? /[^.]+$/.exec(filename)[0] : undefined;
-  };
-
   handleRemove = index => {
     let resItemsLocal = this.state.resultItems;
     let viewItemsLocal = this.state.viewItems;
@@ -545,7 +495,6 @@ class CreateOrder extends Component {
             <h2>Create order</h2>
             <br />
             {this.state.alert}
-
             <br />
             <h2>Title: </h2>
 

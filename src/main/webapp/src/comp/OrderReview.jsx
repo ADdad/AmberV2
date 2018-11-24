@@ -27,7 +27,6 @@ class OrderReview extends Component {
       comments: null,
       executors: null,
       executorId: null,
-      mode: ""
     };
     this.executorAlert = this.executorAlert.bind(this);
   }
@@ -217,8 +216,7 @@ class OrderReview extends Component {
   loadExecutors = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("ROLE_ADMIN") &&
-      this.state.mode === "view"
+      this.state.userRoles.includes("ROLE_ADMIN")
     ) {
       fetch(`/request/executors/${this.state.warehouse.id}`)
         .then(response => response.json())

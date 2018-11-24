@@ -152,6 +152,8 @@ class ExecutorButtons extends Component {
   };
 
   commentField = () => {
+    let backDirection =
+      this.state.commentStatus === "Reject" ? "review" : "progress";
     return (
       <React.Fragment>
         <div className="form-row">
@@ -170,7 +172,7 @@ class ExecutorButtons extends Component {
             className={this.getButtonClasses("success")}
             onClick={() => this.handleBack()}
           >
-            Back to review
+            Back to {backDirection}
           </button>
           <button
             className={this.getButtonClasses("danger")}

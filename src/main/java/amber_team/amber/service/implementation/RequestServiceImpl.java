@@ -70,7 +70,7 @@ public class RequestServiceImpl implements RequestService {
 
     List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
         List<AttributeInfoDto> result = attributeInfoDtos.stream()
-                .filter(attribute -> attribute.getValue() != null)
+                .filter(attribute -> (attribute.getValue() != null && !attribute.getValue().isEmpty()))
                 .collect(Collectors.toList());
         return result;
     }
