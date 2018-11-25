@@ -112,7 +112,7 @@ public class SQLQueries {
             " OFFSET ?";
     public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
-            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
+            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country" +
             " FROM equipment" +
             " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
             " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
@@ -121,15 +121,17 @@ public class SQLQueries {
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_DELIVERED_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
-            " FROM (SELECT equipment.id AS equipmentId, request_equipment.quantity AS quantity, equipment.model AS model," +
-            " equipment.producer AS producer, equipment.country AS country, requests.warehouse_id," +
-            " requests.modified_date" +
+            " FROM (SELECT equipment.id AS equipmentId, SUM(request_equipment.quantity) AS quantity, equipment.model AS model," +
+            " equipment.producer AS producer, equipment.country AS country " +
+            " " +
             " FROM request_equipment" +
-            " INNER JOIN equipments ON equipments.id = request_equipment.equipment_id" +
+            " INNER JOIN equipment ON equipment.id = request_equipment.equipment_id" +
             " INNER JOIN requests ON requests.id = request_equipment.request_id" +
-            " WHERE requests.warehouse_id =? AND requests.status = 'Completed'" +
+            " INNER JOIN request_types ON requests.req_type_id = request_types.id" +
+            " WHERE requests.warehouse_id =? AND requests.status = 'Completed' AND request_types.name='order'" +
             " AND requests.modified_date > ? AND requests.modified_date < ?" +
-            " ORDER BY requests.modified_date ASC) AS sub " +
+            " GROUP BY equipment.id" +
+            " ) AS sub " +
             " ORDER BY sub.equipmentId " +
             " LIMIT ? " +
             " OFFSET ?";
@@ -137,7 +139,7 @@ public class SQLQueries {
             " FROM (SELECT equipment.id AS equipmentId, equipment.producer AS producer, equipment.country AS country," +
             " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
             " FROM equipment" +
-            " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipments.id" +
+            " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipment.id" +
             " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?) AS sub" +
             " ORDER BY equipmentId" +
             " LIMIT ?" +
