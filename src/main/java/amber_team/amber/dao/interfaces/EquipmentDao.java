@@ -18,4 +18,5 @@ public interface EquipmentDao {
     List<EquipmentInfoDto> getRequestEquipment(String requestId);
     List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId);
     List<EquipmentDto> getUnavailableEquipmentQuantity(String requestId);
+    void removeEquipmentFromRequest(String requestId);
 }

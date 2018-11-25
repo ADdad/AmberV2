@@ -9,15 +9,15 @@ class Attachments extends Component {
     };
 
     let title = "";
-    if (this.props.newAttachments.length > 0) title = <h3>Attachments</h3>;
+    if (this.props.attachments.length > 0) title = <h3>Attachments</h3>;
     else title = "";
     return (
       <React.Fragment>
         {title}
         <div className="form-row">
-          {this.props.newAttachments.length > 0 && (
+          {this.props.attachments.length > 0 && (
             <React.Fragment>
-              {this.props.newAttachments.map(file => (
+              {this.props.attachments.map(file => (
                 <figure className="form-group">
                   <img
                     alt="Preview"

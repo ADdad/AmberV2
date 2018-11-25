@@ -15,7 +15,7 @@ class ExecutorButtons extends Component {
   handleReject = () => {
     if (this.commentValidation()) {
       fetch("/request", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           status: this.state.commentStatus,
           executorId: null,
@@ -44,7 +44,7 @@ class ExecutorButtons extends Component {
       this.setState({ confirmation: true, commentStatus: name });
     } else {
       fetch("/request", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           status: name,
           executorId: this.props.executorId,

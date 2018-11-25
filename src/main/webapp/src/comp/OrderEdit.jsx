@@ -143,6 +143,7 @@ class OrderEdit extends Component {
           creationDate: data.creationDate,
           updatedDate: data.modifiedDate,
           warehouse: data.warehouse,
+          warehouseId: data.warehouse.id,
           creator: data.creator,
           executor: data.executor,
           attributes: this.sortAttributes(data.attributes),
@@ -190,10 +191,11 @@ class OrderEdit extends Component {
       fetch("/request", {
         method: "PUT",
         body: JSON.stringify({
+          requestId: this.state.requestId,
           creatorId: this.state.userId,
           title: this.state.title,
           description: this.state.description,
-          type: this.state.type,
+          type: this.state.type.name,
           warehouseId: this.state.warehouseId,
           items: this.state.resultItems,
           attributes: readyAttributes,
@@ -319,8 +321,15 @@ class OrderEdit extends Component {
     let chosenAttributes = this.state.attributes;
     if (chosenAttributes != null) {
       let index = chosenAttributes.findIndex(p => p.id === id);
-      if (index > -1) name += " chosen " + chosenAttributes[index].value;
+      if (index > -1) {
+        name += " chosen " + chosenAttributes[index].value;
+        let index2 = this.state.optionalAttributes.findIndex(a => a.id === id);
+        if (this.state.oAttributesValues[index2] == null && mandatory) {
+          this.changeOptionalValue(index2, chosenAttributes[index].value);
+        }
+      }
     }
+
     switch (type) {
       case "select": {
         if (
@@ -768,7 +777,7 @@ class OrderEdit extends Component {
               </div>
             </div>
 
-            <Attachments newAttachments={this.state.newAttachments} />
+            <Attachments attachments={this.state.newAttachments} />
 
             {this.state.type != null &&
               this.state.optionalAttributes.length > 0 &&

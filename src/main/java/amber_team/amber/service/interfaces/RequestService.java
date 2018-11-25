@@ -2,17 +2,25 @@ package amber_team.amber.service.interfaces;
 
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Request;
-import org.springframework.http.ResponseEntity;
 
 
 public interface RequestService {
 
-    ResponseEntity getRequestInfo(String id);
-    ResponseEntity save(RequestSaveDto request);
+    RequestInfoDto getRequestInfo(String id);
+
+    Request save(RequestSaveDto request);
+
     void archiveOldRequests();
-    ResponseEntity creationData(String type);
-    ResponseEntity searchEquipment(String value);
-    ResponseEntity unavailableEquipmentByRequestId(String requestId);
-    ResponseEntity getWarehouseExecutors(String warehouseId);
-    ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request);
+
+    CreateOrderDto creationData(String type);
+
+    EquipmentSearchDto searchEquipment(String value);
+
+    EquipmentListDto unavailableEquipmentByRequestId(String requestId);
+
+    UserListDto getWarehouseExecutors(String warehouseId);
+
+    Request changeStatus(MyRequestStatusChangeDto request);
+
+    Request editRequest(RequestSaveDto request);
 }

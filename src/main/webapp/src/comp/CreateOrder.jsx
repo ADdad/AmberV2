@@ -135,6 +135,7 @@ class CreateOrder extends Component {
       fetch("/request", {
         method: "POST",
         body: JSON.stringify({
+          requestId: null,
           creatorId: this.state.userId,
           title: this.state.title,
           description: this.state.description,

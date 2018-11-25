@@ -49,6 +49,13 @@ public class AttachmentsServiceImpl implements AttachmentsService {
     }
 
     private void folderDropAndCreate(String requestId) {
+        deleteRequestAttachments(requestId);
+        File folder = new File(MAIN_PATH + requestId);
+        folder.mkdir();
+    }
+
+    @Override
+    public void deleteRequestAttachments(String requestId) {
         File folder = new File(MAIN_PATH + requestId);
         if (folder.exists()) {
             String[] entries = folder.list();
@@ -58,9 +65,6 @@ public class AttachmentsServiceImpl implements AttachmentsService {
             }
             folder.delete();
         }
-        folder.mkdir();
-
-
     }
 
     @Override
@@ -76,8 +80,8 @@ public class AttachmentsServiceImpl implements AttachmentsService {
     }
 
     @Override
-    public ResponseEntity listFiles(String requestId) {
-        if (Files.notExists(Paths.get(MAIN_PATH + requestId))) return ResponseEntity.ok(new ListFilesDto());
+    public ListFilesDto listFiles(String requestId) {
+        if (Files.notExists(Paths.get(MAIN_PATH + requestId))) return new ListFilesDto();
         List<FileInfoDto> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(MAIN_PATH + requestId))) {
             paths
@@ -91,7 +95,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
         }
         ListFilesDto listFilesDto = new ListFilesDto();
         listFilesDto.setListFiles(files);
-        return ResponseEntity.ok(listFilesDto);
+        return listFilesDto;
     }
 
     private String fileSizeMb(File file) {

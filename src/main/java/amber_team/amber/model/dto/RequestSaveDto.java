@@ -6,6 +6,7 @@ import java.util.List;
 
 public class RequestSaveDto {
 
+    private String requestId;
     private String creatorId;
     private String title;
     private String description;
@@ -15,15 +16,13 @@ public class RequestSaveDto {
     private String warehouseId;
     private int offset;
 
-    public MultipartFile[] getAttachments() {
-        return attachments;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setAttachments(MultipartFile[] attachments) {
-        this.attachments = attachments.clone();
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
-
-    private MultipartFile[] attachments;
 
     public int getOffset() {
         return offset;

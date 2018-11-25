@@ -1,8 +1,8 @@
 package amber_team.amber.util;
 
 public class SQLQueries {
-    private SQLQueries() {
-    }
+
+    private SQLQueries() {}
 
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
@@ -99,5 +99,7 @@ public class SQLQueries {
             " description = ?, archive = ? " +
             "WHERE id = ?";
     public static final String ADD_NEW_COMMENT = "INSERT INTO comments VALUES (?, ?, ?, ?, ?)";
+    public static final String DELETE_REQUEST_EQUIPMENT = "DELETE FROM request_equipment WHERE request_id = ?";
+    public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
 
 }

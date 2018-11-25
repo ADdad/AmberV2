@@ -106,6 +106,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
+    public void removeEquipmentFromRequest(String requestId) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(SQLQueries.DELETE_REQUEST_EQUIPMENT, new Object[]{requestId});
+    }
+
+    @Override
     public void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String request_id) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
