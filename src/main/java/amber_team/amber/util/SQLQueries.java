@@ -99,7 +99,49 @@ public class SQLQueries {
             " description = ?, archive = ? " +
             "WHERE id = ?";
     public static final String ADD_NEW_COMMENT = "INSERT INTO comments VALUES (?, ?, ?, ?, ?)";
+    public static final String GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
+            " FROM (SELECT warehouse_equipments.quantity AS quantity," +
+            " equipments.model AS model, equipments.producer AS producer, equipments.country AS country," +
+            " warehouses.warehouse_id" +
+            " FROM equipments" +
+            " INNER JOIN warehouse_equipments ON equipments.equipment_id = warehouse_equipments.equipment_id" +
+            " INNER_JOIN warehouse ON warehouses.warehouse_id = warehouse_equipments.warehouse_id" +
+            " WHERE warehouses.warehouse_id =? AND warehouse_equipments.quantity > 0)" +
+            " ORDER BY model" +
+            " LIMIT ?" +
+            " OFFSET ?";
+    public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
+            " FROM (SELECT warehouse_equipments.quantity AS quantity," +
+            " equipments.model AS model, equipments.producer AS producer, equipments.country AS country," +
+            " FROM equipments" +
+            " INNER JOIN warehouse_equipments ON equipments.equipment_id = warehouse_equipments.equipment_id" +
+            " INNER_JOIN warehouse ON warehouses.warehouse_id = warehouse_equipments.warehouse_id" +
+            " WHERE warehouse_equipments.warehouse_id =? AND warehouse_equipments.quantity < 1)" +
+            " ORDER BY model" +
+            " LIMIT ?" +
+            " OFFSET ?";
+    public static final String GET_DELIVERED_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
+            " FROM (SELECT request_equipments.quantity AS quantity, equipments.model AS model," +
+            " equipments.producer AS producer, equipments.country AS country, requests.warehouse_id," +
+            " requests.modified_date" +
+            " FROM requests_equipments" +
+            " INNER JOIN equipments ON equipments.equipment_id = request_equipments.equipment_id" +
+            " INNER JOIN requests ON requests.request_id = request_equipments.request_id" +
+            " WHERE requests.warehouse_id =? AND requests.status = 'Completed'" +
+            " AND requests.modified_date > ? AND requests.modified_date < ?" +
+            " ORDER BY requests.modified_date ASC) " +
+            " ORDER BY model " +
+            " LIMIT ? " +
+            " OFFSET ?";
+    public static final String GET_ENDING_EQUIPMENT_WITH_PAGINATION = "SELECT *" +
+            " FROM (SELECT equipments.producer AS producer, equipments.country AS country," +
+            " equipments.model AS model, warehouse_equipments.quantity AS quantity" +
+            " FROM equipments" +
+            " INNER JOIN warehouse_equipments ON warehouse_equipments.equipment_id = equipments.equipment_id" +
+            " WHERE warehouse_equipments.warehouse_id = ? AND warehouse_equipments.quantity < ?)" +
+            " ORDER BY model" +
+            " LIMIT ?" +
+            " OFFSET ?";
     public static final String DELETE_REQUEST_EQUIPMENT = "DELETE FROM request_equipment WHERE request_id = ?";
     public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
-
 }
