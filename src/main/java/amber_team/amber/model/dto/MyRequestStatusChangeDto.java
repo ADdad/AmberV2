@@ -7,6 +7,7 @@ public class MyRequestStatusChangeDto {
     private String userId;
     private String commentText;
 
+
     public String getUserId() {
         return userId;
     }

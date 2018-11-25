@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -55,7 +54,6 @@ public class AttributesDaoImpl implements AttributesDao {
         }
         return attributeDtoList;
     }
-
 
 
     public void addAttributeValueToRequest(List<AttributeInfoDto> attributeInfoDtos, String requestId) {
@@ -138,6 +136,12 @@ public class AttributesDaoImpl implements AttributesDao {
         return null;
     }
 
+
+    @Override
+    public void removeRequestValues(String requestId) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(SQLQueries.DELETE_REQUEST_VALUES, requestId);
+    }
 
     private void getAttributeValues(AttributeDto attr, JdbcTemplate jdbcTemplate) {
         List<String> values = jdbcTemplate.query(SQLQueries.RESERVED_VALUES_FOR_ATTRIBUTE_ID, new Object[]{attr.getId()}, new RowMapper<String>() {

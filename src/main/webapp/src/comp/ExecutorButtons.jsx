@@ -15,7 +15,7 @@ class ExecutorButtons extends Component {
   handleReject = () => {
     if (this.commentValidation()) {
       fetch("/request", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           status: this.state.commentStatus,
           executorId: null,
@@ -44,7 +44,7 @@ class ExecutorButtons extends Component {
       this.setState({ confirmation: true, commentStatus: name });
     } else {
       fetch("/request", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           status: name,
           executorId: this.props.executorId,
@@ -152,6 +152,8 @@ class ExecutorButtons extends Component {
   };
 
   commentField = () => {
+    let backDirection =
+      this.state.commentStatus === "Reject" ? "review" : "progress";
     return (
       <React.Fragment>
         <div className="form-row">
@@ -170,7 +172,7 @@ class ExecutorButtons extends Component {
             className={this.getButtonClasses("success")}
             onClick={() => this.handleBack()}
           >
-            Back to review
+            Back to {backDirection}
           </button>
           <button
             className={this.getButtonClasses("danger")}

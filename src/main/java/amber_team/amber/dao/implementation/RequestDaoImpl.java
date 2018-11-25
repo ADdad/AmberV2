@@ -44,7 +44,6 @@ public class RequestDaoImpl implements RequestDao {
 
     public Request create(Request request) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-
         String id = UUID.randomUUID().toString();
 
         String status = request.getStatus();

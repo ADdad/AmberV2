@@ -18,7 +18,7 @@ class OrderReview extends Component {
       warehouse: 0,
       alert: "",
       executorAlert: "",
-      type: "Order",
+      type: "",
       status: "",
       creationDate: "01.02.1998",
       updatedDate: "01.03.1998",
@@ -26,8 +26,7 @@ class OrderReview extends Component {
       attachments: [],
       comments: null,
       executors: null,
-      executorId: null,
-      mode: ""
+      executorId: null
     };
     this.executorAlert = this.executorAlert.bind(this);
   }
@@ -61,6 +60,8 @@ class OrderReview extends Component {
       if (this.state.executors.length < 1) {
         return <h4>Executors: that warehouse haven`t executors</h4>;
       } else {
+        if (this.state.executorId == null)
+          this.setState({ executorId: this.state.executors[0].id });
         return (
           <div className="form-row">
             <div className="form-group col-md-4">
@@ -217,8 +218,7 @@ class OrderReview extends Component {
   loadExecutors = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("ROLE_ADMIN") &&
-      this.state.mode === "view"
+      this.state.userRoles.includes("ROLE_ADMIN")
     ) {
       fetch(`/request/executors/${this.state.warehouse.id}`)
         .then(response => response.json())

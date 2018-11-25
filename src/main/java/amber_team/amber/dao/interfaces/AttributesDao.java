@@ -12,4 +12,5 @@ public interface AttributesDao {
     AttributeDto getById(String id);
     void addAttributeValueToRequest(List<AttributeInfoDto> attributeInfoDtos, String requestId);
 
+    void removeRequestValues(String requestId);
 }

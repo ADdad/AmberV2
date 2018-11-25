@@ -5,17 +5,12 @@ import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Comment;
 import amber_team.amber.model.entities.Request;
-import amber_team.amber.model.dto.RequestSaveDto;
-import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 
@@ -23,36 +18,34 @@ import java.util.stream.Collectors;
 public class RequestServiceImpl implements RequestService {
 
 
+    private final RequestDao requestDao;
+    private final WarehouseDao warehouseDao;
+    private final EquipmentDao equipmentDao;
+    private final RequestTypeDao requestTypeDao;
+    private final UserDao userDao;
+    private final CommentDao commentDao;
+    private final AttributesDao attributesDao;
+
     @Autowired
-    private RequestDao requestDao;
-    @Autowired
-    private WarehouseDao warehouseDao;
-    @Autowired
-    private EquipmentDao equipmentDao;
-    @Autowired
-    private RequestTypeDao requestTypeDao;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private CommentDao commentDao;
-    @Autowired
-    private AttributesDao attributesDao;
+    public RequestServiceImpl(RequestDao requestDao, WarehouseDao warehouseDao, EquipmentDao equipmentDao, RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao, AttributesDao attributesDao) {
+        this.requestDao = requestDao;
+        this.warehouseDao = warehouseDao;
+        this.equipmentDao = equipmentDao;
+        this.requestTypeDao = requestTypeDao;
+        this.userDao = userDao;
+        this.commentDao = commentDao;
+        this.attributesDao = attributesDao;
+    }
 
     @Override
-    public ResponseEntity save(RequestSaveDto request) {
-        Request newRequest = new Request();
-        newRequest.setWarehouseId(request.getWarehouseId());
-        newRequest.setDescription(request.getDescription());
-        newRequest.setTitle(request.getTitle());
-        newRequest.setCreatorId(request.getCreatorId());
-        newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
+    public Request save(RequestSaveDto request) {
+        Request newRequest = mapSaveDto(request);
         Request finalRequest = requestDao.create(newRequest);
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
 
-        return new ResponseEntity<>(finalRequest,
-                HttpStatus.OK);
+        return finalRequest;
 
 
 //		if(request.getTitle().isEmpty()) {
@@ -68,45 +61,45 @@ public class RequestServiceImpl implements RequestService {
 //		}
     }
 
-    List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
+    private List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
         List<AttributeInfoDto> result = attributeInfoDtos.stream()
-                .filter(attribute -> attribute.getValue() != null)
+                .filter(attribute -> (attribute.getValue() != null && !attribute.getValue().isEmpty()))
                 .collect(Collectors.toList());
         return result;
     }
 
 
-    public ResponseEntity creationData(String type) {
+    public CreateOrderDto creationData(String type) {
         CreateOrderDto data = new CreateOrderDto();
         data.setAttributes(attributesDao.getAttributesOfType(type));
         data.setWarehouses(warehouseDao.getAll());
         data.setEquipment(equipmentDao.getLimited(20));
-        return ResponseEntity.ok(data);
+        return data;
     }
 
-    public ResponseEntity searchEquipment(String value) {
+    public EquipmentSearchDto searchEquipment(String value) {
         EquipmentSearchDto result = new EquipmentSearchDto();
         result.setEquipment(equipmentDao.search(value));
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @Override
-    public ResponseEntity<EquipmentListDto> unavailableEquipmentByRequestId(String requestId) {
+    public EquipmentListDto unavailableEquipmentByRequestId(String requestId) {
         //TODO filter out negative quantity equipment
         EquipmentListDto equipmentListDto = new EquipmentListDto();
         equipmentListDto.setList(equipmentDao.getUnavailableEquipmentQuantity(requestId));
-        return ResponseEntity.ok(equipmentListDto);
+        return equipmentListDto;
     }
 
     @Override
-    public ResponseEntity<UserListDto> getWarehouseExecutors(String warehouseId) {
+    public UserListDto getWarehouseExecutors(String warehouseId) {
         UserListDto userListDto = new UserListDto();
         userListDto.setList(warehouseDao.getExecutors(warehouseId));
-        return ResponseEntity.ok(userListDto);
+        return userListDto;
     }
 
     @Override
-    public ResponseEntity<Request> changeStatus(MyRequestStatusChangeDto request) {
+    public Request changeStatus(MyRequestStatusChangeDto request) {
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());
@@ -122,7 +115,33 @@ public class RequestServiceImpl implements RequestService {
             commentDao.create(newComment);
         }
 
-        return ResponseEntity.ok(requestNew);
+        return requestNew;
+    }
+
+    @Override
+    public Request editRequest(RequestSaveDto request) {
+        Request newRequest = mapSaveDto(request);
+        newRequest.setId(request.getRequestId());
+        Request finalRequest = requestDao.create(newRequest);
+
+        attributesDao.removeRequestValues(request.getRequestId());
+        attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
+
+        equipmentDao.removeEquipmentFromRequest(request.getRequestId());
+        equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
+
+        return finalRequest;
+    }
+
+    private Request mapSaveDto(RequestSaveDto request) {
+        Request newRequest = new Request();
+
+        newRequest.setWarehouseId(request.getWarehouseId());
+        newRequest.setDescription(request.getDescription());
+        newRequest.setTitle(request.getTitle());
+        newRequest.setCreatorId(request.getCreatorId());
+        newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
+        return newRequest;
     }
 
 
@@ -132,7 +151,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ResponseEntity getRequestInfo(String id) {
+    public RequestInfoDto getRequestInfo(String id) {
         Request request = new Request();
         request.setId(id);
         request = requestDao.getById(request);
@@ -140,7 +159,7 @@ public class RequestServiceImpl implements RequestService {
         requestInfoDto.setWarehouse(warehouseDao.getById(request.getWarehouseId()));
         requestInfoDto.setType(requestTypeDao.getById(request.getTypeId()));
         requestInfoDto.setCreator(userDao.getById(request.getCreatorId()));
-        if (request.getExecutorId() != null && request.getExecutorId().isEmpty())
+        if (request.getExecutorId() != null && !request.getExecutorId().isEmpty())
             requestInfoDto.setExecutor(userDao.getById(request.getExecutorId()));
         List<CommentDto> commentDtos = commentDao.getForRequest(request.getId());
         if (commentDtos != null && commentDtos.size() > 0) {
@@ -153,7 +172,7 @@ public class RequestServiceImpl implements RequestService {
             requestInfoDto.setAttributes(attributesValuesOfRequest);
         else requestInfoDto.setAttributes(new ArrayList<>());
         requestInfoDto.setEquipment(equipmentDao.getRequestEquipment(id));
-        return ResponseEntity.ok(requestInfoDto);
+        return requestInfoDto;
     }
 
 
