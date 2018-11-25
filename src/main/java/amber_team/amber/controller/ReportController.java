@@ -1,8 +1,6 @@
 package amber_team.amber.controller;
 
-import amber_team.amber.model.dto.ReportAvailableEquipmentDto;
-import amber_team.amber.model.dto.ReportDeliveredEquipmentDto;
-import amber_team.amber.model.dto.ReportEndingEquipmentDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.service.interfaces.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +38,30 @@ public class ReportController {
     @RequestMapping(value="/reports/equipment/ending", method = RequestMethod.GET)
     public ResponseEntity getEndingEquipmentReport(@RequestBody ReportEndingEquipmentDto reportDto) {
         return reportService.getEndingEquipmentReport(reportDto);
+    }
+
+    @PreAuthorize("hasAnyRole(ROLE_ADMIN,ROLE_KEEPER)")
+    @RequestMapping(value="/reports/orders/processed", method = RequestMethod.GET)
+    public ResponseEntity getProcessedOrdersReport(@RequestBody ReportOrdersDto reportDto) {
+        return reportService.getProcessedOrdersReport(reportDto);
+    }
+
+    @PreAuthorize("hasAnyRole(ROLE_ADMIN,ROLE_KEEPER)")
+    @RequestMapping(value="/reports/orders/unprocessed", method = RequestMethod.GET)
+    public ResponseEntity getUnprocessedOrdersReport(@RequestBody ReportOrdersDto reportDto) {
+        return reportService.getUnprocessedOrdersReport(reportDto);
+    }
+
+    @PreAuthorize("hasAnyRole(ROLE_ADMIN,ROLE_KEEPER)")
+    @RequestMapping(value="/reports/orders/executed", method = RequestMethod.GET)
+    public ResponseEntity getExecutedOrdersReportBy(@RequestBody ReportOrdersWithUserDto reportDto) {
+        return reportService.getExecutedOrdersReportBy(reportDto);
+    }
+
+    @PreAuthorize("hasAnyRole(ROLE_ADMIN,ROLE_KEEPER)")
+    @RequestMapping(value="/reports/orders/created", method = RequestMethod.GET)
+    public ResponseEntity getCreatedOrdersReportBy(@RequestBody ReportOrdersWithUserDto reportDto) {
+        return reportService.getCreatedOrdersReportBy(reportDto);
     }
 
 }

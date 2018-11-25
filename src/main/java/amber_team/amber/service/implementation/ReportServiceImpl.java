@@ -1,9 +1,7 @@
 package amber_team.amber.service.implementation;
 
 import amber_team.amber.dao.interfaces.ReportDao;
-import amber_team.amber.model.dto.ReportAvailableEquipmentDto;
-import amber_team.amber.model.dto.ReportDeliveredEquipmentDto;
-import amber_team.amber.model.dto.ReportEndingEquipmentDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.service.interfaces.ReportService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,26 @@ public class ReportServiceImpl implements ReportService {
         } else {
             return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
         }
+    }
+
+    @Override
+    public ResponseEntity getProcessedOrdersReport(ReportOrdersDto reportDto) {
+        return reportDao.getProcessedOrdersReport(reportDto);
+    }
+
+    @Override
+    public ResponseEntity getUnprocessedOrdersReport(ReportOrdersDto reportDto) {
+        return reportDao.getUnprocessedOrdersReport(reportDto);
+    }
+
+    @Override
+    public ResponseEntity getExecutedOrdersReportBy(ReportOrdersWithUserDto reportDto) {
+        return reportDao.getExecutedOrdersReportBy(reportDto);
+    }
+
+    @Override
+    public ResponseEntity getCreatedOrdersReportBy(ReportOrdersWithUserDto reportDto) {
+        return reportDao.getCreatedOrdersReportBy(reportDto);
     }
 
     private boolean checkReportAvailableEquipmentDto(ReportAvailableEquipmentDto reportDto) {
