@@ -34,7 +34,7 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber()*reportDto.getResultsPerPage() - reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION,
-                    new Object[]{reportDto.getWarehouseId(), offset, limit}, (resultSet, rowNum) -> {
+                    new Object[]{reportDto.getWarehouseId(), limit, offset}, (resultSet, rowNum) -> {
                         return getReportEquipmentResponseDto(resultSet);
                     });
         return ResponseEntity.ok(response);
@@ -46,7 +46,7 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber()*reportDto.getResultsPerPage() - reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION,
-                new Object[]{reportDto.getWarehouseId(), offset, limit}, (resultSet, rowNum) -> {
+                new Object[]{reportDto.getWarehouseId(), limit, offset}, (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
         return ResponseEntity.ok(response);
@@ -58,7 +58,7 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber()*reportDto.getResultsPerPage() - reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_DELIVERED_EQUIPMENT_WITH_PAGINATION,
-                new Object[]{reportDto.getWarehouseId(),reportDto.getFromDate(),reportDto.getToDate(), offset, limit},
+                new Object[]{reportDto.getWarehouseId(),reportDto.getFromDate(),reportDto.getToDate(),  limit, offset},
                 (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
@@ -71,7 +71,7 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber()*reportDto.getResultsPerPage() - reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_ENDING_EQUIPMENT_WITH_PAGINATION,
-                new Object[]{reportDto.getWarehouseId(),reportDto.getEquipmentThreshold(), offset, limit}, (resultSet, rowNum) -> {
+                new Object[]{reportDto.getWarehouseId(),reportDto.getEquipmentThreshold(),  limit, offset}, (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
         return ResponseEntity.ok(response);

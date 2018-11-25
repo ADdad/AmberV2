@@ -100,46 +100,46 @@ public class SQLQueries {
             "WHERE id = ?";
     public static final String ADD_NEW_COMMENT = "INSERT INTO comments VALUES (?, ?, ?, ?, ?)";
     public static final String GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
-            " FROM (SELECT warehouse_equipments.quantity AS quantity," +
-            " equipments.model AS model, equipments.producer AS producer, equipments.country AS country," +
-            " warehouses.warehouse_id" +
-            " FROM equipments" +
-            " INNER JOIN warehouse_equipments ON equipments.equipment_id = warehouse_equipments.equipment_id" +
-            " INNER_JOIN warehouse ON warehouses.warehouse_id = warehouse_equipments.warehouse_id" +
-            " WHERE warehouses.warehouse_id =? AND warehouse_equipments.quantity > 0)" +
-            " ORDER BY model" +
+            " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
+            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
+            " warehouses.id" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+            " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+            " WHERE warehouses.id =? AND warehouse_equipment.quantity > 0) AS sub" +
+            " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
-            " FROM (SELECT warehouse_equipments.quantity AS quantity," +
-            " equipments.model AS model, equipments.producer AS producer, equipments.country AS country," +
-            " FROM equipments" +
-            " INNER JOIN warehouse_equipments ON equipments.equipment_id = warehouse_equipments.equipment_id" +
-            " INNER_JOIN warehouse ON warehouses.warehouse_id = warehouse_equipments.warehouse_id" +
-            " WHERE warehouse_equipments.warehouse_id =? AND warehouse_equipments.quantity < 1)" +
-            " ORDER BY model" +
+            " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
+            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+            " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+            " WHERE warehouse_equipment.warehouse_id =? AND warehouse_equipment.quantity < 1) AS sub" +
+            " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_DELIVERED_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
-            " FROM (SELECT request_equipments.quantity AS quantity, equipments.model AS model," +
-            " equipments.producer AS producer, equipments.country AS country, requests.warehouse_id," +
+            " FROM (SELECT equipment.id AS equipmentId, request_equipment.quantity AS quantity, equipment.model AS model," +
+            " equipment.producer AS producer, equipment.country AS country, requests.warehouse_id," +
             " requests.modified_date" +
-            " FROM requests_equipments" +
-            " INNER JOIN equipments ON equipments.equipment_id = request_equipments.equipment_id" +
-            " INNER JOIN requests ON requests.request_id = request_equipments.request_id" +
+            " FROM request_equipment" +
+            " INNER JOIN equipments ON equipments.id = request_equipment.equipment_id" +
+            " INNER JOIN requests ON requests.id = request_equipment.request_id" +
             " WHERE requests.warehouse_id =? AND requests.status = 'Completed'" +
             " AND requests.modified_date > ? AND requests.modified_date < ?" +
-            " ORDER BY requests.modified_date ASC) " +
-            " ORDER BY model " +
+            " ORDER BY requests.modified_date ASC) AS sub " +
+            " ORDER BY sub.equipmentId " +
             " LIMIT ? " +
             " OFFSET ?";
     public static final String GET_ENDING_EQUIPMENT_WITH_PAGINATION = "SELECT *" +
-            " FROM (SELECT equipments.producer AS producer, equipments.country AS country," +
-            " equipments.model AS model, warehouse_equipments.quantity AS quantity" +
-            " FROM equipments" +
-            " INNER JOIN warehouse_equipments ON warehouse_equipments.equipment_id = equipments.equipment_id" +
-            " WHERE warehouse_equipments.warehouse_id = ? AND warehouse_equipments.quantity < ?)" +
-            " ORDER BY model" +
+            " FROM (SELECT equipment.id AS equipmentId, equipment.producer AS producer, equipment.country AS country," +
+            " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipments.id" +
+            " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?) AS sub" +
+            " ORDER BY equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
 }
