@@ -20,6 +20,7 @@ import java.security.Principal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -54,17 +55,18 @@ public class UserListDaoImpl implements UserListDao {
             String sql = SQLQueries.USERS_INFO;
 
             List<UserInfoDto> customers =new ArrayList<>();
-            UserListDto d = new UserListDto();
 
             List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         for (Map row : rows) {
                 UserInfoDto customer = new UserInfoDto();
-                customer.setId((String)(row.get("users.id")));
-                customer.setEmail((String)(row.get("users.email")));
-                customer.setFirstName((String)(row.get("users.f_name")));
-                customer.setSecondName((String)(row.get("users.s_name")));
-                customer.setRoles((List<String>)(row.get("roles.name")));
-                d.setList(customers);
+                customer.setId((String)(row.get("id")));
+                customer.setEmail((String)(row.get("email")));
+                customer.setFirstName((String)(row.get("f_name")));
+                customer.setSecondName((String)(row.get("s_name")));
+                System.out.println("Name from row: "+(String)row.get("name"));
+                customer.setRoles(new ArrayList<String>(Arrays.asList((String) (row.get("name")))));
+                System.out.println("Added role to customer: "+ customer.getRoles().toString());
+                customers.add(customer);
         }
         return ResponseEntity.ok(customers);
     }
