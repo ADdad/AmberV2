@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,23 +28,21 @@ public class AdminServiceImpl implements AdminService {
    private UserListDao userListDao;
 
     @Override
-    public ResponseEntity update(UserListDto userDtos) {
-        if(userDtos.getList().isEmpty()) return ResponseEntity.badRequest()
-        .body(ErrorMessages.EMPTY_LIST);
-        List<UserInfoDto> list = new ArrayList<UserInfoDto>();
-        for (UserInfoDto user:list) {
+    public UserListDto update(UserListDto userDtos) {
+        UserInfoDto userInfoDto = new UserInfoDto();
+        userInfoDto.setId(ErrorMessages.EMPTY_LIST);
+        userDtos.setList(Arrays.asList(userInfoDto));
+        if(userDtos.getList().isEmpty()) return userDtos ;
+        return userListDao.update(userDtos);
+    }
 
-        }
+    @Override
+    public UserListDto getAdminInfo(Principal principal) {
         return null;
     }
 
     @Override
-    public ResponseEntity getAdminInfo(Principal principal) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity returnUsers() {
+    public UserListDto returnUsers() {
         return userListDao.returnUsers();
     }
 

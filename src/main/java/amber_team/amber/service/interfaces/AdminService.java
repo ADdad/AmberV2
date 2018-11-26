@@ -6,7 +6,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface AdminService {
-    ResponseEntity update(UserListDto userDtos);
-    ResponseEntity getAdminInfo(Principal principal);
-    ResponseEntity returnUsers();
+    UserListDto update(UserListDto userDtos);
+    UserListDto getAdminInfo(Principal principal);
+    UserListDto returnUsers();
 }

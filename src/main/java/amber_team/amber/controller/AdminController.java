@@ -23,15 +23,15 @@ public class AdminController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/admin")
-    public ResponseEntity<UserListDto> getUserList() {
+    public UserListDto getUserList() {
         System.out.println("Controller: \n" + adminService.returnUsers().toString());
         return adminService.returnUsers();
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @RequestMapping(value = "/admin",method = RequestMethod.POST)
-//    public ResponseEntity<List<UserInfoDto>> getRequestInfo(UserListDto request){
-//        return adminService.update(request);
-//    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/admin")
+    public UserListDto getRequestInfo(UserListDto request){
+        return adminService.update(request);
+    }
 
 }

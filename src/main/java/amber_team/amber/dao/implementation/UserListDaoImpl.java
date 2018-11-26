@@ -4,21 +4,13 @@ package amber_team.amber.dao.implementation;
 import amber_team.amber.dao.interfaces.UserListDao;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
-import amber_team.amber.model.entities.User;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.security.Principal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,14 +24,13 @@ public class UserListDaoImpl implements UserListDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public ResponseEntity update(UserListDto userDtos) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
-
-        for (UserInfoDto u: userDtos.getList()
-             ) {
-
-        }
+    public UserListDto update(UserListDto userDtos) {
+//        jdbcTemplate = new JdbcTemplate(dataSource);
+//        String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
+//
+//        for (UserInfoDto u: userDtos.getList()) {
+//
+//        }
 
         return null;
     }
@@ -50,7 +41,7 @@ public class UserListDaoImpl implements UserListDao {
     }
 
     @Override
-    public ResponseEntity returnUsers() {
+    public UserListDto returnUsers() {
         jdbcTemplate = new JdbcTemplate(dataSource);
             String sql = SQLQueries.USERS_INFO;
 
@@ -68,7 +59,9 @@ public class UserListDaoImpl implements UserListDao {
                 System.out.println("Added role to customer: "+ customer.getRoles().toString());
                 customers.add(customer);
         }
-        return ResponseEntity.ok(customers);
+        UserListDto userListDto = new UserListDto();
+        userListDto.setList(customers);
+        return userListDto;
     }
 
 }
