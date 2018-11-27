@@ -147,4 +147,6 @@ public class SQLQueries {
             " OFFSET ?";
     public static final String DELETE_REQUEST_EQUIPMENT = "DELETE FROM request_equipment WHERE request_id = ?";
     public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
+    public static final String DELETE_USER_ROLES = "DELETE FROM user_roles WHERE user_id = ?";
+    public static final String ADD_USER_ROLE = "INSERT INTO user_roles VALUES (?, ?)";
 }

@@ -104,5 +104,9 @@ public class UserDaoImpl implements UserDao {
         return false;
     }
 
+    void updateUserRoles(){
+
+    }
+
 
 }

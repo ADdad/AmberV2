@@ -1,38 +1,31 @@
 package amber_team.amber.service.implementation;
 
 
-
 import amber_team.amber.dao.interfaces.UserListDao;
-import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
-import amber_team.amber.model.entities.User;
 import amber_team.amber.service.interfaces.AdminService;
-import amber_team.amber.service.interfaces.UserService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 @Service(value = "adminService")
 public class AdminServiceImpl implements AdminService {
 
 
-   @Autowired
-   private UserListDao userListDao;
+    @Autowired
+    private UserListDao userListDao;
 
     @Override
     public UserListDto update(UserListDto userDtos) {
         UserInfoDto userInfoDto = new UserInfoDto();
         userInfoDto.setId(ErrorMessages.EMPTY_LIST);
         userDtos.setList(Arrays.asList(userInfoDto));
-        if(userDtos.getList().isEmpty()) return userDtos ;
+        if (userDtos.getList().isEmpty()) return userDtos;
         return userListDao.update(userDtos);
     }
 
