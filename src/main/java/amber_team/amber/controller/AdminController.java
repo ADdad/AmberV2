@@ -22,14 +22,15 @@ public class AdminController {
     private AdminService adminService;
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/admin",method = RequestMethod.GET)
-    public ResponseEntity<UserListDto> getUserList(){
+    @GetMapping(value = "/admin")
+    public UserListDto getUserList() {
+        System.out.println("Controller: \n" + adminService.returnUsers().toString());
         return adminService.returnUsers();
     }
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/admin",method = RequestMethod.POST)
-    public ResponseEntity<List<UserInfoDto>> getRequestInfo(UserListDto request){
+    @PostMapping(value = "/admin")
+    public UserListDto getRequestInfo(UserListDto request){
         return adminService.update(request);
     }
 

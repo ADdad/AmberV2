@@ -19,8 +19,11 @@ public class SQLQueries {
             "WHERE users.email=?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email=?";
+
+//    public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name " +
+//            "FROM users ";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
-            "FROM users" +
+            "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
             "INNER JOIN roles ON user_roles.role_id = roles.id ";
     public static final String USER_ROLES_BY_ID = "SELECT roles.name " +

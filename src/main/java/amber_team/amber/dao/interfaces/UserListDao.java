@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.security.Principal;
 
 public interface UserListDao {
-    ResponseEntity update(UserListDto userDtos);
+    UserListDto update(UserListDto userDtos);
     ResponseEntity getAdminInfo(Principal principal);
-    ResponseEntity returnUsers();
+    UserListDto returnUsers();
 }
