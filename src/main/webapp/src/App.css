@@ -24,6 +24,11 @@
   z-index: 2000;
 }
 
+.height-center {
+  position: absolute;
+  top: 34%;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

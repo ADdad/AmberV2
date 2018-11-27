@@ -71,7 +71,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private boolean checkReportAvailableEquipmentDto(ReportAvailableEquipmentDto reportDto) {
-        return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() == 0 || reportDto.getResultsPerPage() == 0);
+        return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() < 0 || reportDto.getResultsPerPage() < 0);
     }
 
 }

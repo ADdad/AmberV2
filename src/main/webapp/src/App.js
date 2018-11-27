@@ -6,6 +6,7 @@ import LogInForm from "./comp/LogInForm";
 import AdminPage from "./comp/AdminPage";
 import Navbar from "./comp/Navbar";
 import ErrorPage from "./comp/ErrorPage";
+import ReportsPage from "./comp/ReportsPage";
 // import PrivateRoute from "./PrivateRoute";
 import "./App.css";
 import { Route, BrowserRouter, Redirect, Switch } from "react-router-dom";
@@ -83,6 +84,7 @@ class App extends Component {
             <Route path="/order/create/:type" component={CreateOrder} />
             <Route path="/order/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={AdminPage} />
+            <Route path="/reports" component={ReportsPage}/>
             <Route component={ErrorPage} />
           </Switch>
         </div>
