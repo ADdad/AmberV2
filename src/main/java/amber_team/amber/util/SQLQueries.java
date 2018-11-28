@@ -73,7 +73,7 @@ public class SQLQueries {
             "WHERE id = 'User_roles_changed'";
     public static final String GET_WAREHOUSE_BY_ID = "SELECT id, adress, contact_number FROM warehouses WHERE id = ?";
     public static final String GET_COMMENTS_OF_REQUEST = "SELECT id, user_id, comment_text, creation_date FROM comments " +
-            "WHERE request_id = ?";
+            "WHERE request_id = ? ORDER BY creation_date";
     public static final String GET_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     public static final String REQUEST_ATTRIBUTES_VALUES_BY_ID = "SELECT attr_id AS id, A1.name AS name, A1.attr_order," +
             " A1.type AS type, string_value, date_value, decimal_value " +
