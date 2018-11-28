@@ -163,7 +163,10 @@ class OrderReview extends Component {
 
     let renderAttributes = [];
     localAttributes.map(a => {
-      renderAttributes.push({ name: a.name, value: a.value });
+      renderAttributes.push({
+        name: a.name,
+        value: a.value.replaceAll("|", ", ")
+      });
     });
 
     return (

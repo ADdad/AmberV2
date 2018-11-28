@@ -4,7 +4,6 @@ package amber_team.amber.dao.implementation;
 import amber_team.amber.dao.interfaces.RoleDao;
 import amber_team.amber.dao.interfaces.UserDao;
 import amber_team.amber.model.dto.UserInfoDto;
-import amber_team.amber.model.entities.Role;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
