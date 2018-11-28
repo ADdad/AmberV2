@@ -54,9 +54,7 @@ public class UserListDaoImpl implements UserListDao {
                 customer.setEmail((String)(row.get("email")));
                 customer.setFirstName((String)(row.get("f_name")));
                 customer.setSecondName((String)(row.get("s_name")));
-                System.out.println("Name from row: "+(String)row.get("name"));
-                customer.setRoles(new ArrayList<String>(Arrays.asList((String) (row.get("name")))));
-                System.out.println("Added role to customer: "+ customer.getRoles().toString());
+
                 customers.add(customer);
         }
         UserListDto userListDto = new UserListDto();

@@ -10,7 +10,7 @@ class OrderReview extends Component {
     this.state = {
       requestId: 0,
       userId: 0,
-      userRoles: ["ROLE_ADMIN", "USER_ROLE", "ROLE_KEEPER"],
+      userRoles: [],
       creator: null,
       title: "",
       equipment: [],
@@ -119,9 +119,11 @@ class OrderReview extends Component {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
+        let roles = [];
+        data.roles.map(r => roles.push(r.name));
         this.setState({
           userId: data.id,
-          userRoles: data.roles,
+          userRoles: roles,
           requestId: requestId
         });
       })

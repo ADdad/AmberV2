@@ -1,4 +1,5 @@
 package amber_team.amber.service.interfaces;
+import amber_team.amber.model.dto.AdminPageDto;
 import amber_team.amber.model.dto.UserListDto;
 import org.springframework.http.ResponseEntity;
 
@@ -9,4 +10,6 @@ public interface AdminService {
     UserListDto update(UserListDto userDtos);
     UserListDto getAdminInfo(Principal principal);
     UserListDto returnUsers();
+
+    AdminPageDto getUsers(int pageNumber);
 }

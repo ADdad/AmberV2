@@ -101,11 +101,13 @@ class ExecutorButtons extends Component {
         break;
       }
       case "On reviewing": {
-        localButtons.push({
-          value: "Approve",
-          type: "success",
-          status: "In progress"
-        });
+        if (this.props.executorId != null) {
+          localButtons.push({
+            value: "Approve",
+            type: "success",
+            status: "In progress"
+          });
+        }
         localButtons.push({
           value: "Reject",
           type: "danger",

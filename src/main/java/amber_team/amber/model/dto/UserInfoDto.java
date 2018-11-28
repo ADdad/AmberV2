@@ -1,5 +1,6 @@
 package amber_team.amber.model.dto;
 
+import amber_team.amber.model.entities.Role;
 import amber_team.amber.model.entities.User;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public class UserInfoDto {
     private String email;
     private String firstName;
     private String secondName;
-    private List<String> roles;
+    private List<Role> roles;
 
     public UserInfoDto(){}
 
@@ -36,7 +37,7 @@ public class UserInfoDto {
         return secondName;
     }
 
-    public List<String> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
@@ -56,7 +57,7 @@ public class UserInfoDto {
         this.secondName = secondName;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 }

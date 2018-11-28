@@ -46,6 +46,7 @@ class AdminPageNew extends Component {
         });
       })
       .catch(error => console.log(error));
+    this.handlePageChange(1);
   }
 
   rolesOptions = roles => {
@@ -67,11 +68,6 @@ class AdminPageNew extends Component {
       })
     );
     return rolesOptions;
-  };
-
-  handleRemoveUser = id => {
-    //fetch for remove
-    console.log(id);
   };
 
   updateUsers = () => {
@@ -143,7 +139,8 @@ class AdminPageNew extends Component {
   };
 
   handlePageChange = pageNumber => {
-    fetch(`/users/${pageNumber}`, {
+    const convertNumber = pageNumber - 1;
+    fetch(`/users/${convertNumber}`, {
       method: "GET"
     })
       .then(response => response.json())
@@ -154,7 +151,6 @@ class AdminPageNew extends Component {
           users: data.users,
           systemRoles: data.systemRoles
         });
-        this.loadExecutors();
       })
       .catch(error => console.log(error));
   };
@@ -166,6 +162,7 @@ class AdminPageNew extends Component {
     }
     return (
       <React.Fragment>
+          <br/>
         <div className="col-md-6">
           {user}
           <div className="form-row">

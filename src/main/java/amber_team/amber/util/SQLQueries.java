@@ -26,10 +26,10 @@ public class SQLQueries {
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
             "INNER JOIN roles ON user_roles.role_id = roles.id ";
-    public static final String USER_ROLES_BY_ID = "SELECT roles.name " +
+    public static final String USER_ROLES_BY_ID = "SELECT roles.id, roles.name " +
             "FROM roles " +
             "INNER JOIN user_roles ON roles.id = user_roles.role_id " +
-            "WHERE user_roles.user_id=?";
+            "WHERE user_roles.user_id = ?";
     public static final String TYPE_BY_ID = "SELECT * " +
             "FROM request_types " +
             "WHERE id=? ORDER BY creation_date DESC LIMIT 1";
@@ -149,4 +149,7 @@ public class SQLQueries {
     public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
     public static final String DELETE_USER_ROLES = "DELETE FROM user_roles WHERE user_id = ?";
     public static final String ADD_USER_ROLE = "INSERT INTO user_roles VALUES (?, ?)";
+    public static final String GET_USERS_WITH_PAGINATION = "SELECT id, f_name, s_name, password, email, enabled " +
+            "FROM users LIMIT ? OFFSET ?";
+    public static final String GET_ALL_ROLES = "SELECT * FROM roles";
 }

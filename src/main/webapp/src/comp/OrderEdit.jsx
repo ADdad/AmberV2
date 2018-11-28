@@ -121,9 +121,11 @@ class OrderEdit extends Component {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
+        let roles = [];
+        data.roles.map(r => roles.push(r.name));
         this.setState({
           userId: data.id,
-          userRoles: data.roles,
+          userRoles: roles,
           requestId: requestId
         });
       })
@@ -151,6 +153,8 @@ class OrderEdit extends Component {
           equipment: data.equipment,
           isLoading: false
         });
+        if (data.status != "Rejected" || data.status != "Opened")
+          this.props.history.push("/dashboard");
         this.loadEquipment(data.equipment);
         this.loadAdditionaAtrributes(data.type);
       })
@@ -322,7 +326,8 @@ class OrderEdit extends Component {
     if (chosenAttributes != null) {
       let index = chosenAttributes.findIndex(p => p.id === id);
       if (index > -1) {
-        name += " chosen " + chosenAttributes[index].value;
+        name +=
+          " chosen " + chosenAttributes[index].value.replaceAll("|", ", ");
         let index2 = this.state.optionalAttributes.findIndex(a => a.id === id);
         if (this.state.oAttributesValues[index2] == null && mandatory) {
           this.changeOptionalValue(index2, chosenAttributes[index].value);

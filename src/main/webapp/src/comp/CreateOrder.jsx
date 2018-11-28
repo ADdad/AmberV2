@@ -152,6 +152,7 @@ class CreateOrder extends Component {
         .then(response => response.json())
         .then(data => {
           if (this.state.attachments.length > 0) {
+            console.log(data);
             this.uploadFiles(data.id);
           } else {
             this.props.history.push("/dashboard");
