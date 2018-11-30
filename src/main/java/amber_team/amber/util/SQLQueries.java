@@ -2,7 +2,7 @@ package amber_team.amber.util;
 
 public class SQLQueries {
 
-    private SQLQueries() {}
+    private SQLQueries() { }
 
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
@@ -19,8 +19,7 @@ public class SQLQueries {
             "WHERE users.email=?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email=?";
-
-//    public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name " +
+    //    public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name " +
 //            "FROM users ";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
@@ -32,7 +31,7 @@ public class SQLQueries {
             "WHERE user_roles.user_id = ?";
     public static final String TYPE_BY_ID = "SELECT * " +
             "FROM request_types " +
-            "WHERE id=? ORDER BY creation_date DESC LIMIT 1";
+            "WHERE id = ? ORDER BY creation_date DESC LIMIT 1";
     public static final String TYPE_BY_NAME = "SELECT * " +
             "FROM request_types " +
             "WHERE name=? ORDER BY creation_date DESC LIMIT 1";
@@ -73,7 +72,7 @@ public class SQLQueries {
             "WHERE id = 'User_roles_changed'";
     public static final String GET_WAREHOUSE_BY_ID = "SELECT id, adress, contact_number FROM warehouses WHERE id = ?";
     public static final String GET_COMMENTS_OF_REQUEST = "SELECT id, user_id, comment_text, creation_date FROM comments " +
-            "WHERE request_id = ? ORDER BY creation_date";
+            "WHERE request_id = ? ORDER BY creation_date DESC";
     public static final String GET_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     public static final String REQUEST_ATTRIBUTES_VALUES_BY_ID = "SELECT attr_id AS id, A1.name AS name, A1.attr_order," +
             " A1.type AS type, string_value, date_value, decimal_value " +
@@ -104,47 +103,47 @@ public class SQLQueries {
     public static final String ADD_NEW_COMMENT = "INSERT INTO comments VALUES (?, ?, ?, ?, ?)";
     public static final String GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
-                " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
-                " warehouses.id" +
-                " FROM equipment" +
-                " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
-                " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
-                " WHERE warehouses.id =? AND warehouse_equipment.quantity > 0" +
+            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
+            " warehouses.id" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+            " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+            " WHERE warehouses.id =? AND warehouse_equipment.quantity > 0" +
             " ) AS sub" +
             " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
-                " equipment.model AS model, equipment.producer AS producer, equipment.country AS country" +
-                " FROM equipment" +
-                " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
-                " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
-                " WHERE warehouse_equipment.warehouse_id =? AND warehouse_equipment.quantity < 1" +
+            " equipment.model AS model, equipment.producer AS producer, equipment.country AS country" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+            " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+            " WHERE warehouse_equipment.warehouse_id =? AND warehouse_equipment.quantity < 1" +
             " ) AS sub" +
             " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_DELIVERED_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, SUM(request_equipment.quantity) AS quantity, equipment.model AS model," +
-                " equipment.producer AS producer, equipment.country AS country " +
-                " FROM request_equipment" +
-                " INNER JOIN equipment ON equipment.id = request_equipment.equipment_id" +
-                " INNER JOIN requests ON requests.id = request_equipment.request_id" +
-                " INNER JOIN request_types ON requests.req_type_id = request_types.id" +
-                " WHERE requests.warehouse_id =? AND requests.status = 'Completed' AND request_types.name='order'" +
-                " AND requests.modified_date > ? AND requests.modified_date < ?" +
-                " GROUP BY equipment.id" +
+            " equipment.producer AS producer, equipment.country AS country " +
+            " FROM request_equipment" +
+            " INNER JOIN equipment ON equipment.id = request_equipment.equipment_id" +
+            " INNER JOIN requests ON requests.id = request_equipment.request_id" +
+            " INNER JOIN request_types ON requests.req_type_id = request_types.id" +
+            " WHERE requests.warehouse_id =? AND requests.status = 'Completed' AND request_types.name='order'" +
+            " AND requests.modified_date > ? AND requests.modified_date < ?" +
+            " GROUP BY equipment.id" +
             " ) AS sub " +
             " ORDER BY sub.equipmentId " +
             " LIMIT ? " +
             " OFFSET ?";
     public static final String GET_ENDING_EQUIPMENT_WITH_PAGINATION = "SELECT *" +
             " FROM (SELECT equipment.id AS equipmentId, equipment.producer AS producer, equipment.country AS country," +
-                " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
-                " FROM equipment" +
-                " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipment.id" +
-                " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?" +
+            " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipment.id" +
+            " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?" +
             " ) AS sub" +
             " ORDER BY equipmentId" +
             " LIMIT ?" +
@@ -153,68 +152,68 @@ public class SQLQueries {
     public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
     public static final String GET_PROCESSED_ORDERS_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date," +
-                " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
-                " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
-                " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
-                " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
-                " FROM requests" +
-                " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
-                " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
-                " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
-                " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
-                " WHERE (requests.status='Completed' OR requests.status='Rejected') AND requests.modified_date > ?" +
-                " AND requests.modified_date < ?" +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
+            " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
+            " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE (requests.status='Completed' OR requests.status='Rejected') AND requests.modified_date > ?" +
+            " AND requests.modified_date < ?" +
             " ) AS sub" +
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_UNPROCESSED_ORDERS_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date," +
-                " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
-                " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
-                " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
-                " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
-                " FROM requests" +
-                " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
-                " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
-                " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
-                " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
-                " WHERE requests.status!='Completed' AND requests.status!='Rejected' AND requests.modified_date > ?" +
-                " AND requests.modified_date < ?" +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
+            " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
+            " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.status!='Completed' AND requests.status!='Rejected' AND requests.modified_date > ?" +
+            " AND requests.modified_date < ?" +
             " ) AS sub" +
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_EXECUTED_ORDERS_BY_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date," +
-                " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
-                " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
-                " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
-                " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
-                " FROM requests" +
-                " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
-                " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
-                " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
-                " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
-                " WHERE requests.status='Completed' AND requests.modified_date > ? AND requests.modified_date < ?" +
-                " AND requests.executor_id=?" +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
+            " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
+            " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.status='Completed' AND requests.modified_date > ? AND requests.modified_date < ?" +
+            " AND requests.executor_id=?" +
             " ) AS sub" +
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
     public static final String GET_CREATED_ORDERS_BY_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date," +
-                " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
-                " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
-                " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
-                " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
-                " FROM requests" +
-                " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
-                " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
-                " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
-                " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
-                " WHERE requests.status='Completed' AND requests.modified_date > ? AND requests.modified_date < ?" +
-                " AND requests.creator_id=?" +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " users1.f_name AS creator_name, users1.s_name AS creator_surname, users1.email AS creator_email," +
+            " user2.f_name AS executor_name, users2.s_name AS executor_surname, users2.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS users1 ON requests.creator_id=users1.id" +
+            " INNER JOIN users AS users2 ON requests.executor_id=users2.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.status='Completed' AND requests.modified_date > ? AND requests.modified_date < ?" +
+            " AND requests.creator_id=?" +
             " ) AS sub" +
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
@@ -224,4 +223,5 @@ public class SQLQueries {
     public static final String GET_USERS_WITH_PAGINATION = "SELECT id, f_name, s_name, password, email, enabled " +
             "FROM users LIMIT ? OFFSET ?";
     public static final String GET_ALL_ROLES = "SELECT * FROM roles";
+
 }

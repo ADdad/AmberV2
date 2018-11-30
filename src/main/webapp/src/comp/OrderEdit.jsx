@@ -7,6 +7,7 @@ import Dropzone from "react-dropzone";
 import Select from "react-select";
 import AsyncSelect from "react-select/lib/Async";
 import Comment from "./Comment";
+import { debounce } from "lodash";
 
 class OrderEdit extends Component {
   constructor(props) {
@@ -153,7 +154,7 @@ class OrderEdit extends Component {
           equipment: data.equipment,
           isLoading: false
         });
-        if (data.status != "Rejected" || data.status != "Opened")
+        if (data.status != "Rejected" && data.status != "Opened")
           this.props.history.push("/dashboard");
         this.loadEquipment(data.equipment);
         this.loadAdditionaAtrributes(data.type);
@@ -248,10 +249,19 @@ class OrderEdit extends Component {
   compileAdditionalAttributes = () => {
     let readyAttributes = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
+      let value = this.state.oAttributesValues[i];
+      if (
+        typeof value !== "undefined" &&
+        value != null &&
+        value.length > 1 &&
+        value.charAt(value.length - 1) === "|"
+      ) {
+        value = value.substring(0, value.length - 1);
+      }
       readyAttributes.push({
         id: this.state.optionalAttributes[i].id,
         type: this.state.optionalAttributes[i].type,
-        value: this.state.oAttributesValues[i]
+        value: value
       });
     }
     return readyAttributes;
@@ -265,7 +275,7 @@ class OrderEdit extends Component {
             <AsyncSelect
               cacheOptions
               defaultOptions={this.getItemsOptions(this.state.myItems)}
-              loadOptions={this.loadOptions}
+              loadOptions={debounce(this.loadOptions, 500)}
               onChange={this.addItem}
             />
           </div>
@@ -326,8 +336,7 @@ class OrderEdit extends Component {
     if (chosenAttributes != null) {
       let index = chosenAttributes.findIndex(p => p.id === id);
       if (index > -1) {
-        name +=
-          " chosen " + chosenAttributes[index].value.replaceAll("|", ", ");
+        name += " chosen " + chosenAttributes[index].value.replace(/\|/g, ", ");
         let index2 = this.state.optionalAttributes.findIndex(a => a.id === id);
         if (this.state.oAttributesValues[index2] == null && mandatory) {
           this.changeOptionalValue(index2, chosenAttributes[index].value);

@@ -103,6 +103,7 @@ public class RequestServiceImpl implements RequestService {
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());
+        System.out.println(request.getStatus());
         requestNew.setStatus(request.getStatus());
         requestNew = requestDao.update(requestNew);
 
@@ -122,10 +123,12 @@ public class RequestServiceImpl implements RequestService {
     public Request editRequest(RequestSaveDto request) {
         Request newRequest = mapSaveDto(request);
         newRequest.setId(request.getRequestId());
-        Request finalRequest = requestDao.create(newRequest);
+        newRequest.setStatus("Opened");
+        Request finalRequest = requestDao.update(newRequest);
 
         attributesDao.removeRequestValues(request.getRequestId());
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
+
 
         equipmentDao.removeEquipmentFromRequest(request.getRequestId());
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());

@@ -85,7 +85,6 @@ public class RequestController {
     @PostMapping("/request/create/attachments/{requestId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile, @PathVariable String requestId) throws IOException {
-        System.out.println("Works");
         if (multipartFile.length < 1) {
             attachmentsService.deleteRequestAttachments(requestId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

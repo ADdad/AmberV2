@@ -6,6 +6,7 @@ import Attachments from "./Attachments";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
 import AsyncSelect from "react-select/lib/Async";
+import { debounce } from "lodash";
 
 class CreateOrder extends Component {
   constructor(props) {
@@ -189,10 +190,19 @@ class CreateOrder extends Component {
   compileAdditionalAttributes = () => {
     let readyAttributes = [];
     for (let i = 0; i < this.state.optionalAttributes.length; i++) {
+      let value = this.state.oAttributesValues[i];
+      if (
+        typeof value !== "undefined" &&
+        value != null &&
+        value.length > 1 &&
+        value.charAt(value.length - 1) === "|"
+      ) {
+        value = value.substring(0, value.length - 1);
+      }
       readyAttributes.push({
         id: this.state.optionalAttributes[i].id,
         type: this.state.optionalAttributes[i].type,
-        value: this.state.oAttributesValues[i]
+        value: value
       });
     }
     return readyAttributes;
@@ -206,7 +216,7 @@ class CreateOrder extends Component {
             <AsyncSelect
               cacheOptions
               defaultOptions={this.getItemsOptions(this.state.myItems)}
-              loadOptions={this.loadOptions}
+              loadOptions={debounce(this.loadOptions, 500)}
               onChange={this.addItem}
             />
           </div>
@@ -424,7 +434,8 @@ class CreateOrder extends Component {
   };
 
   loadOptions = (input, callback) => {
-    if (!input || input.length < 3) {
+    console.log(input);
+    if (!input || input.length < 1) {
       return callback(this.getItemsOptions(this.state.myItems));
     }
 
