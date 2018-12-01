@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import javax.xml.ws.Response;
 import java.security.Principal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,18 +28,24 @@ public class UserListDaoImpl implements UserListDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public UserListDto update(UserListDto userDtos) {
+    public ResponseEntity update(UserListDto userDtos) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
         String drop = SQLQueries.DROP_USER_ROLES;
-        jdbcTemplate.execute(drop);
-        for (UserInfoDto u: userDtos.getList()) {
-            for (Role r: u.getRoles()) {
-                jdbcTemplate.update(sql,u.getId(),r.getId());
+        try {
+            jdbcTemplate.execute(drop);
+            for (UserInfoDto u: userDtos.getList()) {
+                for (Role r: u.getRoles()) {
+                    jdbcTemplate.update(sql,u.getId(),r.getId());
+                }
             }
+        }catch (JDBCException e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Some error while invoking db");
         }
 
-        return returnUsers();
+
+        return ResponseEntity.ok().body("Done");
     }
 
     @Override
