@@ -2,6 +2,8 @@ package amber_team.amber.util;
 
 public class SQLQueries {
 
+    public static final String DROP_USER_ROLES = "DELETE FROM user_roles";
+
     private SQLQueries() { }
 
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
@@ -11,7 +13,7 @@ public class SQLQueries {
     public static final String USER_BY_USERNAME_QUERY = "SELECT users.email as username, " +
             "users.password as password, enabled " +
             "FROM users WHERE users.email=?";
-    public static final String CHANGE_USERS_AND_THEIR_ROLES = "";
+    public static final String CHANGE_USERS_AND_THEIR_ROLES = "INSERT INTO user_roles (user_id, role_id) VALUES (?,?)";
     public static final String AUTHORITIES_BY_USERNAME = "SELECT users.email as username, roles.name as role " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
