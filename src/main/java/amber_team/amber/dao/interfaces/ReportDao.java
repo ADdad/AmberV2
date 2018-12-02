@@ -19,4 +19,10 @@ public interface ReportDao {
     ResponseEntity getExecutedOrdersReportBy(ReportOrdersWithUserDto reportDto);
 
     ResponseEntity getCreatedOrdersReportBy(ReportOrdersWithUserDto reportDto);
+
+    ResponseEntity getWarehouses(PaginationDto helperDto);
+
+    ResponseEntity getExecutors(PaginationDto helperDto);
+
+    ResponseEntity getCreators(PaginationDto helperDto);
 }

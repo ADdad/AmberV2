@@ -70,6 +70,21 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.getCreatedOrdersReportBy(reportDto);
     }
 
+    @Override
+    public ResponseEntity getWarehouses(PaginationDto helperDto) {
+        return reportDao.getWarehouses(helperDto);
+    }
+
+    @Override
+    public ResponseEntity getExecutors(PaginationDto helperDto) {
+        return reportDao.getExecutors(helperDto);
+    }
+
+    @Override
+    public ResponseEntity getCreators(PaginationDto helperDto) {
+        return reportDao.getCreators(helperDto);
+    }
+
     private boolean checkReportAvailableEquipmentDto(ReportAvailableEquipmentDto reportDto) {
         return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() < 0 || reportDto.getResultsPerPage() < 0);
     }

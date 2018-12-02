@@ -25,11 +25,25 @@ class AdminPage extends Component {
           userEmail: data.email,
           userFirstName: data.firstName,
           userSecondName: data.secondName,
-          userRoles: data.roles,
+          userRoles: data.roles.map(role => role.name),
           isLoading: false
         });
       })
       .catch(error => console.log(error));
+  }
+
+  goToReports = () => {
+    this.props.history.push('/reports')
+  }
+
+  showReportsButton = () => {
+    if(!this.state.userRoles.includes('ROLE_ADMIN') && !this.state.userRoles.includes('ROLE_KEEPER')) {
+      return (<div></div>)
+    } else {
+      return (
+          <button className="btn btn-primary" onClick={this.goToReports}>Go to Reports</button>
+      )
+    }
   }
 
   render() {
@@ -44,6 +58,7 @@ class AdminPage extends Component {
         <br />
 
         <div className="container">
+            {this.showReportsButton()}
           <button
             className="btn btn-outline-danger m-2 logout-btn"
             onClick={this.handleLogout}
