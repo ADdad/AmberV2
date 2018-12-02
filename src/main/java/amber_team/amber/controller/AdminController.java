@@ -1,13 +1,17 @@
 package amber_team.amber.controller;
 
 import amber_team.amber.model.dto.AdminPageDto;
+import amber_team.amber.model.dto.UserInfoDto;
+import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.service.interfaces.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.ws.Response;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,5 +37,12 @@ public class AdminController {
     public AdminPageDto getUsers(@PathVariable int pageNumber) {
         return adminService.getUsers(pageNumber);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping(value = "/users")
+    public ResponseEntity update(int userId, UserListDto userRoles) {
+        return adminService.update(userRoles);
+    }
+
 
 }

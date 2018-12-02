@@ -67,6 +67,7 @@ public class RequestDaoImpl implements RequestDao {
         Request newRequest = null;
         try {
             newRequest = MergeReflectionUtil.mergeObjects(request, oldRequest);
+            newRequest.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
             jdbcTemplate.update(SQLQueries.UPDATE_REQUEST, newRequest.getWarehouseId(), newRequest.getCreatorId(), newRequest.getExecutorId(), newRequest.getTypeId(), newRequest.getConnectedRequestId(), newRequest.getTitle(), newRequest.getStatus(), newRequest.getCreationDate(), newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(), newRequest.getId());
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();

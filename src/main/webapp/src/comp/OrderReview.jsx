@@ -9,9 +9,9 @@ class OrderReview extends Component {
     super(props);
     this.state = {
       requestId: 0,
-      userId: 0,
+      userId: 1,
       userRoles: [],
-      creator: null,
+      creator: {},
       title: "",
       equipment: [],
       attributes: [],
@@ -24,7 +24,7 @@ class OrderReview extends Component {
       updatedDate: "01.03.1998",
       description: "",
       attachments: [],
-      comments: null,
+      comments: [],
       executors: null,
       executorId: null
     };
@@ -163,7 +163,10 @@ class OrderReview extends Component {
 
     let renderAttributes = [];
     localAttributes.map(a => {
-      renderAttributes.push({ name: a.name, value: a.value });
+      renderAttributes.push({
+        name: a.name,
+        value: a.value.replace(/\|/g, ", ")
+      });
     });
 
     return (

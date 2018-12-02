@@ -9,7 +9,8 @@ class ExecutorButtons extends Component {
     adminStates: ["Opened", "On reviewing"],
     keeperStates: ["In progress", "On hold", "Delivering"],
     comment: null,
-    commentStatus: ""
+    commentStatus: "",
+    buttonChange: false
   };
 
   handleReject = () => {
@@ -29,7 +30,37 @@ class ExecutorButtons extends Component {
       })
         .then(response => response.json())
         .then(data => {
+          this.setState({ buttonChange: true });
           this.props.history.push("/dashboard");
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.openStatus);
+  }
+
+  openStatus = () => {
+    if (this.props.status == "On reviewing" && !this.state.buttonChange) {
+      fetch("/request", {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: "Opened",
+          executorId: null,
+          requestId: this.props.requestId,
+          userId: null,
+          commentText: null
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
           console.log(data);
         })
         .catch(error => {
@@ -40,9 +71,14 @@ class ExecutorButtons extends Component {
 
   handleClick = name => {
     console.log("Name", name);
+    if (this.props.executorId == null && this.props.state === "On reviewing") {
+      this.props.executorAlert = "Chose executor";
+      return;
+    }
     if (name === "Rejected" || name === "On hold") {
       this.setState({ confirmation: true, commentStatus: name });
     } else {
+      this.setState({ buttonChange: true });
       fetch("/request", {
         method: "PATCH",
         body: JSON.stringify({
@@ -101,13 +137,11 @@ class ExecutorButtons extends Component {
         break;
       }
       case "On reviewing": {
-        if (this.props.executorId != null) {
-          localButtons.push({
-            value: "Approve",
-            type: "success",
-            status: "In progress"
-          });
-        }
+        localButtons.push({
+          value: "Approve",
+          type: "success",
+          status: "In progress"
+        });
         localButtons.push({
           value: "Reject",
           type: "danger",
@@ -155,7 +189,7 @@ class ExecutorButtons extends Component {
 
   commentField = () => {
     let backDirection =
-      this.state.commentStatus === "Reject" ? "review" : "progress";
+      this.state.commentStatus === "Rejected" ? "review" : "progress";
     return (
       <React.Fragment>
         <div className="form-row">
@@ -189,16 +223,17 @@ class ExecutorButtons extends Component {
 
   render() {
     if (
-      !(
+      (!(
         this.props.userRoles.includes("ROLE_ADMIN") &&
         this.state.adminStates.includes(this.props.status)
       ) &&
-      !(
-        this.props.userRoles.includes("ROLE_KEEPER") &&
-        this.state.keeperStates.includes(this.props.status)
-      )
+        !(
+          this.props.userRoles.includes("ROLE_KEEPER") &&
+          this.state.keeperStates.includes(this.props.status)
+        )) ||
+      this.props.state === "Canceled"
     )
-      return <h3>Sorry, you can just view that</h3>;
+      return <h3 />;
 
     if (this.state.confirmation) {
       return this.commentField();

@@ -35,17 +35,17 @@ public class EquipmentDaoImpl implements EquipmentDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         Equipment equipment = jdbcTemplate.queryForObject(
                 SQLQueries.GET_EQUIPMENT_BY_ID, new Object[]{id},
-                new RowMapper<Equipment>() {
-                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Equipment c = new Equipment();
-                        c.setId(rs.getString(1));
-                        c.setModel(rs.getString(2));
-                        c.setProducer(rs.getString(3));
-                        c.setCountry(rs.getString(4));
-                        return c;
-                    }
-                });
+                (rs, rowNum) -> getEquipment(rs));
         return equipment;
+    }
+
+    private Equipment getEquipment(ResultSet rs) throws SQLException {
+        Equipment c = new Equipment();
+        c.setId(rs.getString(1));
+        c.setModel(rs.getString(2));
+        c.setProducer(rs.getString(3));
+        c.setCountry(rs.getString(4));
+        return c;
     }
 
     @Override
@@ -53,16 +53,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.GET_ALL_EQUIPMENT,
-                new RowMapper<Equipment>() {
-                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Equipment c = new Equipment();
-                        c.setId(rs.getString(1));
-                        c.setModel(rs.getString(2));
-                        c.setProducer(rs.getString(3));
-                        c.setCountry(rs.getString(4));
-                        return c;
-                    }
-                });
+                (rs, rowNum) -> getEquipment(rs));
         return equipment;
 
     }
@@ -73,16 +64,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.FIND_EQUIPMENT_BY_VALUE, new Object[]{formatValue, formatValue, formatValue},
-                new RowMapper<Equipment>() {
-                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Equipment c = new Equipment();
-                        c.setId(rs.getString(1));
-                        c.setModel(rs.getString(2));
-                        c.setProducer(rs.getString(3));
-                        c.setCountry(rs.getString(4));
-                        return c;
-                    }
-                });
+                (rs, rowNum) -> getEquipment(rs));
         return equipment;
 
     }
@@ -92,16 +74,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit},
-                new RowMapper<Equipment>() {
-                    public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Equipment c = new Equipment();
-                        c.setId(rs.getString(1));
-                        c.setModel(rs.getString(2));
-                        c.setProducer(rs.getString(3));
-                        c.setCountry(rs.getString(4));
-                        return c;
-                    }
-                });
+                (rs, rowNum) -> getEquipment(rs));
         return equipment;
     }
 

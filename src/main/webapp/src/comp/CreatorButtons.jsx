@@ -13,11 +13,13 @@ class CreatorButtons extends Component {
       this.props.history.push(path);
     } else {
       fetch("/request", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           status: name,
-          executorId: null,
-          requestId: this.props.requestId
+          executorId: this.props.executorId,
+          requestId: this.props.requestId,
+          userId: null,
+          commentText: null
         }),
         headers: {
           "Content-Type": "application/json"
@@ -30,7 +32,6 @@ class CreatorButtons extends Component {
         .catch(error => {
           console.error("Error:", error);
         });
-
       this.props.history.push("/dashboard");
     }
   };

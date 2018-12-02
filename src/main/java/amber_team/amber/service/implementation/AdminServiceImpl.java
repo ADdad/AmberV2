@@ -11,8 +11,11 @@ import amber_team.amber.model.entities.Role;
 import amber_team.amber.service.interfaces.AdminService;
 import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.xml.ws.Response;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
@@ -36,11 +39,11 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public UserListDto update(UserListDto userDtos) {
+    public ResponseEntity update(UserListDto userDtos) {
         UserInfoDto userInfoDto = new UserInfoDto();
         userInfoDto.setId(ErrorMessages.EMPTY_LIST);
         userDtos.setList(Arrays.asList(userInfoDto));
-        if (userDtos.getList().isEmpty()) return userDtos;
+        if (userDtos.getList().isEmpty()) return ResponseEntity.badRequest().body("Empty list to update");
         return userListDao.update(userDtos);
     }
 
