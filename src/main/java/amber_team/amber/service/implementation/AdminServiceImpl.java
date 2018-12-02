@@ -4,9 +4,7 @@ package amber_team.amber.service.implementation;
 import amber_team.amber.dao.interfaces.RoleDao;
 import amber_team.amber.dao.interfaces.UserDao;
 import amber_team.amber.dao.interfaces.UserListDao;
-import amber_team.amber.model.dto.AdminPageDto;
-import amber_team.amber.model.dto.UserInfoDto;
-import amber_team.amber.model.dto.UserListDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Role;
 import amber_team.amber.service.interfaces.AdminService;
 import amber_team.amber.util.ErrorMessages;
@@ -39,11 +37,17 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public ResponseEntity update(UserListDto userDtos) {
-        UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setId(ErrorMessages.EMPTY_LIST);
-        userDtos.setList(Arrays.asList(userInfoDto));
-        if (userDtos.getList().isEmpty()) return ResponseEntity.badRequest().body("Empty list to update");
+    public ResponseEntity update(UpdateRolesListDto userDtos) {
+        System.out.println("____________USERLISTDTOS___________"+userDtos);
+//        System.out.println(userDtos);
+        try {
+            System.out.println(userDtos.getU());
+//            System.out.println(userDtos.getU().get(0));
+        }catch(NullPointerException e){
+            e.printStackTrace();
+        }
+//        if (userDtos.isEmpty()) return ResponseEntity.badRequest().body("Empty list to update");
+//        else if(userDtos.getU().contains(null)) return ResponseEntity.badRequest().body("Null obj");
         return userListDao.update(userDtos);
     }
 

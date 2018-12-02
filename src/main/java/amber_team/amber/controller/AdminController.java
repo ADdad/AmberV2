@@ -1,8 +1,6 @@
 package amber_team.amber.controller;
 
-import amber_team.amber.model.dto.AdminPageDto;
-import amber_team.amber.model.dto.UserInfoDto;
-import amber_team.amber.model.dto.UserListDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.service.interfaces.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +37,8 @@ public class AdminController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping(value = "/users")
-    public ResponseEntity update(int userId, UserListDto userRoles) {
+    @PostMapping(value = "/users")
+    public ResponseEntity update(@RequestBody UpdateRolesListDto userRoles) {
         return adminService.update(userRoles);
     }
 

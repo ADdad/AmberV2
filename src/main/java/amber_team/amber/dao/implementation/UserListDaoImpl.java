@@ -2,6 +2,8 @@ package amber_team.amber.dao.implementation;
 
 
 import amber_team.amber.dao.interfaces.UserListDao;
+import amber_team.amber.model.dto.UpdateRolesDto;
+import amber_team.amber.model.dto.UpdateRolesListDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.Role;
@@ -28,18 +30,31 @@ public class UserListDaoImpl implements UserListDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public ResponseEntity update(UserListDto userDtos) {
+    public ResponseEntity update(UpdateRolesListDto userDtos) {
+        System.out.println("______int update userlistdaoimpl________");
         jdbcTemplate = new JdbcTemplate(dataSource);
+        System.out.println("______int update userlistdaoimpl________");
         String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
         String drop = SQLQueries.DROP_USER_ROLES;
         try {
-            jdbcTemplate.execute(drop);
-            for (UserInfoDto u: userDtos.getList()) {
-                for (Role r: u.getRoles()) {
-                    jdbcTemplate.update(sql,u.getId(),r.getId());
+//            jdbcTemplate.execute(drop);
+            System.out.println("fdsafdsa_______"+userDtos.getU());
+            System.out.println("fdsfdsa______________"+userDtos.getU().get(0));
+            for (UpdateRolesDto u: userDtos.getU()) {
+                System.out.println("______int"+u.toString());
+                System.out.println("user: "+u);
+//                System.out.println("roles: "+u);
+                if(!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())){
+                    for (String r: u.getRoles()) {
+                        System.out.println("______infdsfdsafdst"+r);
+
+                        jdbcTemplate.update(sql,u.getUserId(),r);
+                    }
                 }
+
             }
         }catch (JDBCException e){
+            System.out.println("______int update userlistdaoimpl________");
             e.printStackTrace();
             return ResponseEntity.status(500).body("Some error while invoking db");
         }

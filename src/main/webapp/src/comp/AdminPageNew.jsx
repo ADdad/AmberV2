@@ -73,21 +73,16 @@ class AdminPageNew extends Component {
   updateUsers = () => {
     if (this.state.usersToUpdate.length > 0) {
       fetch("/users", {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify({
           users: this.state.usersToUpdate
         }),
         headers: {
           "Content-Type": "application/json"
         }
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        })
-        .catch(error => {
-          console.error("Error:", error);
-        });
+      }).then(r => r.json())
+          .then(d => console.log(d))
+          .catch(error => console.log("error.....", error))
     }
   };
 
@@ -105,6 +100,7 @@ class AdminPageNew extends Component {
       };
     }
     this.setState({ usersToUpdate: usersToUpdateLocal });
+    console.log(this.state.usersToUpdate);
   };
 
   renderUser = user => {
@@ -163,6 +159,12 @@ class AdminPageNew extends Component {
     return (
       <React.Fragment>
           <br/>
+        <br/>
+        <br/>
+          <button className="btn btn-outline-success m-2 "
+                  onClick={this.updateUsers} disabled>
+              POST
+          </button>
         <div className="col-md-6">
           {user}
           <div className="form-row">
