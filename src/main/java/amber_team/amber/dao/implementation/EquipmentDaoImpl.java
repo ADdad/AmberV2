@@ -135,13 +135,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 SQLQueries.GET_REQUEST_EQUIPMENT, new Object[]{requestId},
                 new RowMapper<EquipmentInfoDto>() {
                     public EquipmentInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        EquipmentInfoDto c = new EquipmentInfoDto();
-                        c.setId(rs.getString("id"));
-                        c.setModel(rs.getString("model"));
-                        c.setProducer(rs.getString("producer"));
-                        c.setCountry(rs.getString("country"));
-                        c.setQuantity(rs.getInt("quantity"));
-                        return c;
+                        return getEquipmentInfoDto(rs);
                     }
                 });
         return equipment;
@@ -150,8 +144,20 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId) {
-        //TODO
-        return null;
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                SQLQueries.EQUIPMENT_INFO_BY_WAREHOUSE, new Object[]{warehouseId},
+                (rs, rowNum) -> getEquipmentInfoDto(rs));
+    }
+
+    private EquipmentInfoDto getEquipmentInfoDto(ResultSet rs) throws SQLException {
+        EquipmentInfoDto c = new EquipmentInfoDto();
+        c.setId(rs.getString("id"));
+        c.setModel(rs.getString("model"));
+        c.setProducer(rs.getString("producer"));
+        c.setCountry(rs.getString("country"));
+        c.setQuantity(rs.getInt("quantity"));
+        return c;
     }
 
     @Override

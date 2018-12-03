@@ -100,6 +100,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request changeStatus(MyRequestStatusChangeDto request) {
+        if(request.getStatus().equals("Completed")){
+//            equipmentDao.getWarehouseEquipment();
+        }
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());

@@ -6,6 +6,11 @@ public class SQLQueries {
 
     private SQLQueries() { }
 
+    public static final String EQUIPMENT_INFO_BY_WAREHOUSE = "SELECT equipment.id, equipment.model, equipment.producer,"+
+        "equipment.country, warehouse_equipment.quantity "+
+            "FROM equipment " +
+            "INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id"+
+            "WHERE warehouse_equipment.warehouse_id = ?";
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?); COMMIT;";
