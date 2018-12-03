@@ -48,7 +48,6 @@ public class UserListDaoImpl implements UserListDao {
         }
         userDtos.setUsers(lst);
         try {
-//            jdbcTemplate.execute(drop);
             for (UpdateRolesDto u: userDtos.getUsers()) {
                 if(!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())){
                     for (Integer r: u.getRoles()) {
