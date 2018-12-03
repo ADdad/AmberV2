@@ -6,6 +6,11 @@ public class SQLQueries {
 
     private SQLQueries() { }
 
+    public static final String EQUIPMENT_INFO_BY_WAREHOUSE = "SELECT equipment.id, equipment.model, equipment.producer,"+
+        "equipment.country, warehouse_equipment.quantity "+
+            "FROM equipment " +
+            "INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id"+
+            "WHERE warehouse_equipment.warehouse_id = ?";
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?); COMMIT;";
@@ -21,8 +26,7 @@ public class SQLQueries {
             "WHERE users.email=?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email=?";
-    //    public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name " +
-//            "FROM users ";
+    public static final String IF_EXISTS = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +

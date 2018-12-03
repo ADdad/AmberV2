@@ -3,13 +3,15 @@ package amber_team.amber.model.dto;
 import java.util.List;
 
 public class UpdateRolesListDto {
-    public List<UpdateRolesDto> getU() {
-        return u;
+
+
+    public List<UpdateRolesDto> getUsers() {
+        return users;
     }
 
-    public void setU(List<UpdateRolesDto> u) {
-        this.u = u;
+    public void setUsers(List<UpdateRolesDto> users) {
+        this.users = users;
     }
 
-    private List<UpdateRolesDto> u;
+    private List<UpdateRolesDto> users;
 }

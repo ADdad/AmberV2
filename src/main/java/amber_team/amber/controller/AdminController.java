@@ -36,7 +36,7 @@ public class AdminController {
         return adminService.getUsers(pageNumber);
     }
 
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/users")
     public ResponseEntity update(@RequestBody UpdateRolesListDto userRoles) {
         return adminService.update(userRoles);

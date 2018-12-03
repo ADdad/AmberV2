@@ -7,6 +7,7 @@ class AdminPageNew extends Component {
     userId: null,
     userRoles: [],
     activePage: 1,
+      postStyle:false,
     itemsPerPage: 25,
     users: [
       {
@@ -71,6 +72,7 @@ class AdminPageNew extends Component {
   };
 
   updateUsers = () => {
+      console.log("User to update: ",this.state.usersToUpdate);
     if (this.state.usersToUpdate.length > 0) {
       fetch("/users", {
         method: "POST",
@@ -81,7 +83,7 @@ class AdminPageNew extends Component {
           "Content-Type": "application/json"
         }
       }).then(r => r.json())
-          .then(d => console.log(d))
+          .then(d => {console.log(d); this.setState({usersToUpdate: [], postStyle: true})})
           .catch(error => console.log("error.....", error))
     }
   };
@@ -161,8 +163,8 @@ class AdminPageNew extends Component {
           <br/>
         <br/>
         <br/>
-          <button className="btn btn-outline-success m-2 "
-                  onClick={this.updateUsers} disabled>
+          <button className={this.state.postStyle? "btn btn-outline-success m-2 disabled":"btn btn-outline-success m-2" }
+                  onClick={this.updateUsers} >
               POST
           </button>
         <div className="col-md-6">
