@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Select from "react-select";
 class ReportsPage extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +25,7 @@ class ReportsPage extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
          fetch('/userinfo')
             .then(response => response.json())
             .then(data => {
@@ -46,15 +45,26 @@ class ReportsPage extends Component {
 
 
     handleReportTypeChange = (event) => {
-        this.setState({reportTypeId : event.target.value, showReport : false, reportRows : [], reportPage : 0/*,  warehouseId : "",
-            equipmentMinQuantity : 1, executorId : "", creatorId : ""*/, fromDate : "1970-01-01", toDate : "1970-01-01"});
-        if(this.state.reportTypeId < 5){
-           // this.loadMoreWarehouses();
-        } else if (this.state.reportTypeId == 7) {
-            //this.loadMoreExecutors()
-        } else if (this.state.reportTypeId == 8) {
-            //this.loadMoreCreators()
+        this.setState({ showReport : false, reportRows : [], reportPage : 0,  warehouseId : "",
+            equipmentMinQuantity : 1, executorId : "", creatorId : "", fromDate : "", toDate : ""});
+        if(this.state.reportTypeId < 5 && this.state.reportTypeId > 0) {
+            this._warehouse.value = "";
         }
+        if(this.state.reportTypeId == 8) {
+            this._creator.value = "";
+        }
+        if(this.state.reportTypeId == 7) {
+            this._executor.value = "";
+        }
+        if(this.state.reportTypeId == 3) {
+            this._input.value = "";
+        }
+        if(this.state.reportTypeId > 3) {
+            this._fromDate.value = "";
+            this._toDate.value = "";
+        }
+        this.setState({reportTypeId : event.target.value})
+
     }
     handleWarehouseChange = (event) => {
         this.setState({warehouseId : event.target.value, showReport : false, reportRows : [], reportPage : 0});
@@ -327,7 +337,7 @@ class ReportsPage extends Component {
                     <label>Select warehouse:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleWarehouseChange} className="custom-select form-control" id="inputGroupSelect02">
+                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect02">
                             <option value="" disabled selected>Warehouse</option>
                             {this.state.warehouses.map(w => (
                                 <option value={w.id}>{w.address}</option>
@@ -349,7 +359,7 @@ class ReportsPage extends Component {
                     <label>Select warehouse:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleWarehouseChange} className="custom-select form-control" id="inputGroupSelect03">
+                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect03">
                             <option value="" disabled selected>Warehouse</option>
                             {this.state.warehouses.map(w => (
                                 <option value={w.id}>{w.address}</option>
@@ -362,7 +372,7 @@ class ReportsPage extends Component {
                 </div>
                     <div className="col-3">
                         <label>Minimum number of equipment:</label>
-                        <input onChange={this.handleMinChange} className="form-control" type="number" min="0" defaultValue="1" />
+                        <input onChange={this.handleMinChange} ref={(node) => this._input = node} className="form-control" type="number" min="0" defaultValue="1" />
                     </div>
                     <div className="col-3">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -376,7 +386,7 @@ class ReportsPage extends Component {
                         <label>Select warehouse:</label>
                         <div className="input-group">
                             {this.renderLoadMoreInputRows()}
-                            <select onChange={this.handleWarehouseChange} className="custom-select form-control" id="inputGroupSelect04">
+                            <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect04">
                                 <option value="" disabled selected>Warehouse</option>
                                 {this.state.warehouses.map(w => (
                                     <option value={w.id}>{w.address}</option>
@@ -387,11 +397,11 @@ class ReportsPage extends Component {
                     </div>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} id="from-date4" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date4" className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} id="to-date4" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date4" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -403,12 +413,12 @@ class ReportsPage extends Component {
                 <React.Fragment>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} id="from-date5" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date5" className="form-control" type="date"/>
                     <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} id="to-date5" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date5" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -420,12 +430,12 @@ class ReportsPage extends Component {
                 <React.Fragment>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} id="from-date6" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date6" className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} id="to-date6" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date6" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -439,7 +449,7 @@ class ReportsPage extends Component {
                     <label>Select executor:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleExecutorsChange} className="custom-select form-control" id="inputGroupSelect07">
+                        <select onChange={this.handleExecutorsChange} ref={(node) => this._executor = node} className="custom-select form-control" id="inputGroupSelect07">
                             <option value="" disabled selected>Executor</option>
                             {this.state.executors.map(e => (
                                 <option value={e.id}>{e.pib}</option>
@@ -449,12 +459,12 @@ class ReportsPage extends Component {
                 </div>
                 <div className="col-2">
                     <label>From date:</label>
-                    <input onChange={this.handleFromInputChange} id="from-date7" className="form-control" type="date"/>
+                    <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date7" className="form-control" type="date"/>
                     <br/>
                 </div>
                 <div className="col-2">
                     <label>To date:</label>
-                    <input onChange={this.handleToInputChange} id="to-date7" min={this.state.fromDate} className="form-control" type="date"/>
+                    <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date7" min={this.state.fromDate} className="form-control" type="date"/>
                 </div>
                 <div className="col-2">
                     <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -468,7 +478,7 @@ class ReportsPage extends Component {
                         <label>Select creator:</label>
                         <div className="input-group">
                             {this.renderLoadMoreInputRows()}
-                            <select onChange={this.handleCreatorsChange} className="custom-select form-control" id="inputGroupSelect08">
+                            <select onChange={this.handleCreatorsChange} ref={(node) => this._creator = node} className="custom-select form-control" id="inputGroupSelect08">
                                 <option value="" disabled selected>Creator</option>
                                 {this.state.creators.map(c => (
                                     <option value={c.id}>{c.pib}</option>
@@ -478,12 +488,12 @@ class ReportsPage extends Component {
                     </div>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} id="from-date8" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date8" className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} id="to-date8" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date8" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
@@ -594,6 +604,253 @@ class ReportsPage extends Component {
         }
     }
 
+    renderLoadExcel = () => {
+        if(this.state.reportRows.length > 0) {
+            return (
+                <button className="btn btn-outline-primary col-3" onClick={this.handleLoadExcel}>Load Excel version</button>
+            )
+        } else {
+            return(<div></div>)
+        }
+    }
+
+    handleLoadExcel = () => {
+        if(this.state.reportTypeId == 1 ) {
+            if ((this.state.warehouseId != "")) {
+                fetch('/reports/equipment/available/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "warehouseId": this.state.warehouseId,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 2) {
+            if ((this.state.warehouseId != "")) {
+                fetch('/reports/equipment/nonavailable/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "warehouseId": this.state.warehouseId,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 3) {
+            if ((this.state.warehouseId != "") && this.state.equipmentMinQuantity >= 0) {
+                fetch('/reports/equipment/ending/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "warehouseId": this.state.warehouseId,
+                        "equipmentThreshold" : this.state.equipmentMinQuantity
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 4) {
+            if ((this.state.warehouseId != "") && this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate) {
+                fetch('/reports/equipment/delivered/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "warehouseId": this.state.warehouseId,
+                        "fromDate" : this.state.fromDate,
+                        "toDate" : this.state.toDate
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 5) {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate) {
+                fetch('/reports/orders/processed/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "fromDate" : this.state.fromDate,
+                        "toDate" : this.state.toDate
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 6) {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate) {
+                fetch('/reports/orders/unprocessed/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "fromDate" : this.state.fromDate,
+                        "toDate" : this.state.toDate
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 7) {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.executorId != "") {
+                fetch('/reports/orders/executed/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "fromDate" : this.state.fromDate,
+                        "toDate" : this.state.toDate,
+                        "userId" : this.state.executorId
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        } else if (this.state.reportTypeId == 8) {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.creatorId != "") {
+                fetch('/reports/orders/created/excel', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "fromDate" : this.state.fromDate,
+                        "toDate" : this.state.toDate,
+                        "userId" : this.state.creatorId
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        const filename = response.headers
+                            .get("Content-Disposition")
+                            .split("filename=")[1];
+                        response.blob().then(blob => {
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = filename;
+                            a.click();
+                        });
+                    })
+                    .then(data => {})
+                    .catch(error => console.log(error))
+            } else {
+                alert("Wrong inputs!")
+            }
+        }
+    }
+
     renderGoToDashboard = () => {
         return (
             <div className="col-3">
@@ -643,6 +900,7 @@ class ReportsPage extends Component {
 
                     </div>
                     {this.renderReport()}
+                    {this.renderLoadExcel()}
                 </div>
 
             </React.Fragment>

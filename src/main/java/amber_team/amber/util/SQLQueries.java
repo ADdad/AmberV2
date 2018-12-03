@@ -105,27 +105,42 @@ public class SQLQueries {
     public static final String ADD_NEW_COMMENT = "INSERT INTO comments VALUES (?, ?, ?, ?, ?)";
     public static final String GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
+                " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
+                " warehouses.id" +
+                " FROM equipment" +
+                " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+                " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+                " WHERE warehouses.id =? AND warehouse_equipment.quantity > 0" +
+            " ) AS sub" +
+            " ORDER BY sub.equipmentId" +
+            " LIMIT ?" +
+            " OFFSET ?";
+    public static final String GET_ALL_AVAILABLE_EQUIPMENT = "SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
             " equipment.model AS model, equipment.producer AS producer, equipment.country AS country," +
             " warehouses.id" +
             " FROM equipment" +
             " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
             " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
             " WHERE warehouses.id =? AND warehouse_equipment.quantity > 0" +
+            " ORDER BY equipment.id";
+    public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
+            " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
+                " equipment.model AS model, equipment.producer AS producer, equipment.country AS country" +
+                " FROM equipment" +
+                " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
+                " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
+                " WHERE warehouse_equipment.warehouse_id =? AND warehouse_equipment.quantity < 1" +
             " ) AS sub" +
             " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
-    public static final String GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
-            " FROM (SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
+    public static final String GET_ALL_NONAVAILABLE_EQIPMENT = "SELECT equipment.id AS equipmentId, warehouse_equipment.quantity AS quantity," +
             " equipment.model AS model, equipment.producer AS producer, equipment.country AS country" +
             " FROM equipment" +
             " INNER JOIN warehouse_equipment ON equipment.id = warehouse_equipment.equipment_id" +
             " INNER JOIN warehouses ON warehouses.id = warehouse_equipment.warehouse_id" +
             " WHERE warehouse_equipment.warehouse_id =? AND warehouse_equipment.quantity < 1" +
-            " ) AS sub" +
-            " ORDER BY sub.equipmentId" +
-            " LIMIT ?" +
-            " OFFSET ?";
+            " ORDER BY equipment.id";
     public static final String GET_DELIVERED_EQUIPMENT_WITH_PAGINATION = "SELECT * " +
             " FROM (SELECT equipment.id AS equipmentId, SUM(request_equipment.quantity) AS quantity, equipment.model AS model," +
                 " equipment.producer AS producer, equipment.country AS country " +
@@ -140,6 +155,16 @@ public class SQLQueries {
             " ORDER BY sub.equipmentId " +
             " LIMIT ? " +
             " OFFSET ?";
+    public static final String GET_ALL_DELIVERED_EQUIPMENT = "SELECT equipment.id AS equipmentId, SUM(request_equipment.quantity) AS quantity, equipment.model AS model," +
+            " equipment.producer AS producer, equipment.country AS country " +
+            " FROM request_equipment" +
+            " INNER JOIN equipment ON equipment.id = request_equipment.equipment_id" +
+            " INNER JOIN requests ON requests.id = request_equipment.request_id" +
+            " INNER JOIN request_types ON requests.req_type_id = request_types.id" +
+            " WHERE requests.warehouse_id =? AND requests.status = 'Completed' AND request_types.name='order'" +
+            " AND requests.modified_date >= ? AND requests.modified_date <= ?" +
+            " GROUP BY equipment.id " +
+            " ORDER BY equipment.id";
     public static final String GET_ENDING_EQUIPMENT_WITH_PAGINATION = "SELECT *" +
             " FROM (SELECT equipment.id AS equipmentId, equipment.producer AS producer, equipment.country AS country," +
             " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
@@ -147,9 +172,15 @@ public class SQLQueries {
             " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipment.id" +
             " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?" +
             " ) AS sub" +
-            " ORDER BY equipmentId" +
+            " ORDER BY sub.equipmentId" +
             " LIMIT ?" +
             " OFFSET ?";
+    public static final String GET_ALL_ENDING_EQUIPMENT = "SELECT equipment.id AS equipmentId, equipment.producer AS producer, equipment.country AS country," +
+            " equipment.model AS model, warehouse_equipment.quantity AS quantity" +
+            " FROM equipment" +
+            " INNER JOIN warehouse_equipment ON warehouse_equipment.equipment_id = equipment.id" +
+            " WHERE warehouse_equipment.warehouse_id = ? AND warehouse_equipment.quantity < ?" +
+            " ORDER BY equipment.id";
     public static final String DELETE_REQUEST_EQUIPMENT = "DELETE FROM request_equipment WHERE request_id = ?";
     public static final String DELETE_REQUEST_VALUES = "DELETE FROM request_values WHERE request_id = ?";
     public static final String GET_PROCESSED_ORDERS_WITH_PAGINATION = "SELECT *" +
@@ -169,6 +200,19 @@ public class SQLQueries {
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
+    public static final String GET_ALL_PROCESSED_ORDERS = "SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " creators.f_name AS creator_name, creators.s_name AS creator_surname, creators.email AS creator_email," +
+            " executors.f_name AS executor_name, executors.s_name AS executor_surname, executors.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS creators ON requests.creator_id=creators.id" +
+            " LEFT OUTER JOIN users AS executors ON requests.executor_id=executors.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE (requests.status='Completed' OR requests.status='Rejected') AND requests.modified_date >= ?" +
+            " AND requests.modified_date <= ? " +
+            " ORDER BY requests.id";
     public static final String GET_UNPROCESSED_ORDERS_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
                 " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
@@ -186,6 +230,19 @@ public class SQLQueries {
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
+    public static final String GET_ALL_UNPROCESSED_ORDERS = "SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " creators.f_name AS creator_name, creators.s_name AS creator_surname, creators.email AS creator_email," +
+            " executors.f_name AS executor_name, executors.s_name AS executor_surname, executors.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS creators ON requests.creator_id=creators.id" +
+            " LEFT OUTER JOIN users AS executors ON requests.executor_id=executors.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.status!='Completed' AND requests.status!='Rejected' AND requests.modified_date >= ?" +
+            " AND requests.modified_date <= ? " +
+            " ORDER BY requests.id";
     public static final String GET_EXECUTED_ORDERS_BY_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
                 " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
@@ -203,6 +260,19 @@ public class SQLQueries {
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
+    public static final String GET_ALL_EXECUTED_ORDERS = "SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " creators.f_name AS creator_name, creators.s_name AS creator_surname, creators.email AS creator_email," +
+            " executors.f_name AS executor_name, executors.s_name AS executor_surname, executors.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS creators ON requests.creator_id=creators.id" +
+            " INNER JOIN users AS executors ON requests.executor_id=executors.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.status='Completed' AND requests.modified_date >= ? AND requests.modified_date <= ?" +
+            " AND requests.executor_id=?" +
+            " ORDER BY requests.id";
     public static final String GET_CREATED_ORDERS_BY_WITH_PAGINATION = "SELECT *" +
             " FROM ( SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
                 " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
@@ -220,6 +290,19 @@ public class SQLQueries {
             " ORDER BY sub.requestId" +
             " LIMIT ?" +
             " OFFSET ?";
+    public static final String GET_ALL_CREATED_ORDERS = "SELECT requests.id AS requestId, requests.creation_date AS creation_date, requests.status AS status, requests.title AS title, " +
+            " requests.modified_date AS modified_date, requests.description AS description, request_types.name AS order_type," +
+            " creators.f_name AS creator_name, creators.s_name AS creator_surname, creators.email AS creator_email," +
+            " executors.f_name AS executor_name, executors.s_name AS executor_surname, executors.email AS executor_email," +
+            " warehouses.adress AS warehouse_address, warehouses.contact_number AS warehouse_phone" +
+            " FROM requests" +
+            " INNER JOIN users AS creators ON requests.creator_id=creators.id" +
+            " LEFT OUTER JOIN users AS executors ON requests.executor_id=executors.id" +
+            " INNER JOIN warehouses ON requests.warehouse_id=warehouses.id" +
+            " INNER JOIN request_types ON requests.req_type_id=request_types.id" +
+            " WHERE requests.creation_date >= ? AND requests.creation_date <= ?" +
+            " AND requests.creator_id=?" +
+            " ORDER BY requests.id";
     public static final String GET_WAREHOUSES_WITH_PAGINATION = "SELECT * " +
             " FROM ( SELECT warehouses.id AS id, warehouses.adress AS address" +
                 " FROM warehouses" +
