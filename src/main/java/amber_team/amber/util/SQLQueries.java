@@ -21,8 +21,7 @@ public class SQLQueries {
             "WHERE users.email=?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email=?";
-    //    public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name " +
-//            "FROM users ";
+    public static final String IF_EXISTS = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +

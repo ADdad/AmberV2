@@ -7,16 +7,20 @@ import amber_team.amber.model.dto.UpdateRolesListDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.Role;
+import amber_team.amber.model.entities.Type;
 import amber_team.amber.util.SQLQueries;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import javax.xml.ws.Response;
 import java.security.Principal;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,31 +34,34 @@ public class UserListDaoImpl implements UserListDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public ResponseEntity update(UpdateRolesListDto userDtos) {
-        System.out.println("______int update userlistdaoimpl________");
+    public ResponseEntity update(UpdateRolesListDto userDtos1) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        System.out.println("______int update userlistdaoimpl________");
         String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
-        String drop = SQLQueries.DROP_USER_ROLES;
+        String drop = SQLQueries.IF_EXISTS;
+        UpdateRolesListDto userDtos = new UpdateRolesListDto();
+        List<UpdateRolesDto> lst = new ArrayList<>();
+        for(UpdateRolesDto u : userDtos1.getUsers()) {
+            UpdateRolesDto d = new UpdateRolesDto();
+            d.setRoles(u.getRoles());
+            d.setUserId(u.getUserId());
+            lst.add(d);
+        }
+        userDtos.setUsers(lst);
         try {
 //            jdbcTemplate.execute(drop);
-            System.out.println("fdsafdsa_______"+userDtos.getU());
-            System.out.println("fdsfdsa______________"+userDtos.getU().get(0));
-            for (UpdateRolesDto u: userDtos.getU()) {
-                System.out.println("______int"+u.toString());
-                System.out.println("user: "+u);
-//                System.out.println("roles: "+u);
+            for (UpdateRolesDto u: userDtos.getUsers()) {
                 if(!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())){
-                    for (String r: u.getRoles()) {
-                        System.out.println("______infdsfdsafdst"+r);
+                    for (Integer r: u.getRoles()) {
+                        Integer cnt = jdbcTemplate.queryForObject(
+                                drop, Integer.class, u.getUserId(),r);
 
+                        if(cnt != null && cnt > 0) continue;
                         jdbcTemplate.update(sql,u.getUserId(),r);
                     }
                 }
 
             }
         }catch (JDBCException e){
-            System.out.println("______int update userlistdaoimpl________");
             e.printStackTrace();
             return ResponseEntity.status(500).body("Some error while invoking db");
         }

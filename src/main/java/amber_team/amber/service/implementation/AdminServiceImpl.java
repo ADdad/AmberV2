@@ -41,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
         System.out.println("____________USERLISTDTOS___________"+userDtos);
 //        System.out.println(userDtos);
         try {
-            System.out.println(userDtos.getU());
+            System.out.println(userDtos.getUsers());
 //            System.out.println(userDtos.getU().get(0));
         }catch(NullPointerException e){
             e.printStackTrace();

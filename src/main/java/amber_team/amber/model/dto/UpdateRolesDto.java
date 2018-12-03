@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UpdateRolesDto {
     private String userId;
-    private List<String> roles;
+    private List<Integer> roles;
 
 
 
@@ -17,13 +17,16 @@ public class UpdateRolesDto {
         this.userId = userId;
     }
 
-    public List<String> getRoles() {
+    public List<Integer> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Integer> roles) {
         this.roles = roles;
     }
 
+    public void setRole(Integer roles) {
+        this.roles.add(roles);
+    }
 
 }
