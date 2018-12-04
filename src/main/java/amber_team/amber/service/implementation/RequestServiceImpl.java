@@ -100,14 +100,29 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request changeStatus(MyRequestStatusChangeDto request) {
-        if(request.getStatus().equals("Completed")){
-//            equipmentDao.getWarehouseEquipment();
-        }
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());
         System.out.println(request.getStatus());
         requestNew.setStatus(request.getStatus());
+//////////////////////////////////////////////////////////
+        String requestTypeName = requestTypeDao.getByRequestId(request.getRequestId()).getName();
+        if("replenishment".equals(requestTypeName) || "refund".equals(requestTypeName)){
+            if("Completed".equals(request.getStatus())){
+                equipmentDao.increaseEquipment(request.getRequestId());
+            }
+        }else{
+            if("Delivering".equals(request.getStatus())) {
+                List<EquipmentDto> unavailableEquipment = equipmentDao.decreaseEquipment(request.getRequestId());
+                if(!unavailableEquipment.isEmpty()){
+                    requestNew.setStatus("On Hold");
+                    requestNew.setConnectedRequestId(createReplenishmentRequest(request, unavailableEquipment));
+                }
+            }
+        }
+
+
+
         requestNew = requestDao.update(requestNew);
 
 
@@ -115,11 +130,21 @@ public class RequestServiceImpl implements RequestService {
             Comment newComment = new Comment();
             newComment.setText(request.getCommentText());
             newComment.setUser(userDao.getById(request.getUserId()));
-            newComment.setRequest(requestDao.getById(requestDao.getById(requestNew)));
+            newComment.setRequest(requestDao.getByRequest(requestDao.getByRequest(requestNew)));
             commentDao.create(newComment);
         }
 
         return requestNew;
+    }
+
+    private String createReplenishmentRequest(MyRequestStatusChangeDto request, List<EquipmentDto> unavailableEquipment) {
+        RequestSaveDto replRequest = new RequestSaveDto();
+        replRequest.setCreatorId(request.getUserId());
+        replRequest.setItems(unavailableEquipment);
+        replRequest.setTitle("Replenishment for request " + request.getRequestId());
+        replRequest.setWarehouseId(requestDao.getById(request.getRequestId()).getWarehouseId());
+        replRequest.setType("replenishment");
+        return save(replRequest).getId();
     }
 
     @Override
@@ -160,7 +185,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestInfoDto getRequestInfo(String id) {
         Request request = new Request();
         request.setId(id);
-        request = requestDao.getById(request);
+        request = requestDao.getByRequest(request);
         RequestInfoDto requestInfoDto = new RequestInfoDto(request);
         requestInfoDto.setWarehouse(warehouseDao.getById(request.getWarehouseId()));
         requestInfoDto.setType(requestTypeDao.getById(request.getTypeId()));
