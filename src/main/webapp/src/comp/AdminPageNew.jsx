@@ -7,33 +7,13 @@ class AdminPageNew extends Component {
     userId: null,
     userRoles: [],
     activePage: 1,
-      postStyle:false,
+    postStyle: false,
     itemsPerPage: 25,
-    users: [
-      {
-        id: 21,
-        firstName: "User",
-        secondName: "Nouser",
-        email: "Sobaka@jkdl.cm",
-        roles: [
-          { id: "1", name: "ROLE_ADMIN" },
-          { id: "2", name: "ROLE_KEEPER" }
-        ]
-      },
-      {
-        id: 22,
-        firstName: "User2",
-        secondName: "Nouser2",
-        email: "Sobaka@jkdl.cm2",
-        roles: [{ id: "2", name: "ROLE_KEEPER" }]
-      }
-    ],
-    systemRoles: [
-      { id: "1", name: "ROLE_ADMIN" },
-      { id: "2", name: "ROLE_KEEPER" }
-    ],
+    users: [],
+    systemRoles: [],
     usersToUpdate: [],
-    isLoading: false
+    isLoading: false,
+    listSize: 0
   };
 
   componentDidMount() {
@@ -47,17 +27,25 @@ class AdminPageNew extends Component {
         });
       })
       .catch(error => console.log(error));
+    fetch(`/users/data`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          systemRoles: data.systemRoles,
+          listSize: data.usersCount
+        });
+      })
+      .catch(error => console.log(error));
     this.handlePageChange(1);
   }
 
-  rolesOptions = roles => {
-    let localRoles = [...roles];
-    let rolesOptions = [];
-    localRoles.map(r =>
-      rolesOptions.push({ label: r.name.substr(5), value: r.id })
-    );
-    return rolesOptions;
+  handleRemoveUser = userId => {
+    this.handleUserChange(userId, []);
   };
+
   rolesOptions = (roles, userId) => {
     let localRoles = [...roles];
     let rolesOptions = [];
@@ -72,7 +60,7 @@ class AdminPageNew extends Component {
   };
 
   updateUsers = () => {
-      console.log("User to update: ",this.state.usersToUpdate);
+    console.log("User to update: ", this.state.usersToUpdate);
     if (this.state.usersToUpdate.length > 0) {
       fetch("/users", {
         method: "POST",
@@ -82,22 +70,26 @@ class AdminPageNew extends Component {
         headers: {
           "Content-Type": "application/json"
         }
-      }).then(r => r.json())
-          .then(d => {console.log(d); this.setState({usersToUpdate: [], postStyle: true})})
-          .catch(error => console.log("error.....", error))
+      })
+        .then(r => r.json())
+        .then(d => {
+          console.log(d);
+          this.setState({ usersToUpdate: [], postStyle: true });
+        })
+        .catch(error => console.log("error.....", error));
     }
   };
 
-  handleUserChange = (selectArg, userData) => {
+  handleUserChange = (userId, userData) => {
     let usersToUpdateLocal = [...this.state.usersToUpdate];
-    let index = usersToUpdateLocal.findIndex(p => p.userId == selectArg);
+    let index = usersToUpdateLocal.findIndex(p => p.userId == userId);
     let rolesId = [];
     userData.map(d => rolesId.push(d.value));
     if (index == -1) {
-      usersToUpdateLocal.push({ userId: selectArg, roles: rolesId });
+      usersToUpdateLocal.push({ userId: userId, roles: rolesId });
     } else {
       usersToUpdateLocal[index] = {
-        userId: selectArg,
+        userId: userId,
         roles: rolesId
       };
     }
@@ -112,7 +104,7 @@ class AdminPageNew extends Component {
           {user.firstName} {user.secondName}
           {","} {user.email}
         </p>
-        <div className="form-group col-md-10 mt-auto">
+        <div className="form-row col-md-10 mt-auto">
           <Select
             defaultValue={this.rolesOptions(user.roles, user.id)}
             isMulti
@@ -121,7 +113,6 @@ class AdminPageNew extends Component {
             className="basic-multi-select form-group"
             classNamePrefix="select"
             onChange={e => this.handleUserChange(user.id, e)}
-            //onChange={this.handleUserChange}
           />
         </div>
         <div className="form-group col-md-2 mt-auto">
@@ -146,8 +137,7 @@ class AdminPageNew extends Component {
         console.log(data);
         this.setState({
           activePage: pageNumber,
-          users: data.users,
-          systemRoles: data.systemRoles
+          users: data.list
         });
       })
       .catch(error => console.log(error));
@@ -160,21 +150,27 @@ class AdminPageNew extends Component {
     }
     return (
       <React.Fragment>
-          <br/>
-        <br/>
-        <br/>
-          <button className={this.state.postStyle? "btn btn-outline-success m-2 disabled":"btn btn-outline-success m-2" }
-                  onClick={this.updateUsers} >
-              POST
-          </button>
-        <div className="col-md-6">
+        <br />
+        <br />
+        <br />
+        <button
+          className={
+            this.state.postStyle
+              ? "btn btn-outline-success m-2 disabled"
+              : "btn btn-outline-success m-2"
+          }
+          onClick={this.updateUsers}
+        >
+          Save changes
+        </button>
+        <div className="col-md-12">
           {user}
           <div className="form-row">
             <div className="form-group mx-auto">
               <Pagination
                 activePage={this.state.activePage}
                 itemsCountPerPage={this.state.itemsPerPage}
-                totalItemsCount={75}
+                totalItemsCount={this.state.listSize}
                 pageRangeDisplayed={5}
                 onChange={this.handlePageChange}
               />

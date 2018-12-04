@@ -14,6 +14,13 @@ public class UserInfoDto {
 
     public UserInfoDto(){}
 
+    public UserInfoDto(String id, String email, String firstName, String secondName) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.secondName = secondName;
+    }
+
     public UserInfoDto(User user){
         this.id = user.getId();
         this.email = user.getEmail();

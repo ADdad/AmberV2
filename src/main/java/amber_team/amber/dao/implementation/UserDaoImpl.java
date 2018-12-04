@@ -62,12 +62,7 @@ public class UserDaoImpl implements UserDao {
         UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME, new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
             @Override
             public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
-                UserInfoDto info = new UserInfoDto();
-                info.setId(resultSet.getString("id"));
-                info.setEmail(resultSet.getString("email"));
-                info.setFirstName(resultSet.getString("f_name"));
-                info.setSecondName(resultSet.getString("s_name"));
-                return info;
+                return getUserInfoDto(resultSet);
             }
         });
         info.setRoles(roleDao.getUserRoles(info.getId()));
@@ -80,15 +75,47 @@ public class UserDaoImpl implements UserDao {
                 SQLQueries.GET_USERS_WITH_PAGINATION, new Object[]{limit, offset},
                 new RowMapper<UserInfoDto>() {
                     public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        UserInfoDto info = new UserInfoDto();
-                        info.setId(rs.getString("id"));
-                        info.setEmail(rs.getString("email"));
-                        info.setFirstName(rs.getString("f_name"));
-                        info.setSecondName(rs.getString("s_name"));
-                        return info;
+                        return getUserInfoDto(rs);
                     }
                 });
         return users;
+    }
+
+    private UserInfoDto getUserInfoDto(ResultSet rs) throws SQLException {
+        UserInfoDto info = new UserInfoDto();
+        info.setId(rs.getString("id"));
+        info.setEmail(rs.getString("email"));
+        info.setFirstName(rs.getString("f_name"));
+        info.setSecondName(rs.getString("s_name"));
+        return info;
+    }
+
+    @Override
+    public List<UserInfoDto> getAll() {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<UserInfoDto> users = jdbcTemplate.query(
+                SQLQueries.GET_ALL_USERS,
+                new RowMapper<UserInfoDto>() {
+                    public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
+                        return c;
+                    }
+                });
+        return users;
+    }
+
+    @Override
+    public List<UserInfoDto> getAllActive() {
+            jdbcTemplate = new JdbcTemplate(dataSource);
+            List<UserInfoDto> users = jdbcTemplate.query(
+                    SQLQueries.GET_ALL_ACTIVE_USERS,
+                    new RowMapper<UserInfoDto>() {
+                        public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
+                            return c;
+                        }
+                    });
+            return users;
     }
 
 

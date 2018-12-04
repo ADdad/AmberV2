@@ -13,7 +13,11 @@ public interface UserDao {
 
     public ResponseEntity getUserInfo(Principal principal);
 
+    List<UserInfoDto> getAllActive();
+
     User getById(String id);
 
     List<UserInfoDto> getUsersPagination(int offset, int limit);
+
+    List<UserInfoDto> getAll();
 }

@@ -23,21 +23,24 @@ public class EmailDaoImpl implements EmailDao {
     @Override
     public String getRegistrationTemplate() {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        String registrationTemplate = jdbcTemplate.queryForObject(SQLQueries.GET_REGISTRATION_EMAIL_TEMPLATE, String.class);
-        return registrationTemplate;
+        return jdbcTemplate.queryForObject(SQLQueries.GET_REGISTRATION_EMAIL_TEMPLATE, String.class);
     }
 
     @Override
     public String getRequestStatusChangedTemplate() {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        String requestStatusChangedTemplate = jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE,String.class);
-        return requestStatusChangedTemplate;
+        return jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE,String.class);
     }
 
     @Override
     public String getUserRolesChangedTemplate() {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        String userRolesChangedTemplate = jdbcTemplate.queryForObject(SQLQueries.GET_USER_ROLES_CHANGED_EMAIL_TEMPLATE, String.class);
-        return userRolesChangedTemplate;
+        return jdbcTemplate.queryForObject(SQLQueries.GET_USER_ROLES_CHANGED_EMAIL_TEMPLATE, String.class);
+    }
+
+    @Override
+    public String getRequestCreatedTemplate() {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_CREATED_EMAIL_TEMPLATE, String.class);
     }
 }

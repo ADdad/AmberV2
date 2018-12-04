@@ -4,16 +4,16 @@ import amber_team.amber.model.entities.Role;
 
 import java.util.List;
 
-public class AdminPageDto {
+public class AdminPageUsersDataDto {
+    private int usersCount;
+    private List<Role> systemRoles;
 
-    private List<UserInfoDto> users;
-
-    public List<UserInfoDto> getUsers() {
-        return users;
+    public int getUsersCount() {
+        return usersCount;
     }
 
-    public void setUsers(List<UserInfoDto> users) {
-        this.users = users;
+    public void setUsersCount(int usersCount) {
+        this.usersCount = usersCount;
     }
 
     public List<Role> getSystemRoles() {
@@ -23,9 +23,4 @@ public class AdminPageDto {
     public void setSystemRoles(List<Role> systemRoles) {
         this.systemRoles = systemRoles;
     }
-
-    private List<Role> systemRoles;
-
-
-
 }

@@ -17,6 +17,8 @@ public interface RequestDao {
 
     public Request getById(String requestId);
 
+    public Request getById(String id);
+
     public void archiveOldRequests();
 
 }
