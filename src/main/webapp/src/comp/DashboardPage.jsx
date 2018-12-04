@@ -1,9 +1,20 @@
 import React, { Component } from "react";
 import Pagination from "react-js-pagination";
-import Select from "react-select";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Checkbox from "@material-ui/core/Checkbox";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Visibility from "@material-ui/icons/Visibility";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 class DashboardPage extends Component {
   state = {
+    checked: [],
     userId: null,
     userRoles: [],
     activePage: 1,
@@ -13,7 +24,16 @@ class DashboardPage extends Component {
     systemRoles: [],
     usersToUpdate: [],
     isLoading: false,
-    listSize: 0
+    listSize: 0,
+    requests: [
+      {
+        id: "jiodj",
+        title: "MyTItle",
+        description: "MyDeklsjkldjl",
+        status: "Status",
+        type: "TYpe"
+      }
+    ]
   };
 
   componentDidMount() {
@@ -29,109 +49,63 @@ class DashboardPage extends Component {
       .catch(error => console.log(error));
   }
 
-  handleRemoveUser = userId => {
-    this.handleUserChange(userId, []);
-  };
-
-  rolesOptions = (roles, userId) => {
-    let localRoles = [...roles];
-    let rolesOptions = [];
-    localRoles.map(r =>
-      rolesOptions.push({
-        label: r.name.substr(5),
-        value: r.id,
-        userId: userId
+  handleRemoveRequest = requestId => {
+    fetch("/request", {
+      method: "PATCH",
+      body: JSON.stringify({
+        status: "Canceled",
+        requestId: requestId,
+        userId: null,
+        commentText: null
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
       })
-    );
-    return rolesOptions;
+      .catch(error => {
+        console.error("Error:", error);
+      });
   };
 
-  updateUsers = () => {
-    console.log("User to update: ", this.state.usersToUpdate);
-    if (this.state.usersToUpdate.length > 0) {
-      fetch("/users", {
-        method: "POST",
-        body: JSON.stringify({
-          users: this.state.usersToUpdate
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(r => r.json())
-        .then(d => {
-          console.log(d);
-          this.setState({ usersToUpdate: [], postStyle: true });
-        })
-        .catch(error => console.log("error.....", error));
-    }
-  };
-
-  handleUserChange = (userId, userData) => {
-    let usersToUpdateLocal = [...this.state.usersToUpdate];
-    let index = usersToUpdateLocal.findIndex(p => p.userId == userId);
-    let rolesId = [];
-    userData.map(d => rolesId.push(d.value));
-    if (index == -1) {
-      usersToUpdateLocal.push({ userId: userId, roles: rolesId });
-    } else {
-      usersToUpdateLocal[index] = {
-        userId: userId,
-        roles: rolesId
-      };
-    }
-    this.setState({ usersToUpdate: usersToUpdateLocal });
-    console.log(this.state.usersToUpdate);
+  handleShowRequest = requestId => {
+    this.props.history.push("order/" + requestId);
   };
 
   renderRequest = request => {
-    request = {
-      title: "MyTitle",
-      description:
-        "Mdlasjlkadjalskjdlkasjdlkasjdlkasjdlkjdlaksjdklasjdlkasjdlkas"
-    };
     return (
-      <div className={"form-row border rounded m-2 col-md-" + this.state.colum}>
-        <p>{request.title + " " + request.description.substr(0, 50)}</p>
-        <div className="form-group col-md-2 mt-auto">
-          <button
-            onClick={() => this.handleRemoveUser(user.id)}
-            className="form-group btn btn-lg btn-outline-danger"
+      <ListItem
+        key={request.id}
+        role={undefined}
+        dense
+        button
+        onClick={this.handleToggle(request.id)}
+      >
+        <Checkbox
+          checked={this.state.checked.indexOf(request.id) !== -1}
+          tabIndex={-1}
+          disableRipple
+        />
+        <ListItemText primary={request.title} />
+        <ListItemText primary={request.description.substr(0, 30)} />
+        <ListItemSecondaryAction>
+          <IconButton
+            aria-label="Comments"
+            onClick={() => this.handleShowRequest(request.id)}
           >
-            Remove
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  renderUser = user => {
-    return (
-      <div className="form-row border rounded m-2 col-md-12">
-        <p>
-          {user.firstName} {user.secondName}
-          {","} {user.email}
-        </p>
-        <div className="form-row col-md-10 mt-auto">
-          <Select
-            defaultValue={this.rolesOptions(user.roles, user.id)}
-            isMulti
-            name={user.id}
-            options={this.rolesOptions(this.state.systemRoles, user.id)}
-            className="basic-multi-select form-group"
-            classNamePrefix="select"
-            onChange={e => this.handleUserChange(user.id, e)}
-          />
-        </div>
-        <div className="form-group col-md-2 mt-auto">
-          <button
-            onClick={() => this.handleRemoveUser(user.id)}
-            className="form-group btn btn-lg btn-outline-danger"
+            <Visibility />
+          </IconButton>
+          <IconButton
+            aria-label="Comments"
+            onClick={() => this.handleRemoveRequest(request.id)}
           >
-            Remove
-          </button>
-        </div>
-      </div>
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
     );
   };
 
@@ -151,32 +125,52 @@ class DashboardPage extends Component {
       .catch(error => console.log(error));
   };
 
+  handleToggle = value => () => {
+    const { checked } = this.state;
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    this.setState({
+      checked: newChecked
+    });
+  };
+
   render() {
-    let requests = this.state.request.map(u => this.renderRequest(u));
+    let requests = this.state.requests.map(u => this.renderRequest(u));
     if (this.state.isLoading) {
       return <p>Loading ...</p>;
     }
-    return (
-      <React.Fragment>
-        <br />
-        <br />
-        <br />
-        <div className="col-md-12">
-          {requests}
-          <div className="form-row">
-            <div className="form-group mx-auto">
-              <Pagination
-                activePage={this.state.activePage}
-                itemsCountPerPage={this.state.itemsPerPage}
-                totalItemsCount={this.state.listSize}
-                pageRangeDisplayed={5}
-                onChange={this.handlePageChange}
-              />
-            </div>
-          </div>
-        </div>
-      </React.Fragment>
-    );
+
+    return <List className="col-md-6">{requests}</List>;
+
+    // return (
+    //   <React.Fragment>
+    //     <br />
+    //     <br />
+    //     <MyList />
+    //     <br />
+    //     <div className="col-md-12">
+    //       {/* {requests} */}
+    //       <div className="form-row">
+    //         <div className="form-group mx-auto">
+    //           <Pagination
+    //             activePage={this.state.activePage}
+    //             itemsCountPerPage={this.state.itemsPerPage}
+    //             totalItemsCount={this.state.listSize}
+    //             pageRangeDisplayed={5}
+    //             onChange={this.handlePageChange}
+    //           />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </React.Fragment>
+    // );
   }
 }
 
