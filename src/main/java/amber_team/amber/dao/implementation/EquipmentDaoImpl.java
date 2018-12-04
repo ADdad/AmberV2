@@ -6,6 +6,7 @@ import amber_team.amber.model.dto.EquipmentInfoDto;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -69,6 +70,19 @@ public class EquipmentDaoImpl implements EquipmentDao {
         return equipment;
 
     }
+
+    @Override
+    public ResponseEntity update(EquipmentDto e, String ware_id, int new_val) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        String drop = SQLQueries.IF_EXISTS_EQUIP_ITS_QUANTITY;
+        Integer cnt = jdbcTemplate.queryForObject(
+                drop, Integer.class,e.getId() ,ware_id);
+
+        if(cnt != null && cnt > new_val) {jdbcTemplate.update(SQLQueries.UPDATE_WARE_EQUIP_QUANTITY, new_val, e.getId(),ware_id);
+            return ResponseEntity.ok().body("Success");}
+        return ResponseEntity.badRequest().body("Bad query");
+    }
+
 
     @Override
     public List<Equipment> getLimited(int limit) {
