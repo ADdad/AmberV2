@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Pagination from "react-js-pagination";
 import Select from "react-select";
 
-class AdminPageNew extends Component {
+class DashboardPage extends Component {
   state = {
     userId: null,
     userRoles: [],
@@ -27,19 +27,6 @@ class AdminPageNew extends Component {
         });
       })
       .catch(error => console.log(error));
-    fetch(`/users/data`, {
-      method: "GET"
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          systemRoles: data.systemRoles,
-          listSize: data.usersCount
-        });
-      })
-      .catch(error => console.log(error));
-    this.handlePageChange(1);
   }
 
   handleRemoveUser = userId => {
@@ -97,6 +84,27 @@ class AdminPageNew extends Component {
     console.log(this.state.usersToUpdate);
   };
 
+  renderRequest = request => {
+    request = {
+      title: "MyTitle",
+      description:
+        "Mdlasjlkadjalskjdlkasjdlkasjdlkasjdlkjdlaksjdklasjdlkasjdlkas"
+    };
+    return (
+      <div className={"form-row border rounded m-2 col-md-" + this.state.colum}>
+        <p>{request.title + " " + request.description.substr(0, 50)}</p>
+        <div className="form-group col-md-2 mt-auto">
+          <button
+            onClick={() => this.handleRemoveUser(user.id)}
+            className="form-group btn btn-lg btn-outline-danger"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   renderUser = user => {
     return (
       <div className="form-row border rounded m-2 col-md-12">
@@ -144,7 +152,7 @@ class AdminPageNew extends Component {
   };
 
   render() {
-    let user = this.state.users.map(u => this.renderUser(u));
+    let requests = this.state.request.map(u => this.renderRequest(u));
     if (this.state.isLoading) {
       return <p>Loading ...</p>;
     }
@@ -154,7 +162,7 @@ class AdminPageNew extends Component {
         <br />
         <br />
         <div className="col-md-12">
-          {user}
+          {requests}
           <div className="form-row">
             <div className="form-group mx-auto">
               <Pagination
@@ -166,22 +174,10 @@ class AdminPageNew extends Component {
               />
             </div>
           </div>
-          <div className="form-row">
-            <button
-              className={
-                this.state.postStyle
-                  ? "btn btn-outline-success m-2 disabled form-group mx-auto"
-                  : "btn btn-outline-success m-2 form-group mx-auto"
-              }
-              onClick={this.updateUsers}
-            >
-              Save changes
-            </button>
-          </div>
         </div>
       </React.Fragment>
     );
   }
 }
 
-export default AdminPageNew;
+export default DashboardPage;
