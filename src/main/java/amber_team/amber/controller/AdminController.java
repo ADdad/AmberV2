@@ -31,8 +31,15 @@ public class AdminController {
 //    }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/users/data")
+    public AdminPageUsersDataDto getUsersData() {
+        return adminService.getUsersData();
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/users/{pageNumber}")
-    public AdminPageDto getUsers(@PathVariable int pageNumber) {
+    public UserListDto getUsers(@PathVariable int pageNumber) {
         return adminService.getUsers(pageNumber);
     }
 

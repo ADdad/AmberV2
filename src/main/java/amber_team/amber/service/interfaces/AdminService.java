@@ -1,18 +1,15 @@
 package amber_team.amber.service.interfaces;
-import amber_team.amber.model.dto.AdminPageDto;
-import amber_team.amber.model.dto.UpdateRolesDto;
-import amber_team.amber.model.dto.UpdateRolesListDto;
-import amber_team.amber.model.dto.UserListDto;
+import amber_team.amber.model.dto.*;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.ws.Response;
 import java.security.Principal;
-import java.util.List;
 
 public interface AdminService {
     ResponseEntity update(UpdateRolesListDto userDtos);
     UserListDto getAdminInfo(Principal principal);
     UserListDto returnUsers();
 
-    AdminPageDto getUsers(int pageNumber);
+    UserListDto getUsers(int pageNumber);
+
+    AdminPageUsersDataDto getUsersData();
 }

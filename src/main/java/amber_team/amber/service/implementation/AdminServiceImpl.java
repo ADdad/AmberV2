@@ -7,15 +7,11 @@ import amber_team.amber.dao.interfaces.UserListDao;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Role;
 import amber_team.amber.service.interfaces.AdminService;
-import amber_team.amber.util.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.xml.ws.Response;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,17 +56,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminPageDto getUsers(int pageNumber) {
-        AdminPageDto adminPageDto = new AdminPageDto();
+    public UserListDto getUsers(int pageNumber) {
+        UserListDto userListDto = new UserListDto();
         List<UserInfoDto> users = userDao.getUsersPagination(PAGINATION_SIZE * pageNumber, PAGINATION_SIZE);
         users = users.stream().map(user -> {
             List<Role> roles = roleDao.getUserRoles(user.getId());
             user.setRoles(roles);
             return user;
         }).collect(Collectors.toList());
-        adminPageDto.setUsers(users);
-        adminPageDto.setSystemRoles(roleDao.getAll());
-        return adminPageDto;
+        userListDto.setList(users);
+        return userListDto;
+    }
+
+    @Override
+    public AdminPageUsersDataDto getUsersData() {
+        AdminPageUsersDataDto adminPageUsersDataDto = new AdminPageUsersDataDto();
+        adminPageUsersDataDto.setSystemRoles(roleDao.getAll());
+        adminPageUsersDataDto.setUsersCount(userDao.getAllActive().size());
+        return adminPageUsersDataDto;
     }
 
 

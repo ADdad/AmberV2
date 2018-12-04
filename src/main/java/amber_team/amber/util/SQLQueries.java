@@ -14,18 +14,18 @@ public class SQLQueries {
     public static final String ADD_NEW_USER_AND_HIS_ROLE = "BEGIN; INSERT INTO users" +
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?); COMMIT;";
-    public static final String EXISTING_THIS_EMAIL = "SELECT email FROM users WHERE email=?";
+    public static final String EXISTING_THIS_EMAIL = "SELECT email FROM users WHERE email = ?";
     public static final String USER_BY_USERNAME_QUERY = "SELECT users.email as username, " +
             "users.password as password, enabled " +
-            "FROM users WHERE users.email=?";
+            "FROM users WHERE users.email = ?";
     public static final String CHANGE_USERS_AND_THEIR_ROLES = "INSERT INTO user_roles (user_id, role_id) VALUES (?,?)";
     public static final String AUTHORITIES_BY_USERNAME = "SELECT users.email as username, roles.name as role " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
             "INNER JOIN roles ON user_roles.role_id = roles.id " +
-            "WHERE users.email=?";
+            "WHERE users.email = ?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
-            "FROM users WHERE users.email=?";
+            "FROM users WHERE users.email =?";
     public static final String IF_EXISTS = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
@@ -335,5 +335,7 @@ public class SQLQueries {
     public static final String GET_USERS_WITH_PAGINATION = "SELECT id, f_name, s_name, password, email, enabled " +
             "FROM users LIMIT ? OFFSET ?";
     public static final String GET_ALL_ROLES = "SELECT * FROM roles";
+    public static final String GET_ALL_ACTIVE_USERS = "SELECT * FROM users WHERE enabled = 1";
+    public static final String GET_ALL_USERS = "SELECT * FROM users";
 
 }
