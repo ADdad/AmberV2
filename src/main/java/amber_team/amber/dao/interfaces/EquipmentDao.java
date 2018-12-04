@@ -2,6 +2,7 @@ package amber_team.amber.dao.interfaces;
 
 import amber_team.amber.model.dto.EquipmentInfoDto;
 import amber_team.amber.model.dto.EquipmentDto;
+import amber_team.amber.model.dto.MyRequestStatusChangeDto;
 import amber_team.amber.model.entities.Equipment;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface EquipmentDao {
     List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId);
     List<EquipmentDto> getUnavailableEquipmentQuantity(String requestId);
     void removeEquipmentFromRequest(String requestId);
+    void increaseEquipment(String requestId);
+    List<EquipmentDto> decreaseEquipment(String requestId);
 }

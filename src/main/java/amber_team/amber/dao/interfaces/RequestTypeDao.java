@@ -7,6 +7,8 @@ import java.util.List;
 public interface RequestTypeDao {
     Type getById(String id);
 
+    Type getByRequestId(String id);
+
     Type getByName(String name);
 
     List<Type> getAll();

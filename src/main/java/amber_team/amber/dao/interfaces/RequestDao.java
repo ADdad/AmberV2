@@ -13,7 +13,9 @@ public interface RequestDao {
 
     public Request update(Request request);
 
-    public Request getById(Request requestId);
+    public Request getByRequest(Request requestId);
+
+    public Request getById(String requestId);
 
     public Request getById(String id);
 

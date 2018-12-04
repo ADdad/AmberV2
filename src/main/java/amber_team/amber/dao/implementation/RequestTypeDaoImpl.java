@@ -46,6 +46,22 @@ public class RequestTypeDaoImpl implements RequestTypeDao {
     }
 
     @Override
+    public Type getByRequestId(String id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        Type type = jdbcTemplate.queryForObject(SQLQueries.TYPE_BY_REQUEST_ID, new Object[]{id}, new RowMapper<Type>() {
+            @Override
+            public Type mapRow(ResultSet resultSet, int i) throws SQLException {
+                Type info = new Type();
+                info.setId(resultSet.getString("id"));
+                info.setName(resultSet.getString("name"));
+                info.setCreationDate(resultSet.getTimestamp("creation_date"));
+                return info;
+            }
+        });
+        return type;
+    }
+
+    @Override
     public Type getByName(String name) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         Type type = jdbcTemplate.queryForObject(SQLQueries.TYPE_BY_NAME, new Object[]{name}, new RowMapper<Type>() {

@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository(value = "equipmentDao")
 public class EquipmentDaoImpl implements EquipmentDao {
@@ -85,7 +86,59 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
-    public void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String request_id) {
+    public void increaseEquipment(String requestId) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
+
+        jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                EquipmentInfoDto equipmentDto = equipment.get(i);
+                ps.setInt(1, equipmentDto.getQuantity());
+                ps.setString(2, equipmentDto.getId());
+                ps.setString(3, requestId);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return equipment.size();
+            }
+        });
+    }
+
+    @Override
+    public List<EquipmentDto> decreaseEquipment(String requestId) {
+        List<EquipmentDto> unavailableEquipment = getUnavailableEquipmentQuantity(requestId).parallelStream()
+                .filter(equipmentDto -> equipmentDto.getQuantity()>0)
+                .collect(Collectors.toList());
+        if(unavailableEquipment.isEmpty()){
+            jdbcTemplate = new JdbcTemplate(dataSource);
+
+            List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
+
+            jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST, new BatchPreparedStatementSetter() {
+
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    EquipmentInfoDto equipmentDto = equipment.get(i);
+                    ps.setInt(1, -equipmentDto.getQuantity());
+                    ps.setString(2, equipmentDto.getId());
+                    ps.setString(3, requestId);
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return equipment.size();
+                }
+            });
+        }
+        return unavailableEquipment;
+    }
+
+    @Override
+    public void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String requestId) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         jdbcTemplate.batchUpdate(SQLQueries.ADD_REQUEST_EQUIPMENT, new BatchPreparedStatementSetter() {
@@ -93,7 +146,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 EquipmentDto equipmentDto = equipmentDtos.get(i);
-                ps.setString(1, request_id);
+                ps.setString(1, requestId);
                 ps.setString(2, equipmentDto.getId());
                 ps.setInt(3, equipmentDto.getQuantity());
             }
@@ -106,7 +159,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
-    public void addEquipmentToWarehouse(List<EquipmentDto> equipmentDtoList, String warehouse_id) {
+    public void addEquipmentToWarehouse(List<EquipmentDto> equipmentDtoList, String warehouseId) {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         jdbcTemplate.batchUpdate(SQLQueries.ADD_WAREHOUSE_EQUIPMENT, new BatchPreparedStatementSetter() {
@@ -114,7 +167,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 EquipmentDto equipmentDto = equipmentDtoList.get(i);
-                ps.setString(1, warehouse_id);
+                ps.setString(1, warehouseId);
                 ps.setString(2, equipmentDto.getId());
                 ps.setInt(3, equipmentDto.getQuantity());
             }
@@ -125,7 +178,6 @@ public class EquipmentDaoImpl implements EquipmentDao {
             }
         });
     }
-
 
     @Override
     public List<EquipmentInfoDto> getRequestEquipment(String requestId) {

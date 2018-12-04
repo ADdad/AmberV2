@@ -2,15 +2,12 @@ package amber_team.amber.dao.implementation;
 
 
 import amber_team.amber.dao.interfaces.RequestDao;
-import amber_team.amber.model.dto.AttributeDto;
-import amber_team.amber.model.dto.RequestStatusChangeDto;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.util.MergeReflectionUtil;
 import amber_team.amber.util.SQLQueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -19,10 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -62,7 +57,7 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public Request update(Request request){
-        Request oldRequest = this.getById(request);
+        Request oldRequest = this.getByRequest(request);
         jdbcTemplate = new JdbcTemplate(dataSource);
         Request newRequest = null;
         try {
@@ -79,14 +74,19 @@ public class RequestDaoImpl implements RequestDao {
 
 
     @Override
-    public Request getById(Request request) {
+    public Request getByRequest(Request request) {
+        return getById(request.getId());
+    }
+
+    @Override
+    public Request getById(String requestId) {
 
         jdbcTemplate = new JdbcTemplate(dataSource);
-        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {request.getId()}, new RowMapper<Request>() {
+        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {requestId}, new RowMapper<Request>() {
             @Override
             public Request mapRow(ResultSet resultSet, int i) throws SQLException {
                 Request info = new Request();
-                info.setId(request.getId());
+                info.setId(requestId);
                 info.setWarehouseId(resultSet.getString("warehouse_id"));
                 info.setCreatorId(resultSet.getString("creator_id"));
                 info.setExecutorId(resultSet.getString("executor_id"));

@@ -38,6 +38,11 @@ public class SQLQueries {
     public static final String TYPE_BY_ID = "SELECT * " +
             "FROM request_types " +
             "WHERE id = ? ORDER BY creation_date DESC LIMIT 1";
+    public static final String TYPE_BY_REQUEST_ID = "SELECT request_types.id AS id, request_types.name AS name, " +
+            "request_types.creation_date AS creation_date " +
+            "FROM requests " +
+            "INNER JOIN request_types ON requests.req_type_id = request_types.id " +
+            "WHERE requests.id = ? ORDER BY creation_date DESC LIMIT 1";
     public static final String TYPE_BY_NAME = "SELECT * " +
             "FROM request_types " +
             "WHERE name=? ORDER BY creation_date DESC LIMIT 1";
@@ -94,6 +99,12 @@ public class SQLQueries {
             " E1.country AS country, E2.quantity AS quantity " +
             "FROM equipment AS E1 INNER JOIN request_equipment AS E2 on E1.id = E2.equipment_id " +
             "WHERE request_id = ?";
+    public static final String UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST = "UPDATE warehouse_equipment " +
+            "SET quantity = quantity + (?) " +
+            "FROM requests " +
+            "WHERE requests.warehouse_id = warehouse_equipment.warehouse_id" +
+            "AND warehouse_equipment.equipment_id = ? " +
+            "AND requests.id = ?";
     public static final String GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE = "SELECT e.id AS id, " +
             "  re.quantity-we.quantity AS quantity_diff " +
             "FROM request_equipment AS re " +
