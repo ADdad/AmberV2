@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Comment;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.entities.User;
 import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,12 @@ public class RequestServiceImpl implements RequestService {
     private final UserDao userDao;
     private final CommentDao commentDao;
     private final AttributesDao attributesDao;
+    private final EmailServiceImpl emailService;
 
     @Autowired
-    public RequestServiceImpl(RequestDao requestDao, WarehouseDao warehouseDao, EquipmentDao equipmentDao, RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao, AttributesDao attributesDao) {
+    public RequestServiceImpl(RequestDao requestDao, WarehouseDao warehouseDao, EquipmentDao equipmentDao,
+                              RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao, AttributesDao attributesDao,
+                               EmailServiceImpl emailService) {
         this.requestDao = requestDao;
         this.warehouseDao = warehouseDao;
         this.equipmentDao = equipmentDao;
@@ -35,6 +39,7 @@ public class RequestServiceImpl implements RequestService {
         this.userDao = userDao;
         this.commentDao = commentDao;
         this.attributesDao = attributesDao;
+        this.emailService = emailService;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class RequestServiceImpl implements RequestService {
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
-
+        sendCreationEmail(request);
         return finalRequest;
 
 
@@ -59,6 +64,11 @@ public class RequestServiceImpl implements RequestService {
 //			//todo setAttrbutes
 //			return requestDao.create(newRequest);
 //		}
+    }
+
+    private void sendCreationEmail(RequestSaveDto request) {
+        User userInfo = userDao.getById(request.getCreatorId());
+        emailService.sendRequestCreated(userInfo.getEmail(), userInfo.getFirstName(), request.getTitle());
     }
 
     private List<AttributeInfoDto> filterNullAttributes(List<AttributeInfoDto> attributeInfoDtos) {
@@ -103,6 +113,8 @@ public class RequestServiceImpl implements RequestService {
         if(request.getStatus().equals("Completed")){
 //            equipmentDao.getWarehouseEquipment();
         }
+        String oldStatus = requestDao.getById(request.getRequestId()).getStatus();
+
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());
@@ -119,7 +131,15 @@ public class RequestServiceImpl implements RequestService {
             commentDao.create(newComment);
         }
 
+        sendChangeStatusEmail(requestNew,oldStatus);
+
         return requestNew;
+    }
+
+    private void sendChangeStatusEmail(Request requestNew, String oldStatus) {
+        User userInfo = userDao.getById(requestNew.getCreatorId());
+        emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(), oldStatus,
+                requestNew.getStatus());
     }
 
     @Override

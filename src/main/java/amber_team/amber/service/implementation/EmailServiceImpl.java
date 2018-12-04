@@ -23,10 +23,17 @@ public class EmailServiceImpl  {
         sendSimpleMessage(to,subject,text);
     }
 
+    public void sendRequestCreated(String to, String firstName, String requestTitle) {
+        String requestCreatedTemplate = emailDao.getRequestCreatedTemplate();
+        String text = String.format(requestCreatedTemplate, firstName, requestTitle);
+        String subject = "Request created!";
+        sendSimpleMessage(to,subject,text);
+    }
+
     public void sendRequestStatusChanged(String to, String firstName,String requestTitle, String oldStatus, String newStatus) {
         String requestStatusChangedTemplate = emailDao.getRequestStatusChangedTemplate();
         String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, oldStatus, newStatus);
-        String subject = "RequestInfoDto status changed!";
+        String subject = "Request status changed!";
         sendSimpleMessage(to,subject,text);
     }
 
