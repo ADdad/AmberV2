@@ -76,6 +76,8 @@ public class SQLQueries {
             "WHERE id = 'Request_status_changed'";
     public static final String GET_USER_ROLES_CHANGED_EMAIL_TEMPLATE = "SELECT template FROM email_templates " +
             "WHERE id = 'User_roles_changed'";
+    public static final String GET_REQUEST_CREATED_EMAIL_TEMPLATE = "SELECT template FROM email_templates " +
+            " WHERE id = 'Request_created'";
     public static final String GET_WAREHOUSE_BY_ID = "SELECT id, adress, contact_number FROM warehouses WHERE id = ?";
     public static final String GET_COMMENTS_OF_REQUEST = "SELECT id, user_id, comment_text, creation_date FROM comments " +
             "WHERE request_id = ? ORDER BY creation_date DESC";
