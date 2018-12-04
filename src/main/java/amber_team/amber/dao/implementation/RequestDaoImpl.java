@@ -78,33 +78,6 @@ public class RequestDaoImpl implements RequestDao {
         return getById(request.getId());
     }
 
-    @Override
-    public Request getById(String requestId) {
-
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {requestId}, new RowMapper<Request>() {
-            @Override
-            public Request mapRow(ResultSet resultSet, int i) throws SQLException {
-                Request info = new Request();
-                info.setId(requestId);
-                info.setWarehouseId(resultSet.getString("warehouse_id"));
-                info.setCreatorId(resultSet.getString("creator_id"));
-                info.setExecutorId(resultSet.getString("executor_id"));
-                info.setTypeId(resultSet.getString("req_type_id"));
-                info.setTitle(resultSet.getString("title"));
-                info.setStatus(resultSet.getString("status"));
-                info.setConnectedRequestId(resultSet.getString("connected_request"));
-                info.setCreationDate(resultSet.getTimestamp("creation_date"));
-                info.setModifiedDate(resultSet.getTimestamp("modified_date"));
-                info.setDescription(resultSet.getString("description"));
-                info.setArchive(resultSet.getBoolean("archive"));
-                return info;
-            }
-        });
-
-        return info;
-    }
-
     public Request getById(String id) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[] {id}, new RowMapper<Request>() {

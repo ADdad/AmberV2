@@ -37,7 +37,7 @@ public class UserListDaoImpl implements UserListDao {
     public ResponseEntity update(UpdateRolesListDto userDtos1) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
-        String drop = SQLQueries.IF_EXISTS;
+        String drop = SQLQueries.IF_EXISTS_USER_ROLE;
         UpdateRolesListDto userDtos = new UpdateRolesListDto();
         List<UpdateRolesDto> lst = new ArrayList<>();
         for(UpdateRolesDto u : userDtos1.getUsers()) {
