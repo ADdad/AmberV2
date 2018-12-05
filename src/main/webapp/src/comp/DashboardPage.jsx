@@ -16,38 +16,70 @@ class DashboardPage extends Component {
   state = {
     checked: [],
     userId: null,
-    userRoles: [],
+    userRoles: ["ROLE_KEEPER"],
     activePage: 1,
     postStyle: false,
     itemsPerPage: 25,
-    users: [],
-    systemRoles: [],
-    usersToUpdate: [],
     isLoading: false,
-    listSize: 0,
-    requests: [
-      {
-        id: "jiodj",
-        title: "MyTItle",
-        description: "MyDeklsjkldjl",
-        status: "Status",
-        type: "TYpe"
-      }
-    ]
+    doubleList: false,
+    createdListSize: 0,
+    createdRequests: [],
+    executingActivePage: 1,
+    executingListSize: 0,
+    executingRequests: []
   };
 
   componentDidMount() {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
+        let doubleListLocal = true;
+        if (data.roles.includes("ROLE_USER") && data.roles.length > 1)
+          doubleListLocal = true;
+        else doubleListLocal = false;
         this.setState({
           userId: data.id,
           userRoles: data.roles,
+          doubleList: doubleListLocal,
+          isLoading: false
+        });
+        this.downloadCreatedRequestsPaginated(1);
+        this.downloadExecutingRequestsPaginated(1);
+      })
+      .catch(error => console.log(error));
+  }
+
+  downloadCreatedRequestsPaginated = page => {
+    fetch(`/user/requests/created/${page}`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          createdRequests: data.requests,
+          createdListSize: data.requestsCount,
           isLoading: false
         });
       })
       .catch(error => console.log(error));
-  }
+  };
+
+  downloadExecutingRequestsPaginated = page => {
+    fetch(`/user/requests/executing/${page}`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          executingRequests: data.requests,
+          executingListSize: data.requestsCount,
+          isLoading: false
+        });
+      })
+      .catch(error => console.log(error));
+  };
 
   handleRemoveRequest = requestId => {
     fetch("/request", {
@@ -64,6 +96,7 @@ class DashboardPage extends Component {
     })
       .then(response => response.json())
       .then(data => {
+        this.downloadCreatedRequestsPaginated(this.state.activePage);
         console.log(data);
       })
       .catch(error => {
@@ -75,7 +108,7 @@ class DashboardPage extends Component {
     this.props.history.push("order/" + requestId);
   };
 
-  renderRequest = request => {
+  renderCreatedRequest = request => {
     return (
       <ListItem
         key={request.id}
@@ -89,9 +122,24 @@ class DashboardPage extends Component {
           tabIndex={-1}
           disableRipple
         />
-        <ListItemText primary={request.title} />
-        <ListItemText primary={request.description.substr(0, 30)} />
-        <ListItemSecondaryAction>
+        <ListItemText
+          className="col-md-4"
+          primary={request.title.substr(0, 17)}
+          secondary={request.description.substr(0, 30)}
+        />
+        <ListItemText primary={request.status} className="col-md-2" />
+        <ListItemText
+          className="col-md-2 ml-0 p-0"
+          primary={request.creationDate.substr(0, 10)}
+          secondary={request.creationDate.substr(11, 5).replace("T", "/")}
+        />
+        <ListItemText
+          className="col-md-2 m-0 p-0"
+          primary={request.modifiedDate.substr(0, 10)}
+          secondary={request.modifiedDate.substr(11, 5).replace("T", "/")}
+        />
+        <ListItemText primary={"  "} />
+        <ListItemSecondaryAction className="col-md-2 m-0 p-0">
           <IconButton
             aria-label="Comments"
             onClick={() => this.handleShowRequest(request.id)}
@@ -109,20 +157,47 @@ class DashboardPage extends Component {
     );
   };
 
-  handlePageChange = pageNumber => {
-    const convertNumber = pageNumber - 1;
-    fetch(`/users/${convertNumber}`, {
-      method: "GET"
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          activePage: pageNumber,
-          users: data.list
-        });
-      })
-      .catch(error => console.log(error));
+  renderExecutingRequest = request => {
+    return (
+      <ListItem
+        key={request.id}
+        role={undefined}
+        dense
+        button
+        onClick={this.handleToggle(request.id)}
+      >
+        <Checkbox
+          checked={this.state.checked.indexOf(request.id) !== -1}
+          tabIndex={-1}
+          disableRipple
+        />
+        <ListItemText
+          className="col-md-4"
+          primary={request.title.substr(0, 17)}
+          secondary={request.description.substr(0, 30)}
+        />
+        <ListItemText primary={request.typeId} className="col-md-2" />
+        <ListItemText
+          className="col-md-2 ml-0 p-0"
+          primary={request.creationDate.substr(0, 10)}
+          secondary={request.creationDate.substr(11, 5).replace("T", "/")}
+        />
+        <ListItemText
+          className="col-md-2 m-0 p-0"
+          primary={request.modifiedDate.substr(0, 10)}
+          secondary={request.modifiedDate.substr(11, 5).replace("T", "/")}
+        />
+        <ListItemText primary={"  "} />
+        <ListItemSecondaryAction className="col-md-2 m-0 p-0">
+          <IconButton
+            aria-label="Comments"
+            onClick={() => this.handleShowRequest(request.id)}
+          >
+            <Visibility />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
   };
 
   handleToggle = value => () => {
@@ -141,36 +216,80 @@ class DashboardPage extends Component {
     });
   };
 
+  renderCreatedRequests = () => {
+    let createdRequests = this.state.createdRequests.map(u =>
+      this.renderCreatedRequest(u)
+    );
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <List className="col-md-12">{createdRequests}</List>
+        <div className="form-row">
+          <div className="form-group mx-auto">
+            <Pagination
+              activePage={this.state.activePage}
+              itemsCountPerPage={this.state.itemsPerPage}
+              totalItemsCount={this.state.createdListSize}
+              pageRangeDisplayed={5}
+              onChange={this.downloadCreatedRequestsPaginated}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderExecutingRequests = () => {
+    let executingRequests = this.state.executingRequests.map(u =>
+      this.renderExecutingRequest(u)
+    );
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <List className="col-md-12">{executingRequests}</List>
+        <div className="form-row">
+          <div className="form-group mx-auto">
+            <Pagination
+              activePage={this.state.executingActivePage}
+              itemsCountPerPage={this.state.itemsPerPage}
+              totalItemsCount={this.state.executingListSize}
+              pageRangeDisplayed={5}
+              onChange={this.downloadExecutingRequestsPaginated}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
-    let requests = this.state.requests.map(u => this.renderRequest(u));
     if (this.state.isLoading) {
       return <p>Loading ...</p>;
     }
 
-    return <List className="col-md-6">{requests}</List>;
-
-    // return (
-    //   <React.Fragment>
-    //     <br />
-    //     <br />
-    //     <MyList />
-    //     <br />
-    //     <div className="col-md-12">
-    //       {/* {requests} */}
-    //       <div className="form-row">
-    //         <div className="form-group mx-auto">
-    //           <Pagination
-    //             activePage={this.state.activePage}
-    //             itemsCountPerPage={this.state.itemsPerPage}
-    //             totalItemsCount={this.state.listSize}
-    //             pageRangeDisplayed={5}
-    //             onChange={this.handlePageChange}
-    //           />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </React.Fragment>
-    // );
+    return (
+      <React.Fragment>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div className="container-fluid">
+          <div className="form-row">
+            {this.state.userRoles.includes("ROLE_USER") &&
+              this.renderCreatedRequests()}
+            {(this.state.userRoles.includes("ROLE_ADMIN") ||
+              this.state.userRoles.includes("ROLE_KEEPER")) &&
+              this.renderExecutingRequests()}
+          </div>
+        </div>
+      </React.Fragment>
+    );
   }
 }
 

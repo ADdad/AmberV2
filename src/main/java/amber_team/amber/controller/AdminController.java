@@ -44,7 +44,7 @@ public class AdminController {
     }
 
 //    @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/users")
+    @PatchMapping(value = "/users")
     public ResponseEntity update(@RequestBody UpdateRolesListDto userRoles) {
         return adminService.update(userRoles);
     }

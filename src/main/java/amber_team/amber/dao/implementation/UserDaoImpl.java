@@ -69,6 +69,19 @@ public class UserDaoImpl implements UserDao {
         return ResponseEntity.ok(info);
     }
 
+    @Override
+    public UserInfoDto getUserByEmail(Principal principal) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME, new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
+            @Override
+            public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
+                return getUserInfoDto(resultSet);
+            }
+        });
+        info.setRoles(roleDao.getUserRoles(info.getId()));
+        return info;
+    }
+
     public List<UserInfoDto> getUsersPagination(int offset, int limit) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<UserInfoDto> users = jdbcTemplate.query(

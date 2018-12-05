@@ -3,12 +3,16 @@ package amber_team.amber.service.interfaces;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Request;
 
+import java.security.Principal;
+
 
 public interface RequestService {
 
     RequestInfoDto getRequestInfo(String id);
 
     Request save(RequestSaveDto request);
+
+    RequestListDtoPagination getCreatedRequests(Principal userData, int page);
 
     void archiveOldRequests();
 
@@ -23,4 +27,6 @@ public interface RequestService {
     Request changeStatus(MyRequestStatusChangeDto request);
 
     Request editRequest(RequestSaveDto request);
+
+    RequestListDtoPagination getExecutingRequests(Principal principal, int page);
 }

@@ -17,6 +17,8 @@ public interface UserDao {
 
     User getById(String id);
 
+    UserInfoDto getUserByEmail(Principal principal);
+
     List<UserInfoDto> getUsersPagination(int offset, int limit);
 
     List<UserInfoDto> getAll();

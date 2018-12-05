@@ -52,4 +52,20 @@ public class RoleDaoImpl implements RoleDao {
                 });
         return roles;
     }
+
+    @Override
+    public Role getByName(String roleName) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        Role type = jdbcTemplate.queryForObject(SQLQueries.ROLE_BY_NAME, new Object[]{roleName}, new RowMapper<Role>() {
+            @Override
+            public Role mapRow(ResultSet resultSet, int i) throws SQLException {
+                Role info = new Role();
+                info.setId(resultSet.getString("id"));
+                info.setName(resultSet.getString("name"));
+                return info;
+            }
+        });
+
+        return type;
+    }
 }

@@ -10,7 +10,10 @@ import amber_team.amber.service.interfaces.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,9 @@ import java.util.stream.Collectors;
 public class RequestServiceImpl implements RequestService {
 
 
+    private static final int PAGINATION = 25;
+    private static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
+    private static final String KEEPER_ROLE_NAME = "ROLE_KEEPER";
     private final RequestDao requestDao;
     private final WarehouseDao warehouseDao;
     private final EquipmentDao equipmentDao;
@@ -26,12 +32,13 @@ public class RequestServiceImpl implements RequestService {
     private final UserDao userDao;
     private final CommentDao commentDao;
     private final AttributesDao attributesDao;
+    private final RoleDao roleDao;
     private final EmailServiceImpl emailService;
 
     @Autowired
     public RequestServiceImpl(RequestDao requestDao, WarehouseDao warehouseDao, EquipmentDao equipmentDao,
                               RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao, AttributesDao attributesDao,
-                               EmailServiceImpl emailService) {
+                              RoleDao roleDao, EmailServiceImpl emailService) {
         this.requestDao = requestDao;
         this.warehouseDao = warehouseDao;
         this.equipmentDao = equipmentDao;
@@ -39,6 +46,7 @@ public class RequestServiceImpl implements RequestService {
         this.userDao = userDao;
         this.commentDao = commentDao;
         this.attributesDao = attributesDao;
+        this.roleDao = roleDao;
         this.emailService = emailService;
     }
 
@@ -110,32 +118,28 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request changeStatus(MyRequestStatusChangeDto request) {
-        if(request.getStatus().equals("Completed")){
-//            equipmentDao.getWarehouseEquipment();
-        }
+
         String oldStatus = requestDao.getById(request.getRequestId()).getStatus();
 
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
         requestNew.setExecutorId(request.getExecutorId());
-        System.out.println(request.getStatus());
         requestNew.setStatus(request.getStatus());
-//////////////////////////////////////////////////////////
+
         String requestTypeName = requestTypeDao.getByRequestId(request.getRequestId()).getName();
-        if("replenishment".equals(requestTypeName) || "refund".equals(requestTypeName)){
-            if("Completed".equals(request.getStatus())){
+        if ("replenishment".equals(requestTypeName) || "refund".equals(requestTypeName)) {
+            if ("Completed".equals(request.getStatus())) {
                 equipmentDao.increaseEquipment(request.getRequestId());
             }
-        }else{
-            if("Delivering".equals(request.getStatus())) {
+        } else {
+            if ("Delivering".equals(request.getStatus())) {
                 List<EquipmentDto> unavailableEquipment = equipmentDao.decreaseEquipment(request.getRequestId());
-                if(!unavailableEquipment.isEmpty()){
+                if (!unavailableEquipment.isEmpty()) {
                     requestNew.setStatus("On Hold");
                     requestNew.setConnectedRequestId(createReplenishmentRequest(request, unavailableEquipment));
                 }
             }
         }
-
 
 
         requestNew = requestDao.update(requestNew);
@@ -149,7 +153,7 @@ public class RequestServiceImpl implements RequestService {
             commentDao.create(newComment);
         }
 
-        sendChangeStatusEmail(requestNew,oldStatus);
+        sendChangeStatusEmail(requestNew, oldStatus);
 
         return requestNew;
     }
@@ -185,6 +189,49 @@ public class RequestServiceImpl implements RequestService {
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
 
         return finalRequest;
+    }
+
+    @Override
+    public RequestListDtoPagination getExecutingRequests(Principal principal, int page) {
+        UserInfoDto userByEmail = userDao.getUserByEmail(principal);
+        page--;
+        List<Request> requestsList = new ArrayList<>();
+        if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
+            requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
+        if (userByEmail.getRoles().contains(roleDao.getByName(KEEPER_ROLE_NAME)))
+            requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
+
+        Collections.sort(requestsList, new Comparator<Request>() {
+            @Override
+            public int compare(Request request1, Request request2) {
+                return request1.getModifiedDate().compareTo(request2.getModifiedDate());
+            }
+        });
+        try {
+            requestsList = requestsList.subList(0, PAGINATION);
+        } catch (IndexOutOfBoundsException e) {
+            requestsList = requestsList.subList(0, requestsList.size());
+        }
+        for (Request req :
+                requestsList) {
+            req.setTypeId(requestTypeDao.getById(req.getTypeId()).getName());
+        }
+        RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
+        requestListDtoPagination.setRequests(requestsList);
+        requestListDtoPagination.setRequestsCount(requestDao.getCountOfAdminActiveRequests()
+                + requestDao.getCountOfKeeperActiveRequests(userByEmail.getId()));
+        return requestListDtoPagination;
+    }
+
+    @Override
+    public RequestListDtoPagination getCreatedRequests(Principal userData, int page) {
+        UserInfoDto userByEmail = userDao.getUserByEmail(userData);
+        page--;
+        List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION);
+        RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
+        requestListDtoPagination.setRequests(listRequests);
+        requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersActiveRequests(userByEmail.getId()));
+        return requestListDtoPagination;
     }
 
     private Request mapSaveDto(RequestSaveDto request) {

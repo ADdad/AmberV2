@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Arrays;
 
 
@@ -51,6 +52,20 @@ public class RequestController {
     @ResponseStatus(HttpStatus.OK)
     public UserListDto getExecutors(@PathVariable String warehouseId) {
         return requestService.getWarehouseExecutors(warehouseId);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/requests/created/{page}")
+    @ResponseStatus(HttpStatus.OK)
+    public RequestListDtoPagination getCreatedRequests(Principal principal, @PathVariable int page) {
+        return requestService.getCreatedRequests(principal, page);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/requests/executing/{page}")
+    @ResponseStatus(HttpStatus.OK)
+    public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page) {
+        return requestService.getExecutingRequests(principal, page);
     }
 
     @PreAuthorize("isAuthenticated()")

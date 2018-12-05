@@ -34,15 +34,19 @@ public class RequestTypeDaoImpl implements RequestTypeDao {
         Type type = jdbcTemplate.queryForObject(SQLQueries.TYPE_BY_ID, new Object[]{id}, new RowMapper<Type>() {
             @Override
             public Type mapRow(ResultSet resultSet, int i) throws SQLException {
-                Type info = new Type();
-                info.setId(resultSet.getString("id"));
-                info.setName(resultSet.getString("name"));
-                info.setCreationDate(resultSet.getTimestamp("creation_date"));
-                return info;
+                return typeMapper(resultSet);
             }
         });
 
         return type;
+    }
+
+    private Type typeMapper(ResultSet resultSet) throws SQLException {
+        Type info = new Type();
+        info.setId(resultSet.getString("id"));
+        info.setName(resultSet.getString("name"));
+        info.setCreationDate(resultSet.getTimestamp("creation_date"));
+        return info;
     }
 
     @Override
@@ -51,11 +55,7 @@ public class RequestTypeDaoImpl implements RequestTypeDao {
         Type type = jdbcTemplate.queryForObject(SQLQueries.TYPE_BY_REQUEST_ID, new Object[]{id}, new RowMapper<Type>() {
             @Override
             public Type mapRow(ResultSet resultSet, int i) throws SQLException {
-                Type info = new Type();
-                info.setId(resultSet.getString("id"));
-                info.setName(resultSet.getString("name"));
-                info.setCreationDate(resultSet.getTimestamp("creation_date"));
-                return info;
+                return typeMapper(resultSet);
             }
         });
         return type;
@@ -67,11 +67,7 @@ public class RequestTypeDaoImpl implements RequestTypeDao {
         Type type = jdbcTemplate.queryForObject(SQLQueries.TYPE_BY_NAME, new Object[]{name}, new RowMapper<Type>() {
             @Override
             public Type mapRow(ResultSet resultSet, int i) throws SQLException {
-                Type info = new Type();
-                info.setId(resultSet.getString("id"));
-                info.setName(resultSet.getString("name"));
-                info.setCreationDate(resultSet.getTimestamp("creation_date"));
-                return info;
+                return typeMapper(resultSet);
             }
         });
 

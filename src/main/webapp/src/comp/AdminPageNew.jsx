@@ -63,7 +63,7 @@ class AdminPageNew extends Component {
     console.log("User to update: ", this.state.usersToUpdate);
     if (this.state.usersToUpdate.length > 0) {
       fetch("/users", {
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify({
           users: this.state.usersToUpdate
         }),
@@ -94,13 +94,12 @@ class AdminPageNew extends Component {
       };
     }
     this.setState({ usersToUpdate: usersToUpdateLocal });
-    console.log(this.state.usersToUpdate);
   };
 
   renderUser = user => {
     return (
       <div className="form-row border rounded m-2 col-md-12">
-        <p>
+        <p className="form-group">
           {user.firstName} {user.secondName}
           {","} {user.email}
         </p>
@@ -114,14 +113,6 @@ class AdminPageNew extends Component {
             classNamePrefix="select"
             onChange={e => this.handleUserChange(user.id, e)}
           />
-        </div>
-        <div className="form-group col-md-2 mt-auto">
-          <button
-            onClick={() => this.handleRemoveUser(user.id)}
-            className="form-group btn btn-lg btn-outline-danger"
-          >
-            Remove
-          </button>
         </div>
       </div>
     );

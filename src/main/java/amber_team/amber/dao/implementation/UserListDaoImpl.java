@@ -6,61 +6,84 @@ import amber_team.amber.model.dto.UpdateRolesDto;
 import amber_team.amber.model.dto.UpdateRolesListDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
-import amber_team.amber.model.entities.Role;
-import amber_team.amber.model.entities.Type;
 import amber_team.amber.util.SQLQueries;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import javax.xml.ws.Response;
 import java.security.Principal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Repository(value = "UserListDao")
 public class UserListDaoImpl implements UserListDao {
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public UserListDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+//    @Override
+//    public ResponseEntity update(UpdateRolesListDto userDtos) {
+//
+//        String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
+//        String drop = SQLQueries.IF_EXISTS;
+//
+//        try {
+//            for (UpdateRolesDto u : userDtos.getUsers()) {
+//                if (!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())) {
+//                    jdbcTemplate.update("DELETE FROM user_roles WHERE user_id = ? AND role_id NOT IN ?",
+//                            u.getUserId(), u.getRoles());
+//                    for (Integer r : u.getRoles()) {
+//                        Integer cnt = jdbcTemplate.queryForObject(
+//                                drop, Integer.class, u.getUserId(), r);
+//
+//                        if (cnt != null && cnt > 0) continue;
+//                        jdbcTemplate.update(sql, u.getUserId(), r);
+//                    }
+//                }
+//
+//            }
+//        } catch (JDBCException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body("Some error while invoking db");
+//        }
+//
+//
+//        return ResponseEntity.ok().body("Done");
+//    }
 
     @Override
-    public ResponseEntity update(UpdateRolesListDto userDtos1) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public ResponseEntity update(UpdateRolesListDto userDtos) {
+        NamedParameterJdbcTemplate jdbcTemplateN = new NamedParameterJdbcTemplate(dataSource);
         String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
-        String drop = SQLQueries.IF_EXISTS;
-        UpdateRolesListDto userDtos = new UpdateRolesListDto();
-        List<UpdateRolesDto> lst = new ArrayList<>();
-        for(UpdateRolesDto u : userDtos1.getUsers()) {
-            UpdateRolesDto d = new UpdateRolesDto();
-            d.setRoles(u.getRoles());
-            d.setUserId(u.getUserId());
-            lst.add(d);
-        }
-        userDtos.setUsers(lst);
         try {
-            for (UpdateRolesDto u: userDtos.getUsers()) {
-                if(!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())){
-                    for (Integer r: u.getRoles()) {
-                        Integer cnt = jdbcTemplate.queryForObject(
-                                drop, Integer.class, u.getUserId(),r);
+            for (UpdateRolesDto u : userDtos.getUsers()) {
+                if (!u.getUserId().isEmpty()) {
 
-                        if(cnt != null && cnt > 0) continue;
-                        jdbcTemplate.update(sql,u.getUserId(),r);
+                    MapSqlParameterSource parameters = new MapSqlParameterSource();
+                    parameters.addValue("roles", u.getRoles());
+                    parameters.addValue("user_id", u.getUserId());
+
+
+                    jdbcTemplateN.update(SQLQueries.CLEAR_USERS_ROLES,
+                            parameters);
+                    for (Integer r : u.getRoles()) {
+                        jdbcTemplate.update(sql, u.getUserId(), r);
                     }
                 }
 
             }
-        }catch (JDBCException e){
+        } catch (JDBCException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Some error while invoking db");
         }
@@ -69,6 +92,7 @@ public class UserListDaoImpl implements UserListDao {
         return ResponseEntity.ok().body("Done");
     }
 
+
     @Override
     public ResponseEntity getAdminInfo(Principal principal) {
         return null;
@@ -76,7 +100,6 @@ public class UserListDaoImpl implements UserListDao {
 
     @Override
     public UserListDto returnUsers() {
-        jdbcTemplate = new JdbcTemplate(dataSource);
         String sql = SQLQueries.USERS_INFO;
 
         List<UserInfoDto> customers = new ArrayList<>();

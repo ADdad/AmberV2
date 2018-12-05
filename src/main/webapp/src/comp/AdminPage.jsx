@@ -33,18 +33,23 @@ class AdminPage extends Component {
   }
 
   goToReports = () => {
-    this.props.history.push('/reports')
-  }
+    this.props.history.push("/reports");
+  };
 
   showReportsButton = () => {
-    if(!this.state.userRoles.includes('ROLE_ADMIN') && !this.state.userRoles.includes('ROLE_KEEPER')) {
-      return (<div></div>)
+    if (
+      !this.state.userRoles.includes("ROLE_ADMIN") &&
+      !this.state.userRoles.includes("ROLE_KEEPER")
+    ) {
+      return <div />;
     } else {
       return (
-          <button className="btn btn-primary" onClick={this.goToReports}>Go to Reports</button>
-      )
+        <button className="btn btn-primary" onClick={this.goToReports}>
+          Go to Reports
+        </button>
+      );
     }
-  }
+  };
 
   render() {
     if (this.state.isLoading) {
@@ -52,13 +57,8 @@ class AdminPage extends Component {
     }
     return (
       <React.Fragment>
-        <br />
-        <br />
-        <br />
-        <br />
-
         <div className="container">
-            {this.showReportsButton()}
+          {this.showReportsButton()}
           <button
             className="btn btn-outline-danger m-2 logout-btn"
             onClick={this.handleLogout}

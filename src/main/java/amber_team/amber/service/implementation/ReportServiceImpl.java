@@ -174,7 +174,7 @@ public class ReportServiceImpl implements ReportService {
                     " creationDate, modifiedDate, warehouse, title, orderDescription", response.getOutputStream());
             response.flushBuffer();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 
