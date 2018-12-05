@@ -74,6 +74,8 @@ public class RequestDaoImpl implements RequestDao {
     }
 
 
+
+
     @Override
     public Request getByRequest(Request request) {
         return getById(request.getId());

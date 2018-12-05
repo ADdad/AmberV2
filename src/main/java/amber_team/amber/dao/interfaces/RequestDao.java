@@ -13,8 +13,7 @@ public interface RequestDao {
 
     public Request getByRequest(Request requestId);
 
-    public Request getById(String id);
-
+    public Request getById(String requestId);
 
     int getCountOfUsersActiveRequests(String userId);
 

@@ -12,6 +12,8 @@ public class SQLQueries {
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?); COMMIT;";
     public static final String EXISTING_THIS_EMAIL = "SELECT email FROM users WHERE email = ?";
+    public static final String IF_EXISTS_EQUIP_ITS_QUANTITY = "SELECT quantity FROM warehouse_equipment WHERE  equipment_id = ? "+
+            "AND warehouse_id = ?";
     public static final String USER_BY_USERNAME_QUERY = "SELECT users.email as username, " +
             "users.password as password, enabled " +
             "FROM users WHERE users.email = ?";
@@ -24,7 +26,7 @@ public class SQLQueries {
             "WHERE users.email = ?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email =?";
-    public static final String IF_EXISTS = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
+    public static final String IF_EXISTS_USER_ROLE = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
@@ -103,6 +105,10 @@ public class SQLQueries {
             "WHERE requests.warehouse_id = warehouse_equipment.warehouse_id " +
             "AND warehouse_equipment.equipment_id = ? " +
             "AND requests.id = ?";
+
+    public static final String UPDATE_WARE_EQUIP_QUANTITY = "UPDATE warehouse_equipment" +
+            " SET quantity = ? "+
+            " WHERE equipment_id = ? AND warehouse_id = ?  ";
     public static final String GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE = "SELECT e.id AS id, " +
             "  re.quantity-we.quantity AS quantity_diff " +
             "FROM request_equipment AS re " +

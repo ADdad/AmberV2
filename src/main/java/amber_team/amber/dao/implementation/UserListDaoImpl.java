@@ -92,7 +92,6 @@ public class UserListDaoImpl implements UserListDao {
         return ResponseEntity.ok().body("Done");
     }
 
-
     @Override
     public ResponseEntity getAdminInfo(Principal principal) {
         return null;
