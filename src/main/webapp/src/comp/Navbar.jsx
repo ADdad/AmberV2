@@ -1,10 +1,22 @@
 import React, { Component } from "react";
+import SearchAppBar from "./SearchAppBar";
 class Navbar extends Component {
-  state = {};
+  state = {
+    tempVal: false
+  };
   render() {
+    let tempVal = false;
+    fetch("/userinfo")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ tempVal: true });
+      })
+      .catch(error => {
+        this.setState({ tempVal: false });
+      });
     return (
       <React.Fragment>
-        <div className="navbar">Navbar</div>
+        <SearchAppBar tempVal={this.state.tempVal} />
       </React.Fragment>
     );
   }

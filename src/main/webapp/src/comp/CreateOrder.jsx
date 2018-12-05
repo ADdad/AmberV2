@@ -28,7 +28,8 @@ class CreateOrder extends Component {
       optionalAttributes: [],
       oAttributesValues: [],
       resultOptionalAttributes: [],
-      alertFiles: ""
+      alertFiles: "",
+      connectedRequest: ""
     };
   }
 
@@ -96,6 +97,28 @@ class CreateOrder extends Component {
         }
       }
     }
+    if (this.props.type === "refund") {
+      let localEquipment = [...this.state.equipment];
+      if (resultItemsLocal.length > localEquipment.length) {
+        localAlert += "You can`t refund more than have\n";
+        validated = false;
+      }
+      for (let i = 0; i < resultItemsLocal.length; i++) {
+        let index = localEquipment.findIndex(
+          p => p.id === resultItemsLocal[i].id
+        );
+        if (index < 0) {
+          localAlert += "You can`t refund items not from order\n";
+          validated = false;
+          break;
+        }
+        if (this.loadEquipment[index].quantity < resultItemsLocal[i].quantity) {
+          localAlert += "You can`t refund more than have\n";
+          validated = false;
+          break;
+        }
+      }
+    }
     let newAlert = localAlert.split("\n").map((item, i) => (
       <p key={i} className="text-danger">
         {item}
@@ -114,6 +137,7 @@ class CreateOrder extends Component {
       })
       .catch(error => console.log(error));
     const type = this.props.match.params.type;
+    const connectedRequest = this.props.match.params.requestId;
     fetch(`/request/create/${type}`)
       .then(res => res.json())
       .then(response => {
@@ -123,12 +147,46 @@ class CreateOrder extends Component {
           myItems: response.equipment,
           type: type,
           warehouse: response.warehouses[0].id,
+          connectedRequest: connectedRequest,
           isLoading: false,
           initialized: true
         });
       })
       .catch(error => console.error("Error:", error));
+    if (type === "refund") {
+      fetch(`/request/${connectedRequest}`, {
+        method: "GET"
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.setState({
+            warehouseId: data.warehouse.id,
+            creator: data.creator,
+            equipment: data.equipment,
+            isLoading: false
+          });
+          if (
+            data.status != "Completed" ||
+            data.creator.id != this.state.userId
+          )
+            this.props.history.push("/dashboard");
+          this.loadEquipment(data.equipment);
+        })
+        .catch(error => console.log(error));
+    }
   }
+
+  loadEquipment = localEquip => {
+    let localItemsOptions = this.getItemsOptions(localEquip);
+    localItemsOptions.map(e => this.addItem(e));
+
+    let readyItems = this.state.resultItems.slice();
+    for (let i = 0; i < readyItems.length; i++) {
+      readyItems[i].quantity = localEquip[i].quantity;
+    }
+    this.setState({ resultItems: readyItems });
+  };
 
   handleSubmit = () => {
     if (this.validate()) {
@@ -144,6 +202,7 @@ class CreateOrder extends Component {
           warehouseId: this.state.warehouseId,
           items: this.state.resultItems,
           attributes: readyAttributes,
+          connectRequest: this.state.connectedRequest,
           offset: new Date().getTimezoneOffset()
         }),
         headers: {
@@ -433,6 +492,19 @@ class CreateOrder extends Component {
     this.setState({ warehouseId: selectedWarehouse.value });
   };
 
+  renderResetItemsButton = () => {
+    return (
+      <div className="form-group col-md-3">
+        <button
+          onClick={() => this.loadEquipment(this.state.equipment)}
+          className="btn btn-lg btn-outline-danger"
+        >
+          ResetItems
+        </button>
+      </div>
+    );
+  };
+
   loadOptions = (input, callback) => {
     console.log(input);
     if (!input || input.length < 1) {
@@ -503,8 +575,6 @@ class CreateOrder extends Component {
       <React.Fragment>
         <div className="container">
           <div className="container">
-            <br />
-            <br />
             <h2>Create order</h2>
             <br />
             {this.state.alert}
@@ -549,6 +619,7 @@ class CreateOrder extends Component {
                   Remove all
                 </button>
               </div>
+              {this.state.type === "refund" && this.renderResetItemsButton()}
             </div>
             {items}
             {this.initReactSelect()}

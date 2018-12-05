@@ -1,7 +1,5 @@
 package amber_team.amber.model.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 public class RequestSaveDto {
@@ -15,6 +13,15 @@ public class RequestSaveDto {
     private List<EquipmentDto> items;
     private String warehouseId;
     private int offset;
+    private String connectedRequest;
+
+    public String getConnectedRequest() {
+        return connectedRequest;
+    }
+
+    public void setConnectedRequest(String connectedRequest) {
+        this.connectedRequest = connectedRequest;
+    }
 
     public String getRequestId() {
         return requestId;

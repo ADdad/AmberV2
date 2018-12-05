@@ -30,20 +30,20 @@ public class AdminController {
 //        return adminService.update(request);
 //    }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/users/data")
     public AdminPageUsersDataDto getUsersData() {
         return adminService.getUsersData();
     }
 
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/users/{pageNumber}")
     public UserListDto getUsers(@PathVariable int pageNumber) {
         return adminService.getUsers(pageNumber);
     }
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(value = "/users")
     public ResponseEntity update(@RequestBody UpdateRolesListDto userRoles) {
         return adminService.update(userRoles);

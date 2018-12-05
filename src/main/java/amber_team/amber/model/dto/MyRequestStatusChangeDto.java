@@ -7,6 +7,16 @@ public class MyRequestStatusChangeDto {
     private String userId;
     private String commentText;
 
+    public String getConnectedRequest() {
+        return connectedRequest;
+    }
+
+    public void setConnectedRequest(String connectedRequest) {
+        this.connectedRequest = connectedRequest;
+    }
+
+    private String connectedRequest;
+
 
     public String getUserId() {
         return userId;

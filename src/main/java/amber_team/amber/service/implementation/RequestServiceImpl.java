@@ -242,6 +242,7 @@ public class RequestServiceImpl implements RequestService {
         newRequest.setTitle(request.getTitle());
         newRequest.setCreatorId(request.getCreatorId());
         newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
+        if(request.getConnectedRequest() != null) newRequest.setConnectedRequestId(request.getConnectedRequest());
         return newRequest;
     }
 

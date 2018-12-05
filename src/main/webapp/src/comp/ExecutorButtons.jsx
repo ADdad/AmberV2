@@ -2,16 +2,19 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 class ExecutorButtons extends Component {
-  state = {
-    buttons: [],
-    confirmation: false,
-    noButtons: false,
-    adminStates: ["Opened", "On reviewing"],
-    keeperStates: ["In progress", "On hold", "Delivering"],
-    comment: null,
-    commentStatus: "",
-    buttonChange: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      buttons: [],
+      confirmation: false,
+      noButtons: false,
+      adminStates: ["Opened", "On reviewing"],
+      keeperStates: ["In progress", "On hold", "Delivering"],
+      comment: null,
+      commentStatus: "",
+      buttonChange: false
+    };
+  }
 
   handleReject = () => {
     if (this.commentValidation()) {
@@ -40,73 +43,42 @@ class ExecutorButtons extends Component {
     }
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.openStatus);
-  }
-
-  openStatus = () => {
-    if (this.props.status == "On reviewing" && !this.state.buttonChange) {
-      fetch("/request", {
-        method: "PATCH",
-        body: JSON.stringify({
-          status: "Opened",
-          executorId: null,
-          requestId: this.props.requestId,
-          userId: null,
-          commentText: null
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        })
-        .catch(error => {
-          console.error("Error:", error);
-        });
-    }
-  };
-
   handleClick = name => {
-    console.log("Name", name);
-    if (this.props.executorId == null && this.props.state === "On reviewing") {
-      this.props.executorAlert = "Chose executor";
-      return;
-    }
-    if (name === "Rejected" || name === "On hold") {
-      this.setState({ confirmation: true, commentStatus: name });
+    if (name === "In progress" && this.props.executorId == null) {
+      console.log("worked");
+      this.props.validateComment("Chose executor");
     } else {
-      this.setState({ buttonChange: true });
-      fetch("/request", {
-        method: "PATCH",
-        body: JSON.stringify({
-          status: name,
-          executorId: this.props.executorId,
-          requestId: this.props.requestId,
-          userId: null,
-          commentText: null
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
+      if (name === "Rejected" || name === "On hold") {
+        this.setState({ confirmation: true, commentStatus: name });
+      } else {
+        this.setState({ buttonChange: true });
+        fetch("/request", {
+          method: "PATCH",
+          body: JSON.stringify({
+            status: name,
+            executorId: this.props.executorId,
+            requestId: this.props.requestId,
+            userId: null,
+            commentText: null
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
         })
-        .catch(error => {
-          console.error("Error:", error);
-        });
-      if (name !== "On reviewing") this.props.history.push("/dashboard");
-      else window.location.reload();
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+          })
+          .catch(error => {
+            console.error("Error:", error);
+          });
+        if (name !== "On reviewing") this.props.history.push("/dashboard");
+        else window.location.reload();
+      }
     }
   };
 
   componentDidMount() {
-    console.log(this.props.userRoles);
-    console.log(this.props.status);
     this.initButtons();
   }
 
@@ -224,11 +196,11 @@ class ExecutorButtons extends Component {
   render() {
     if (
       (!(
-        this.props.userRoles.includes("ROLE_ADMIN") &&
+        this.props.userRoles.filter(role => role.name === "ROLE_ADMIN") &&
         this.state.adminStates.includes(this.props.status)
       ) &&
         !(
-          this.props.userRoles.includes("ROLE_KEEPER") &&
+          this.props.userRoles.filter(role => role.name === "ROLE_KEEPER") &&
           this.state.keeperStates.includes(this.props.status)
         )) ||
       this.props.state === "Canceled"

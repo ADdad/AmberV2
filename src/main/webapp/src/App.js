@@ -15,6 +15,7 @@ import OrderReview from "./comp/OrderReview";
 import OrderEdit from "./comp/OrderEdit";
 import AdminPageNew from "./comp/AdminPageNew";
 import DashboardPage from "./comp/DashboardPage";
+import SearchAppBar from "./comp/SearchAppBar";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -70,10 +71,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <header className="navbar">
-            <Navbar />
-          </header>
-
+          <Navbar />
           <br />
           <Switch>
             <Route
@@ -85,9 +83,12 @@ class App extends Component {
             <Route path="/testdash" component={DashboardPage} />
             <Route path="/admin" component={AdminPageNew} />
             <Route path="/order/edit/:requestId" component={OrderEdit} />
-            <Route path="/order/create/:type" component={CreateOrder} />
+            <Route
+              path="/order/create/:type/:requestId?"
+              component={CreateOrder}
+            />
             <Route path="/order/:requestId" component={OrderReview} />
-            <Route path="/dashboard" component={AdminPage} />
+            <Route path="/dashboard" component={DashboardPage} />
             <Route path="/reports" component={ReportsPage} />
             <Route component={ErrorPage} />
           </Switch>

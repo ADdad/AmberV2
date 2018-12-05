@@ -586,7 +586,7 @@ class OrderEdit extends Component {
             {this.state.comments.map(comment => (
               <Comment
                 key={comment.id}
-                date={comment.creationDate}
+                date={comment.creationDate.substr(0, 16).replace("T", "/")}
                 authorName={comment.user.email}
                 textComment={comment.text}
               />
@@ -718,13 +718,15 @@ class OrderEdit extends Component {
             <div className="form-row">
               <div className="form-group mr-2">
                 <label className="">
-                  Creation Date: {this.state.creationDate}
+                  Creation Date:{" "}
+                  {this.state.creationDate.substr(0, 16).replace("T", "/")}
                 </label>
               </div>
               <div className="form-group mr-2">
                 <label className="">
                   {" "}
-                  Updated Date: {this.state.updatedDate}
+                  Updated Date:{" "}
+                  {this.state.updatedDate.substr(0, 16).replace("T", "/")}
                 </label>
               </div>
             </div>

@@ -50,7 +50,9 @@ public class RequestDaoImpl implements RequestDao {
 
         jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
                 creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(), request.getTitle());
-
+        if(request.getConnectedRequestId() != null){
+            jdbcTemplate.update(SQLQueries.CONNECT_REQUEST, request.getConnectedRequestId(), id);
+        }
         request.setId(id);
 
         return request;

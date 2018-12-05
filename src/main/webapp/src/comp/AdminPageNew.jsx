@@ -141,9 +141,6 @@ class AdminPageNew extends Component {
     }
     return (
       <React.Fragment>
-        <br />
-        <br />
-        <br />
         <div className="col-md-12">
           {user}
           <div className="form-row">

@@ -8,6 +8,10 @@ class CreatorButtons extends Component {
 
   handleClick = name => {
     console.log(name);
+    if (name === "refund") {
+      let path = "/order/create/" + name + "/" + this.props.requestId;
+      this.props.history.push(path);
+    }
     if (name === "Edit") {
       let path = "/order/edit/" + this.props.requestId;
       this.props.history.push(path);
@@ -93,7 +97,11 @@ class CreatorButtons extends Component {
         break;
       }
       case "Completed": {
-        localButtons.push({ value: "Return equipment", type: "success" });
+        localButtons.push({
+          value: "Return equipment",
+          type: "success",
+          status: "refund"
+        });
         break;
       }
       default:

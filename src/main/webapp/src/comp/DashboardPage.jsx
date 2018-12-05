@@ -10,13 +10,14 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Visibility from "@material-ui/icons/Visibility";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import Button from "@material-ui/core/Button";
 
 class DashboardPage extends Component {
   state = {
-    checked: [],
+    createdChecked: [],
+    executingChecked: [],
     userId: null,
-    userRoles: ["ROLE_KEEPER"],
+    userRoles: [],
     activePage: 1,
     postStyle: false,
     itemsPerPage: 25,
@@ -33,8 +34,12 @@ class DashboardPage extends Component {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         let doubleListLocal = true;
-        if (data.roles.includes("ROLE_USER") && data.roles.length > 1)
+        if (
+          data.roles.filter(role => role.name === "ROLE_USER").length > 0 &&
+          data.roles.length > 1
+        )
           doubleListLocal = true;
         else doubleListLocal = false;
         this.setState({
@@ -59,6 +64,7 @@ class DashboardPage extends Component {
         this.setState({
           createdRequests: data.requests,
           createdListSize: data.requestsCount,
+          activePage: page,
           isLoading: false
         });
       })
@@ -75,6 +81,7 @@ class DashboardPage extends Component {
         this.setState({
           executingRequests: data.requests,
           executingListSize: data.requestsCount,
+          executingActivePage: page,
           isLoading: false
         });
       })
@@ -105,7 +112,7 @@ class DashboardPage extends Component {
   };
 
   handleShowRequest = requestId => {
-    this.props.history.push("order/" + requestId);
+    this.props.history.push("/order/" + requestId);
   };
 
   renderCreatedRequest = request => {
@@ -115,10 +122,10 @@ class DashboardPage extends Component {
         role={undefined}
         dense
         button
-        onClick={this.handleToggle(request.id)}
+        onClick={this.handleToggleCreated(request.id)}
       >
         <Checkbox
-          checked={this.state.checked.indexOf(request.id) !== -1}
+          checked={this.state.createdChecked.indexOf(request.id) !== -1}
           tabIndex={-1}
           disableRipple
         />
@@ -164,10 +171,10 @@ class DashboardPage extends Component {
         role={undefined}
         dense
         button
-        onClick={this.handleToggle(request.id)}
+        onClick={this.handleToggleExecuting(request.id)}
       >
         <Checkbox
-          checked={this.state.checked.indexOf(request.id) !== -1}
+          checked={this.state.executingChecked.indexOf(request.id) !== -1}
           tabIndex={-1}
           disableRipple
         />
@@ -200,10 +207,10 @@ class DashboardPage extends Component {
     );
   };
 
-  handleToggle = value => () => {
-    const { checked } = this.state;
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  handleToggleExecuting = value => () => {
+    const { executingChecked } = this.state;
+    const currentIndex = executingChecked.indexOf(value);
+    const newChecked = [...executingChecked];
 
     if (currentIndex === -1) {
       newChecked.push(value);
@@ -212,7 +219,23 @@ class DashboardPage extends Component {
     }
 
     this.setState({
-      checked: newChecked
+      executingChecked: newChecked
+    });
+  };
+
+  handleToggleCreated = value => () => {
+    const { createdChecked } = this.state;
+    const currentIndex = createdChecked.indexOf(value);
+    const newChecked = [...createdChecked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    this.setState({
+      createdChecked: newChecked
     });
   };
 
@@ -268,23 +291,57 @@ class DashboardPage extends Component {
     );
   };
 
+  createRequestButton = () => {
+    return (
+      <Button
+        variant="raised"
+        color="primary"
+        onClick={this.handleOrderRequest}
+      >
+        Order items
+      </Button>
+    );
+  };
+
+  createReportsButton = () => {
+    return (
+      <Button variant="raised" color="primary" onClick={this.handleReportsPage}>
+        Reports
+      </Button>
+    );
+  };
+
+  handleOrderRequest = () => {
+    this.props.history.push("/order/create/order");
+  };
+
+  handleReportsPage = () => {
+    this.props.history.push("/reports");
+  };
+
   render() {
     if (this.state.isLoading) {
       return <p>Loading ...</p>;
     }
-
     return (
       <React.Fragment>
-        <br />
-        <br />
-        <br />
-        <br />
         <div className="container-fluid">
+          <div className="from-row d-flex justify-content-between">
+            {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+              .length > 0 && this.createRequestButton()}
+            {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
+              .length > 0 ||
+              this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
+                .length > 0) &&
+              this.createReportsButton()}
+          </div>
           <div className="form-row">
-            {this.state.userRoles.includes("ROLE_USER") &&
-              this.renderCreatedRequests()}
-            {(this.state.userRoles.includes("ROLE_ADMIN") ||
-              this.state.userRoles.includes("ROLE_KEEPER")) &&
+            {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+              .length > 0 && this.renderCreatedRequests()}
+            {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
+              .length > 0 ||
+              this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
+                .length > 0) &&
               this.renderExecutingRequests()}
           </div>
         </div>

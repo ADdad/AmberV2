@@ -206,6 +206,7 @@ class OrderReview extends Component {
             status={this.state.status}
             requestId={this.state.requestId}
             executorId={this.state.executorId}
+            validateComment={this.executorAlert}
           />
         </React.Fragment>
       );
@@ -315,7 +316,7 @@ class OrderReview extends Component {
             {this.state.comments.map(comment => (
               <Comment
                 key={comment.id}
-                date={comment.creationDate}
+                date={comment.creationDate.substr(0, 16).replace("T", "/")}
                 authorName={comment.user.email}
                 textComment={comment.text}
               />
@@ -340,12 +341,8 @@ class OrderReview extends Component {
       <React.Fragment>
         <div className="container">
           <div className="container">
-            <br />
-            <br />
             <h4 className="text-danger">{this.state.executorAlert}</h4>
-            <br />
-            <br />
-            <br />
+
             <h2>Title: {this.state.title} </h2>
             <h4 className="form-group">
               Status:
@@ -363,13 +360,15 @@ class OrderReview extends Component {
             <div className="form-row">
               <div className="form-group mr-2">
                 <label className="">
-                  Creation Date: {this.state.creationDate}
+                  Creation Date:{" "}
+                  {this.state.creationDate.substr(0, 16).replace("T", "/")}
                 </label>
               </div>
               <div className="form-group mr-2">
                 <label className="">
                   {" "}
-                  Updated Date: {this.state.updatedDate}
+                  Updated Date:{" "}
+                  {this.state.updatedDate.substr(0, 16).replace("T", "/")}
                 </label>
               </div>
             </div>

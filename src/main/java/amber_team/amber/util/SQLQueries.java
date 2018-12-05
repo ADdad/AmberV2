@@ -12,7 +12,7 @@ public class SQLQueries {
             " (id ,email, password, s_name, f_name, enabled) VALUES (?, ?, ?, ?, ?, ?);" +
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?); COMMIT;";
     public static final String EXISTING_THIS_EMAIL = "SELECT email FROM users WHERE email = ?";
-    public static final String IF_EXISTS_EQUIP_ITS_QUANTITY = "SELECT quantity FROM warehouse_equipment WHERE  equipment_id = ? "+
+    public static final String IF_EXISTS_EQUIP_ITS_QUANTITY = "SELECT quantity FROM warehouse_equipment WHERE  equipment_id = ? " +
             "AND warehouse_id = ?";
     public static final String USER_BY_USERNAME_QUERY = "SELECT users.email as username, " +
             "users.password as password, enabled " +
@@ -107,7 +107,7 @@ public class SQLQueries {
             "AND requests.id = ?";
 
     public static final String UPDATE_WARE_EQUIP_QUANTITY = "UPDATE warehouse_equipment" +
-            " SET quantity = ? "+
+            " SET quantity = ? " +
             " WHERE equipment_id = ? AND warehouse_id = ?  ";
     public static final String GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE = "SELECT e.id AS id, " +
             "  re.quantity-we.quantity AS quantity_diff " +
@@ -370,6 +370,8 @@ public class SQLQueries {
             " status != 'Canceled' AND status != 'Completed' AND archive = false";
     public static final String CLEAR_USERS_ROLES = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id NOT IN (:roles)";
     public static final String UPDATE_ENABLED_USER = "UPDATE users SET enabled = ? WHERE id = ?";
+    public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";
+
     private SQLQueries() {
     }
 
