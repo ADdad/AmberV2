@@ -166,11 +166,15 @@ class CreateOrder extends Component {
             equipment: data.equipment,
             isLoading: false
           });
+          console.log(this.state.userId);
           if (
             data.status != "Completed" ||
             data.creator.id != this.state.userId
           )
-            this.props.history.push("/dashboard");
+            console.log("redirect");
+          console.log(data.status);
+
+          //this.props.history.push("/dashboard");
           this.loadEquipment(data.equipment);
         })
         .catch(error => console.log(error));
@@ -178,6 +182,7 @@ class CreateOrder extends Component {
   }
 
   loadEquipment = localEquip => {
+    console.log(this.state);
     let localItemsOptions = this.getItemsOptions(localEquip);
     localItemsOptions.map(e => this.addItem(e));
 
@@ -186,6 +191,18 @@ class CreateOrder extends Component {
       readyItems[i].quantity = localEquip[i].quantity;
     }
     this.setState({ resultItems: readyItems });
+  };
+
+  resetEquipment = localEquip => {
+    this.handleRemoveAll();
+    let localItemsOptions = this.getItemsOptions(localEquip);
+    localItemsOptions.map(e => this.addItem(e));
+    let readyItems = this.state.resultItems.slice();
+    for (let i = 0; i < readyItems.length; i++) {
+      console.log(i);
+      readyItems[i].quantity = localEquip[i].quantity;
+    }
+    this.setState({ resultItems: localItemsOptions });
   };
 
   handleSubmit = () => {
@@ -496,7 +513,7 @@ class CreateOrder extends Component {
     return (
       <div className="form-group col-md-3">
         <button
-          onClick={() => this.loadEquipment(this.state.equipment)}
+          onClick={() => this.resetEquipment(this.state.equipment)}
           className="btn btn-lg btn-outline-danger"
         >
           ResetItems
@@ -608,9 +625,16 @@ class CreateOrder extends Component {
             </div>
 
             <div className="form-row">
-              <div className="form-group col-md-9">
+              <div
+                className={
+                  this.state.type === "refund"
+                    ? "form-group col-md-6"
+                    : "form-group col-md-9"
+                }
+              >
                 <h3>Items</h3>
               </div>
+              {this.state.type === "refund" && this.renderResetItemsButton()}
               <div className="form-group col-md-3">
                 <button
                   onClick={() => this.handleRemoveAll()}
@@ -619,7 +643,6 @@ class CreateOrder extends Component {
                   Remove all
                 </button>
               </div>
-              {this.state.type === "refund" && this.renderResetItemsButton()}
             </div>
             {items}
             {this.initReactSelect()}

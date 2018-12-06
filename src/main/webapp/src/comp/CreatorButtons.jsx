@@ -8,9 +8,10 @@ class CreatorButtons extends Component {
 
   handleClick = name => {
     console.log(name);
-    if (name === "refund") {
-      let path = "/order/create/" + name + "/" + this.props.requestId;
+    if (name == "refund") {
+      let path = "/order/create/refund/" + this.props.requestId;
       this.props.history.push(path);
+      return;
     }
     if (name === "Edit") {
       let path = "/order/edit/" + this.props.requestId;

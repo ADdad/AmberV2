@@ -80,7 +80,6 @@ class App extends Component {
             />
 
             <Route path="/registration" component={RegForm} />
-            <Route path="/testdash" component={DashboardPage} />
             <Route path="/admin" component={AdminPageNew} />
             <Route path="/order/edit/:requestId" component={OrderEdit} />
             <Route

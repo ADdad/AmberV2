@@ -11,7 +11,7 @@ class OrderReview extends Component {
       requestId: 0,
       userId: 1,
       userRoles: [],
-      creator: {},
+      creator: { },
       title: "",
       equipment: [],
       attributes: [],
