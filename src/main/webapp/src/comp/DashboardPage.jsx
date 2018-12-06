@@ -60,11 +60,13 @@ class DashboardPage extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        let doubleList = true;
+        if (data.requestsCount < 1) doubleList = false;
         this.setState({
           createdRequests: data.requests,
           createdListSize: data.requestsCount,
           activePage: page,
+          doubleList: doubleList,
           isLoading: false
         });
       })
@@ -77,10 +79,13 @@ class DashboardPage extends Component {
     })
       .then(response => response.json())
       .then(data => {
+        let doubleList = true;
+        if (data.requestsCount < 1) doubleList = false;
         console.log(data);
         this.setState({
           executingRequests: data.requests,
           executingListSize: data.requestsCount,
+          doubleList: doubleList,
           executingActivePage: page,
           isLoading: false
         });
@@ -122,6 +127,7 @@ class DashboardPage extends Component {
         role={undefined}
         dense
         button
+        divider
         onClick={this.handleToggleCreated(request.id)}
       >
         <Checkbox
@@ -171,6 +177,7 @@ class DashboardPage extends Component {
         role={undefined}
         dense
         button
+        divider
         onClick={this.handleToggleExecuting(request.id)}
       >
         <Checkbox
@@ -240,6 +247,7 @@ class DashboardPage extends Component {
   };
 
   renderCreatedRequests = () => {
+    console.log(this.state.createdListSize);
     let createdRequests = this.state.createdRequests.map(u =>
       this.renderCreatedRequest(u)
     );
@@ -266,6 +274,7 @@ class DashboardPage extends Component {
   };
 
   renderExecutingRequests = () => {
+    console.log(this.state.executingListSize);
     let executingRequests = this.state.executingRequests.map(u =>
       this.renderExecutingRequest(u)
     );
@@ -337,11 +346,14 @@ class DashboardPage extends Component {
           </div>
           <div className="form-row">
             {this.state.userRoles.filter(role => role.name === "ROLE_USER")
-              .length > 0 && this.renderCreatedRequests()}
+              .length > 0 &&
+              this.state.createdListSize > 0 &&
+              this.renderCreatedRequests()}
             {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
               .length > 0 ||
               this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
                 .length > 0) &&
+              this.state.executingListSize > 0 &&
               this.renderExecutingRequests()}
           </div>
         </div>

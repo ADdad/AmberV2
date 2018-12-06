@@ -57,7 +57,7 @@ public class RequestServiceImpl implements RequestService {
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
-       // sendCreationEmail(request);
+        sendCreationEmail(request);
         return finalRequest;
 
 
