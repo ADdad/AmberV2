@@ -22,14 +22,15 @@ class CreateOrder extends Component {
       viewItems: [],
       warehouses: [],
       warehouseId: "",
-      type: "",
+      type: "refund",
       description: "",
       attachments: [],
       optionalAttributes: [],
       oAttributesValues: [],
       resultOptionalAttributes: [],
       alertFiles: "",
-      connectedRequest: ""
+      connectedRequest: "",
+      equipment: []
     };
   }
 
@@ -97,25 +98,28 @@ class CreateOrder extends Component {
         }
       }
     }
-    if (this.props.type === "refund") {
+    if (this.state.type === "refund") {
       let localEquipment = [...this.state.equipment];
       if (resultItemsLocal.length > localEquipment.length) {
         localAlert += "You can`t refund more than have\n";
         validated = false;
-      }
-      for (let i = 0; i < resultItemsLocal.length; i++) {
-        let index = localEquipment.findIndex(
-          p => p.id === resultItemsLocal[i].id
-        );
-        if (index < 0) {
-          localAlert += "You can`t refund items not from order\n";
-          validated = false;
-          break;
-        }
-        if (this.loadEquipment[index].quantity < resultItemsLocal[i].quantity) {
-          localAlert += "You can`t refund more than have\n";
-          validated = false;
-          break;
+      } else {
+        for (let i = 0; i < resultItemsLocal.length; i++) {
+          let index = localEquipment.findIndex(
+            p => p.id === resultItemsLocal[i].id
+          );
+          if (index < 0) {
+            localAlert += "You can`t refund items not from order\n";
+            validated = false;
+            break;
+          }
+          if (
+            localEquipment[index].quantity < resultItemsLocal[i].quantity
+          ) {
+            localAlert += "You can`t refund more than have\n";
+            validated = false;
+            break;
+          }
         }
       }
     }
@@ -161,6 +165,7 @@ class CreateOrder extends Component {
         .then(data => {
           console.log(data);
           this.setState({
+            connectedRequest: data.id,
             warehouseId: data.warehouse.id,
             creator: data.creator,
             equipment: data.equipment,
@@ -171,10 +176,7 @@ class CreateOrder extends Component {
             data.status != "Completed" ||
             data.creator.id != this.state.userId
           )
-            console.log("redirect");
-          console.log(data.status);
-
-          //this.props.history.push("/dashboard");
+            this.props.history.push("/dashboard");
           this.loadEquipment(data.equipment);
         })
         .catch(error => console.log(error));
@@ -194,15 +196,16 @@ class CreateOrder extends Component {
   };
 
   resetEquipment = localEquip => {
-    this.handleRemoveAll();
-    let localItemsOptions = this.getItemsOptions(localEquip);
-    localItemsOptions.map(e => this.addItem(e));
-    let readyItems = this.state.resultItems.slice();
-    for (let i = 0; i < readyItems.length; i++) {
-      console.log(i);
-      readyItems[i].quantity = localEquip[i].quantity;
+    let readyItems = [];
+    let viewLoc = [];
+    for (let i = 0; i < localEquip.length; i++) {
+      readyItems.push({
+        id: localEquip[i].id,
+        quantity: localEquip[i].quantity
+      });
+      viewLoc.push(this.itemName(localEquip[i]));
     }
-    this.setState({ resultItems: localItemsOptions });
+    this.setState({ resultItems: readyItems, viewItems: viewLoc });
   };
 
   handleSubmit = () => {

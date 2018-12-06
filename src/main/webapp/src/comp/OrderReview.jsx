@@ -4,6 +4,7 @@ import ItemsList from "./ItemsList";
 import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
 import Select from "react-select";
+import ExecutorRefundButtons from "./ExecutorRefundButtons";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
@@ -11,7 +12,7 @@ class OrderReview extends Component {
       requestId: 0,
       userId: 1,
       userRoles: [],
-      creator: { },
+      creator: {},
       title: "",
       equipment: [],
       attributes: [],
@@ -181,35 +182,67 @@ class OrderReview extends Component {
   };
 
   buttonsSpace = () => {
-    if (this.state.creator.id == this.state.userId) {
-      return (
-        <React.Fragment>
-          <ExecutorButtons
-            userId={this.state.userId}
-            userRoles={this.state.userRoles}
-            status={this.state.status}
-            requestId={this.state.requestId}
-            executorId={this.state.executorId}
-            validateComment={this.executorAlert}
-          />
-          <CreatorButtons
-            requestId={this.state.requestId}
-            status={this.state.status}
-          />
-        </React.Fragment>
-      );
-    } else
-      return (
-        <React.Fragment>
-          <ExecutorButtons
-            userRoles={this.state.userRoles}
-            status={this.state.status}
-            requestId={this.state.requestId}
-            executorId={this.state.executorId}
-            validateComment={this.executorAlert}
-          />
-        </React.Fragment>
-      );
+    if (this.state.type.name === "refund") {
+      if (this.state.creator.id == this.state.userId) {
+        return (
+          <React.Fragment>
+            <ExecutorRefundButtons
+              userId={this.state.userId}
+              userRoles={this.state.userRoles}
+              status={this.state.status}
+              requestId={this.state.requestId}
+              executorId={this.state.executorId}
+              validateComment={this.executorAlert}
+            />
+            <CreatorButtons
+              requestId={this.state.requestId}
+              status={this.state.status}
+            />
+          </React.Fragment>
+        );
+      } else
+        return (
+          <React.Fragment>
+            <ExecutorRefundButtons
+              userRoles={this.state.userRoles}
+              status={this.state.status}
+              requestId={this.state.requestId}
+              executorId={this.state.executorId}
+              validateComment={this.executorAlert}
+            />
+          </React.Fragment>
+        );
+    } else {
+      if (this.state.creator.id == this.state.userId) {
+        return (
+          <React.Fragment>
+            <ExecutorButtons
+              userId={this.state.userId}
+              userRoles={this.state.userRoles}
+              status={this.state.status}
+              requestId={this.state.requestId}
+              executorId={this.state.executorId}
+              validateComment={this.executorAlert}
+            />
+            <CreatorButtons
+              requestId={this.state.requestId}
+              status={this.state.status}
+            />
+          </React.Fragment>
+        );
+      } else
+        return (
+          <React.Fragment>
+            <ExecutorButtons
+              userRoles={this.state.userRoles}
+              status={this.state.status}
+              requestId={this.state.requestId}
+              executorId={this.state.executorId}
+              validateComment={this.executorAlert}
+            />
+          </React.Fragment>
+        );
+    }
   };
 
   componentDidMount() {

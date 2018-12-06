@@ -52,12 +52,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request save(RequestSaveDto request) {
+        System.out.println(request.getConnectedRequest());
         Request newRequest = mapSaveDto(request);
         Request finalRequest = requestDao.create(newRequest);
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
 
         equipmentDao.addEquipmentToRequest(request.getItems(), finalRequest.getId());
-        sendCreationEmail(request);
+       // sendCreationEmail(request);
         return finalRequest;
 
 
