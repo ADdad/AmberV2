@@ -222,7 +222,7 @@ class CreateOrder extends Component {
           warehouseId: this.state.warehouseId,
           items: this.state.resultItems,
           attributes: readyAttributes,
-          connectRequest: this.state.connectedRequest,
+          connectedRequest: this.state.connectedRequest,
           offset: new Date().getTimezoneOffset()
         }),
         headers: {

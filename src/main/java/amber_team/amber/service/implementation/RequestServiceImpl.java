@@ -52,7 +52,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request save(RequestSaveDto request) {
-        System.out.println(request.getConnectedRequest());
         Request newRequest = mapSaveDto(request);
         Request finalRequest = requestDao.create(newRequest);
         attributesDao.addAttributeValueToRequest(filterNullAttributes(request.getAttributes()), finalRequest.getId());
