@@ -11,16 +11,21 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class ReportServiceImpl implements ReportService {
 
+
+    private final ReportDao reportDao;
+
     @Autowired
-    private ReportDao reportDao;
+    public ReportServiceImpl(ReportDao reportDao) {
+        this.reportDao = reportDao;
+    }
 
     @Override
     public ResponseEntity getAvailableEquipmentReport(ReportAvailableEquipmentDto reportDto) {
@@ -152,7 +157,7 @@ public class ReportServiceImpl implements ReportService {
     private void generateEquipmentExcel(List<ReportEquipmentResponseDto> equipment, HttpServletResponse response, String fileName){
         List<String> headers = Arrays.asList("Model", "Quantity", "Producer", "Country");
         try {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            LocalDateTime timestamp = LocalDateTime.now();
             response.addHeader("Content-disposition", "attachment; filename="+fileName+"-equipment-" + timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
             new SimpleExporter().gridExport(headers, equipment, "equipmentModel, quantity, equipmentProducer," +
@@ -167,7 +172,7 @@ public class ReportServiceImpl implements ReportService {
         List<String> headers = Arrays.asList("Order Type", "Status", "Creator", "Executor", "Creation date",
                 "Last modified date", " Warehouse", "Title", "Description");
         try {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            LocalDateTime timestamp = LocalDateTime.now();
             response.addHeader("Content-disposition", "attachment; filename="+fileName+"-orders-" + timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
             new SimpleExporter().gridExport(headers, orders, "orderType, orderStatus, creator, executor," +

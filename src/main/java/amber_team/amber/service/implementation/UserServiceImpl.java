@@ -7,7 +7,6 @@ import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.service.interfaces.UserService;
-import amber_team.amber.util.EmailTexts;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.RegExp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,21 @@ public class UserServiceImpl implements UserService {
 	
 
 
-	@Autowired
-	private UserDao userDao;
+
+	private final UserDao userDao;
+
+
+	private final BCryptPasswordEncoder bcryptEncoder;
+
+
+	private final EmailServiceImpl emailService;
 
 	@Autowired
-	private BCryptPasswordEncoder bcryptEncoder;
-
-	@Autowired
-	private EmailServiceImpl emailService;
+	public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bcryptEncoder, EmailServiceImpl emailService) {
+		this.userDao = userDao;
+		this.bcryptEncoder = bcryptEncoder;
+		this.emailService = emailService;
+	}
 
 
 	@Override

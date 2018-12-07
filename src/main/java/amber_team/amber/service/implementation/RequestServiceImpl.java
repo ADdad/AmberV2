@@ -119,7 +119,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Request changeStatus(MyRequestStatusChangeDto request) {
 
-        String oldStatus = requestDao.getById(request.getRequestId()).getStatus();
+        String existedStatus = requestDao.getById(request.getRequestId()).getStatus();
 
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
@@ -153,14 +153,14 @@ public class RequestServiceImpl implements RequestService {
             commentDao.create(newComment);
         }
 
-        sendChangeStatusEmail(requestNew, oldStatus);
+        sendChangeStatusEmail(requestNew, existedStatus);
 
         return requestNew;
     }
 
-    private void sendChangeStatusEmail(Request requestNew, String oldStatus) {
+    private void sendChangeStatusEmail(Request requestNew, String existedStatus) {
         User userInfo = userDao.getById(requestNew.getCreatorId());
-        emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(), oldStatus,
+        emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(), existedStatus,
                 requestNew.getStatus());
     }
 

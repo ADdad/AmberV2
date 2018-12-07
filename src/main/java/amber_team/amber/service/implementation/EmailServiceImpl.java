@@ -11,10 +11,16 @@ import java.util.List;
 @Component
 public class EmailServiceImpl  {
 
+
+    private final JavaMailSender emailSender;
+
+    private final EmailDao emailDao;
+
     @Autowired
-    public JavaMailSender emailSender;
-    @Autowired
-    public EmailDao emailDao;
+    public EmailServiceImpl(JavaMailSender javaMailSender, EmailDao emailDao) {
+        this.emailDao = emailDao;
+        this.emailSender = javaMailSender;
+    }
 
     public void sendRegistrationMessage(String to, String firstName) {
         String registrationTemplate = emailDao.getRegistrationTemplate();
@@ -30,16 +36,16 @@ public class EmailServiceImpl  {
         sendSimpleMessage(to,subject,text);
     }
 
-    public void sendRequestStatusChanged(String to, String firstName,String requestTitle, String oldStatus, String newStatus) {
+    public void sendRequestStatusChanged(String to, String firstName,String requestTitle, String existedStatus, String currentStatus) {
         String requestStatusChangedTemplate = emailDao.getRequestStatusChangedTemplate();
-        String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, oldStatus, newStatus);
+        String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, existedStatus, currentStatus);
         String subject = "Request status changed!";
         sendSimpleMessage(to,subject,text);
     }
 
-    public void sendUserRolesChanged(String to, String firstName, List<String> newRoles) {
+    public void sendUserRolesChanged(String to, String firstName, List<String> currentRoles) {
         String userRolesChangedTemplate = emailDao.getUserRolesChangedTemplate();
-        String roles = String.join(", ",newRoles);
+        String roles = String.join(", ",currentRoles);
         String text = String.format(userRolesChangedTemplate, firstName, roles);
         String subject = "Your roles list has been changed!";
         sendSimpleMessage(to, subject, text);

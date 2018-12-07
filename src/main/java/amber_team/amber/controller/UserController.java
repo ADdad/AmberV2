@@ -15,17 +15,21 @@ import java.security.Principal;
 @RestController
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     
-    @RequestMapping(value="/register", method = RequestMethod.POST)
+    @PostMapping(value="/register")
     public ResponseEntity<User> saveUser(@RequestBody UserDto user){
         return  userService.save(user);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value="/userinfo", method = RequestMethod.GET)
+    @GetMapping(value="/userinfo")
     public ResponseEntity<UserInfoDto> getUserInfo(Principal principal){
         return userService.getUserInfo(principal);
     }

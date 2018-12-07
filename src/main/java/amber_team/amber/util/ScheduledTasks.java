@@ -9,8 +9,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTasks {
+
+    private final RequestService requestService;
+
     @Autowired
-    private RequestService requestService;
+    public ScheduledTasks(RequestService requestService) {
+        this.requestService = requestService;
+    }
 
     @Scheduled(cron="0 1 0 ? * *")
     public void archiveOldRequests() {
