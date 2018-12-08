@@ -61,7 +61,7 @@ public class RequestController {
         return requestService.getCreatedRequests(principal, page);
     }
 
-    @PreAuthorize("isAuthenticated()")  
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/requests/executing/{page}")
     @ResponseStatus(HttpStatus.OK)
     public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page) {
