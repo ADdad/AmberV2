@@ -88,8 +88,8 @@ class App extends Component {
             />
             <Route path="/order/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={DashboardPage} />
-            <Route path="/" component={DashboardPage} />
-            <Route path="/reports" component={ReportsPage} />
+              <Route path="/reports" component={ReportsPage} />
+
             <Route component={ErrorPage} />
           </Switch>
         </div>

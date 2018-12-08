@@ -4,16 +4,21 @@ class Navbar extends Component {
   state = {
     tempVal: false
   };
+
+  componentWillMount = () => {
+      let tempVal = false;
+      fetch("/userinfo")
+          .then(response => response.json())
+          .then(data => {
+              this.setState({ tempVal: true });
+          })
+          .catch(error => {
+              this.setState({ tempVal: false });
+          });
+
+  }
   render() {
-    let tempVal = false;
-    fetch("/userinfo")
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ tempVal: true });
-      })
-      .catch(error => {
-        this.setState({ tempVal: false });
-      });
+
     return (
       <React.Fragment>
         <SearchAppBar tempVal={this.state.tempVal} />
