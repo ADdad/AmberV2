@@ -1,22 +1,17 @@
 import React, { Component } from "react";
 import SearchAppBar from "./SearchAppBar";
 class Navbar extends Component {
-  state = {
-    tempVal: false
-  };
+  state = {};
   render() {
     let tempVal = false;
-    fetch("/userinfo")
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ tempVal: true });
-      })
-      .catch(error => {
-        this.setState({ tempVal: false });
-      });
+    const currentPath = this.props.location.pathname;
+    const regLoginEx = /\w*\/login\b/g;
+    const regRegistEx = /\w*\/registration\b/g;
+    tempVal = !(regLoginEx.test(currentPath) || regRegistEx.test(currentPath));
+    console.log(currentPath);
     return (
       <React.Fragment>
-        <SearchAppBar tempVal={this.state.tempVal} />
+        <SearchAppBar tempVal={tempVal} />
       </React.Fragment>
     );
   }
