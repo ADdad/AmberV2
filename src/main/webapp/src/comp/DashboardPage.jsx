@@ -27,7 +27,9 @@ class DashboardPage extends Component {
     createdRequests: [],
     executingActivePage: 1,
     executingListSize: 0,
-    executingRequests: []
+    executingRequests: [],
+    executorDoubleList: false,
+    createdDoubleList: false
   };
 
   componentDidMount() {
@@ -66,7 +68,7 @@ class DashboardPage extends Component {
           createdRequests: data.requests,
           createdListSize: data.requestsCount,
           activePage: page,
-          doubleList: doubleList,
+          createdDoubleList: doubleList,
           isLoading: false
         });
       })
@@ -85,7 +87,7 @@ class DashboardPage extends Component {
         this.setState({
           executingRequests: data.requests,
           executingListSize: data.requestsCount,
-          doubleList: doubleList,
+          executorDoubleList: doubleList,
           executingActivePage: page,
           isLoading: false
         });
@@ -273,6 +275,10 @@ class DashboardPage extends Component {
     );
   };
 
+  checkDoubleList = () => {
+    return this.state.executorDoubleList && this.state.createdDoubleList;
+  };
+
   renderExecutingRequests = () => {
     console.log(this.state.executingListSize);
     let executingRequests = this.state.executingRequests.map(u =>
@@ -329,6 +335,9 @@ class DashboardPage extends Component {
   };
 
   render() {
+    if (this.checkDoubleList() != this.state.doubleList) {
+      this.setState({ doubleList: this.checkDoubleList() });
+    }
     if (this.state.isLoading) {
       return <p>Loading ...</p>;
     }
