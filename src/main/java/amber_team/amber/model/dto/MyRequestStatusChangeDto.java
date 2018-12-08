@@ -7,6 +7,14 @@ public class MyRequestStatusChangeDto {
     private String userId;
     private String commentText;
 
+    public MyRequestStatusChangeDto() {
+    }
+
+    public MyRequestStatusChangeDto(String requestId, String status) {
+        this.requestId = requestId;
+        this.status = status;
+    }
+
     public String getConnectedRequest() {
         return connectedRequest;
     }

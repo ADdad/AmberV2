@@ -309,7 +309,7 @@ class DashboardPage extends Component {
   createRequestButton = () => {
     return (
       <Button
-        variant="raised"
+        variant="contained"
         color="primary"
         onClick={this.handleOrderRequest}
       >
@@ -318,9 +318,48 @@ class DashboardPage extends Component {
     );
   };
 
+  createCancelManyButton = () => {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={this.handleCancelManyButton}
+      >
+        Cancel seleced
+      </Button>
+    );
+  };
+
+  handleCancelManyButton = () => {
+    if (this.state.createdChecked.length > 0) {
+      fetch("/request/list", {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: "Canceled",
+          requests: this.state.createdChecked
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.downloadCreatedRequestsPaginated(this.state.activePage);
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
+  };
+
   createReportsButton = () => {
     return (
-      <Button variant="raised" color="primary" onClick={this.handleReportsPage}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={this.handleReportsPage}
+      >
         Reports
       </Button>
     );
@@ -345,8 +384,14 @@ class DashboardPage extends Component {
       <React.Fragment>
         <div className="container-fluid">
           <div className="from-row d-flex justify-content-between">
-            {this.state.userRoles.filter(role => role.name === "ROLE_USER")
-              .length > 0 && this.createRequestButton()}
+            <div>
+              {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+                .length > 0 && this.createRequestButton()}
+              {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+                .length > 0 &&
+                this.state.createdChecked.length > 0 &&
+                this.createCancelManyButton()}
+            </div>
             {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
               .length > 0 ||
               this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")

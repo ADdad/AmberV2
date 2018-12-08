@@ -61,7 +61,7 @@ public class RequestController {
         return requestService.getCreatedRequests(principal, page);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")  
     @GetMapping("/user/requests/executing/{page}")
     @ResponseStatus(HttpStatus.OK)
     public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page) {
@@ -87,6 +87,13 @@ public class RequestController {
     @PatchMapping("/request")
     public Request updateRequest(@RequestBody MyRequestStatusChangeDto request) {
         return requestService.changeStatus(request);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/request/list")
+    public ResponseEntity updateRequests(@RequestBody ListRequestChangeStatusDto requests) {
+        requestService.changeStatus(requests);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PreAuthorize("isAuthenticated()")

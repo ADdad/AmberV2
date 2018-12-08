@@ -158,6 +158,14 @@ public class RequestServiceImpl implements RequestService {
         return requestNew;
     }
 
+    @Override
+    public void changeStatus(ListRequestChangeStatusDto requests) {
+        for (String requestId:
+             requests.getRequests()) {
+            changeStatus(new MyRequestStatusChangeDto(requestId, requests.getStatus()));
+        }
+    }
+
     private void sendChangeStatusEmail(Request requestNew, String existedStatus) {
         User userInfo = userDao.getById(requestNew.getCreatorId());
         emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(), existedStatus,

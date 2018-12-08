@@ -26,6 +26,8 @@ public interface RequestService {
 
     Request changeStatus(MyRequestStatusChangeDto request);
 
+    void changeStatus(ListRequestChangeStatusDto request);
+
     Request editRequest(RequestSaveDto request);
 
     RequestListDtoPagination getExecutingRequests(Principal principal, int page);
