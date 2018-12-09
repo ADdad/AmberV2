@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
-
 @Component
 public class ScheduledTasks {
 
@@ -17,7 +16,7 @@ public class ScheduledTasks {
         this.requestService = requestService;
     }
 
-    @Scheduled(cron="0 1 0 ? * *")
+    @Scheduled(cron = "0 1 0 ? * *")
     public void archiveOldRequests() {
         requestService.archiveOldRequests();
     }

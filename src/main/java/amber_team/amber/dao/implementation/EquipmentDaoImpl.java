@@ -76,10 +76,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         String drop = SQLQueries.IF_EXISTS_EQUIP_ITS_QUANTITY;
         Integer cnt = jdbcTemplate.queryForObject(
-                drop, Integer.class,e.getId() ,ware_id);
+                drop, Integer.class, e.getId(), ware_id);
 
-        if(cnt != null && cnt > new_val) {jdbcTemplate.update(SQLQueries.UPDATE_WARE_EQUIP_QUANTITY, new_val, e.getId(),ware_id);
-            return ResponseEntity.ok().body("Success");}
+        if (cnt != null && cnt > new_val) {
+            jdbcTemplate.update(SQLQueries.UPDATE_WARE_EQUIP_QUANTITY, new_val, e.getId(), ware_id);
+            return ResponseEntity.ok().body("Success");
+        }
         return ResponseEntity.badRequest().body("Bad query");
     }
 
@@ -125,9 +127,9 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public List<EquipmentDto> decreaseEquipment(String requestId) {
         List<EquipmentDto> unavailableEquipment = getUnavailableEquipmentQuantity(requestId).parallelStream()
-                .filter(equipmentDto -> equipmentDto.getQuantity()>0)
+                .filter(equipmentDto -> equipmentDto.getQuantity() > 0)
                 .collect(Collectors.toList());
-        if(unavailableEquipment.isEmpty()){
+        if (unavailableEquipment.isEmpty()) {
             jdbcTemplate = new JdbcTemplate(dataSource);
 
             List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);

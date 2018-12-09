@@ -8,7 +8,10 @@ import java.util.List;
 public interface CommentDao {
 
     Comment getById(String id);
+
     List<Comment> getAll();
+
     List<CommentDto> getForRequest(String requestId);
+
     void create(Comment comment);
 }

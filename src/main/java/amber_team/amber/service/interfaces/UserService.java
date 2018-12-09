@@ -9,6 +9,7 @@ import java.security.Principal;
 public interface UserService {
 
     ResponseEntity save(UserDto user);
+
     ResponseEntity getUserInfo(Principal principal);
 
 }

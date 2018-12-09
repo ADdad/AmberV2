@@ -119,16 +119,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UserInfoDto> getAllActive() {
-            jdbcTemplate = new JdbcTemplate(dataSource);
-            List<UserInfoDto> users = jdbcTemplate.query(
-                    SQLQueries.GET_ALL_ACTIVE_USERS,
-                    new RowMapper<UserInfoDto>() {
-                        public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
-                            return c;
-                        }
-                    });
-            return users;
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<UserInfoDto> users = jdbcTemplate.query(
+                SQLQueries.GET_ALL_ACTIVE_USERS,
+                new RowMapper<UserInfoDto>() {
+                    public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
+                        return c;
+                    }
+                });
+        return users;
     }
 
 

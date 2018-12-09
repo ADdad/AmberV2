@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface UserListDao {
     ResponseEntity update(UpdateRolesListDto userDtos);
+
     ResponseEntity getAdminInfo(Principal principal);
+
     UserListDto returnUsers();
 }

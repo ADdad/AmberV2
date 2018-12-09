@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
+
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
@@ -46,11 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             request.login(username, password);
         } catch (ServletException e) {
-            System.out.println("Error while login "+e);
+            System.out.println("Error while login " + e);
         }
     }
-
-
 
 
     @Override
@@ -59,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
 
                 .authorizeRequests()
-                .antMatchers("/register","/perform_login","/*.js","/*.ico", "/*.json", "/index*", "/static/**", "/registration", "/login").permitAll()
+                .antMatchers("/register", "/perform_login", "/*.js", "/*.ico", "/*.json", "/index*", "/static/**", "/registration", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login")
@@ -71,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutSuccessUrl("/login")
                 .and().csrf().disable();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new
@@ -81,12 +81,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-
-
-
-
     @Bean
-    public BCryptPasswordEncoder encoder(){
+    public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 

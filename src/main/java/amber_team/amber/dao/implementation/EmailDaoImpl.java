@@ -16,7 +16,7 @@ public class EmailDaoImpl implements EmailDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -29,7 +29,7 @@ public class EmailDaoImpl implements EmailDao {
     @Override
     public String getRequestStatusChangedTemplate() {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE,String.class);
+        return jdbcTemplate.queryForObject(SQLQueries.GET_REQUEST_STATUS_CHANGED_EMAIL_TEMPLATE, String.class);
     }
 
     @Override

@@ -70,13 +70,14 @@ public class RequestInfoDto {
         this.comments = comments;
     }
 
-    public RequestInfoDto() {}
+    public RequestInfoDto() {
+    }
 
-    public RequestInfoDto(Request request){
+    public RequestInfoDto(Request request) {
         this.id = request.getId();
         this.title = request.getTitle();
         this.description = request.getDescription();
-        this.status= request.getStatus();
+        this.status = request.getStatus();
         this.archive = request.isArchive();
         this.creationDate = request.getCreationDate();
         this.modifiedDate = request.getModifiedDate();

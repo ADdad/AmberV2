@@ -29,7 +29,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity getAvailableEquipmentReport(ReportAvailableEquipmentDto reportDto) {
-        if(checkReportAvailableEquipmentDto(reportDto)) {
+        if (checkReportAvailableEquipmentDto(reportDto)) {
             return reportDao.getAvailableEquipmentReport(reportDto);
         } else {
             return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
@@ -38,7 +38,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity getNonAvailableEquipmentReport(ReportAvailableEquipmentDto reportDto) {
-        if(checkReportAvailableEquipmentDto(reportDto)) {
+        if (checkReportAvailableEquipmentDto(reportDto)) {
             return reportDao.getNonAvailableEquipmentReport(reportDto);
         } else {
             return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
@@ -47,7 +47,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity getDeliveredEquipmentReport(ReportDeliveredEquipmentDto reportDto) {
-        if(checkReportAvailableEquipmentDto(reportDto)){
+        if (checkReportAvailableEquipmentDto(reportDto)) {
             return reportDao.getDeliveredEquipmentReport(reportDto);
         } else {
             return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
@@ -56,7 +56,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity getEndingEquipmentReport(ReportEndingEquipmentDto reportDto) {
-        if(checkReportAvailableEquipmentDto(reportDto)) {
+        if (checkReportAvailableEquipmentDto(reportDto)) {
             return reportDao.getEndingEquipmentReport(reportDto);
         } else {
             return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
@@ -102,63 +102,63 @@ public class ReportServiceImpl implements ReportService {
     public void createAvailableExcel(HttpServletResponse response, ReportAvailableEquipmentDto reportDto) {
         List<ReportEquipmentResponseDto> equipment = reportDao.getAllAvailableEquipment(reportDto);
         String fileName = "available";
-        generateEquipmentExcel(equipment,response,fileName);
+        generateEquipmentExcel(equipment, response, fileName);
     }
 
     @Override
     public void createNonAvailableExcel(HttpServletResponse response, ReportAvailableEquipmentDto reportDto) {
         List<ReportEquipmentResponseDto> equipment = reportDao.getAllNonAvailableEquipment(reportDto);
         String fileName = "non-available";
-        generateEquipmentExcel(equipment,response,fileName);
+        generateEquipmentExcel(equipment, response, fileName);
     }
 
     @Override
     public void createDeliveredExcel(HttpServletResponse response, ReportDeliveredEquipmentDto reportDto) {
         List<ReportEquipmentResponseDto> equipment = reportDao.getAllDeliveredEquipment(reportDto);
         String fileName = "delivered";
-        generateEquipmentExcel(equipment,response,fileName);
+        generateEquipmentExcel(equipment, response, fileName);
     }
 
     @Override
     public void createEndingExcel(HttpServletResponse response, ReportEndingEquipmentDto reportDto) {
         List<ReportEquipmentResponseDto> equipment = reportDao.getAllEndingEquipment(reportDto);
         String fileName = "ending";
-        generateEquipmentExcel(equipment,response,fileName);
+        generateEquipmentExcel(equipment, response, fileName);
     }
 
     @Override
     public void createProcessedExcel(HttpServletResponse response, ReportOrdersDto reportDto) {
         List<ReportOrdersResponseExcelDto> orders = reportDao.getAllProcessedOrders(reportDto);
         String fileName = "processed";
-        generateOrdersExcel(orders,response,fileName);
+        generateOrdersExcel(orders, response, fileName);
     }
 
     @Override
     public void createUnprocessedExcel(HttpServletResponse response, ReportOrdersDto reportDto) {
         List<ReportOrdersResponseExcelDto> orders = reportDao.getAllUnprocessedOrders(reportDto);
         String fileName = "unprocessed";
-        generateOrdersExcel(orders,response,fileName);
+        generateOrdersExcel(orders, response, fileName);
     }
 
     @Override
     public void createExecutedExcel(HttpServletResponse response, ReportOrdersWithUserDto reportDto) {
         List<ReportOrdersResponseExcelDto> orders = reportDao.getAllExecutedOrders(reportDto);
-        String fileName = "executed-by-"+reportDto.getUserId();
-        generateOrdersExcel(orders,response,fileName);
+        String fileName = "executed-by-" + reportDto.getUserId();
+        generateOrdersExcel(orders, response, fileName);
     }
 
     @Override
     public void createCreatedExcel(HttpServletResponse response, ReportOrdersWithUserDto reportDto) {
         List<ReportOrdersResponseExcelDto> orders = reportDao.getAllCreatedOrders(reportDto);
-        String fileName = "created-by-"+reportDto.getUserId();
-        generateOrdersExcel(orders,response,fileName);
+        String fileName = "created-by-" + reportDto.getUserId();
+        generateOrdersExcel(orders, response, fileName);
     }
 
-    private void generateEquipmentExcel(List<ReportEquipmentResponseDto> equipment, HttpServletResponse response, String fileName){
+    private void generateEquipmentExcel(List<ReportEquipmentResponseDto> equipment, HttpServletResponse response, String fileName) {
         List<String> headers = Arrays.asList("Model", "Quantity", "Producer", "Country");
         try {
             LocalDateTime timestamp = LocalDateTime.now();
-            response.addHeader("Content-disposition", "attachment; filename="+fileName+"-equipment-" + timestamp + ".xls");
+            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-equipment-" + timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
             new SimpleExporter().gridExport(headers, equipment, "equipmentModel, quantity, equipmentProducer," +
                     " equipmentCountry", response.getOutputStream());
@@ -173,7 +173,7 @@ public class ReportServiceImpl implements ReportService {
                 "Last modified date", " Warehouse", "Title", "Description");
         try {
             LocalDateTime timestamp = LocalDateTime.now();
-            response.addHeader("Content-disposition", "attachment; filename="+fileName+"-orders-" + timestamp + ".xls");
+            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-orders-" + timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
             new SimpleExporter().gridExport(headers, orders, "orderType, orderStatus, creator, executor," +
                     " creationDate, modifiedDate, warehouse, title, orderDescription", response.getOutputStream());

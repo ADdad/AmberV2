@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class EmailServiceImpl  {
+public class EmailServiceImpl {
 
 
     private final JavaMailSender emailSender;
@@ -26,26 +26,26 @@ public class EmailServiceImpl  {
         String registrationTemplate = emailDao.getRegistrationTemplate();
         String text = String.format(registrationTemplate, firstName);
         String subject = "Registration";
-        sendSimpleMessage(to,subject,text);
+        sendSimpleMessage(to, subject, text);
     }
 
     public void sendRequestCreated(String to, String firstName, String requestTitle) {
         String requestCreatedTemplate = emailDao.getRequestCreatedTemplate();
         String text = String.format(requestCreatedTemplate, firstName, requestTitle);
         String subject = "Request created!";
-        sendSimpleMessage(to,subject,text);
+        sendSimpleMessage(to, subject, text);
     }
 
-    public void sendRequestStatusChanged(String to, String firstName,String requestTitle, String existedStatus, String currentStatus) {
+    public void sendRequestStatusChanged(String to, String firstName, String requestTitle, String existedStatus, String currentStatus) {
         String requestStatusChangedTemplate = emailDao.getRequestStatusChangedTemplate();
         String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, existedStatus, currentStatus);
         String subject = "Request status changed!";
-        sendSimpleMessage(to,subject,text);
+        sendSimpleMessage(to, subject, text);
     }
 
     public void sendUserRolesChanged(String to, String firstName, List<String> currentRoles) {
         String userRolesChangedTemplate = emailDao.getUserRolesChangedTemplate();
-        String roles = String.join(", ",currentRoles);
+        String roles = String.join(", ", currentRoles);
         String text = String.format(userRolesChangedTemplate, firstName, roles);
         String subject = "Your roles list has been changed!";
         sendSimpleMessage(to, subject, text);

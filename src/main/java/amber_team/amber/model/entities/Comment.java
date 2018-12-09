@@ -16,13 +16,13 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(CommentDto commentDto){
+    public Comment(CommentDto commentDto) {
         this.id = commentDto.getId();
         this.text = commentDto.getText();
         this.creationDate = commentDto.getCreationDate();
     }
 
-    public Comment(CommentDto commentDto, User user){
+    public Comment(CommentDto commentDto, User user) {
         this.id = commentDto.getId();
         this.text = commentDto.getText();
         this.creationDate = commentDto.getCreationDate();

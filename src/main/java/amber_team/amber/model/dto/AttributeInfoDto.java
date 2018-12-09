@@ -7,7 +7,8 @@ public class AttributeInfoDto {
     String value;
     int order;
 
-   public AttributeInfoDto() {}
+    public AttributeInfoDto() {
+    }
 
     public String getType() {
         return type;

@@ -34,14 +34,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseEntity update(UpdateRolesListDto userDtos) {
-        System.out.println("____________USERLISTDTOS___________"+userDtos);
+        System.out.println("____________USERLISTDTOS___________" + userDtos);
         try {
             System.out.println(userDtos.getUsers());
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         if (userDtos.getUsers().isEmpty()) return ResponseEntity.badRequest().body("Empty list to update");
-        else if(userDtos.getUsers().contains(null)) return ResponseEntity.badRequest().body("Null obj");
+        else if (userDtos.getUsers().contains(null)) return ResponseEntity.badRequest().body("Null obj");
         return userListDao.update(userDtos);
     }
 

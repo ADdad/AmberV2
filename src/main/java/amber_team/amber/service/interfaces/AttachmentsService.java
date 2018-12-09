@@ -10,8 +10,12 @@ import java.util.List;
 public interface AttachmentsService {
 
     ResponseEntity uploadAttachments(List<MultipartFile> files, String requestId) throws IOException;
+
     ResponseEntity<byte[]> downloadAttachment(String requestId, String filename) throws IOException;
+
     ListFilesDto listFiles(String requestId);
+
     ResponseEntity<byte[]> downloadAsZIP(String requestId);
+
     void deleteRequestAttachments(String requestId);
 }

@@ -22,15 +22,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    
-    @PostMapping(value="/register")
-    public ResponseEntity<User> saveUser(@RequestBody UserDto user){
-        return  userService.save(user);
+
+    @PostMapping(value = "/register")
+    public ResponseEntity<User> saveUser(@RequestBody UserDto user) {
+        return userService.save(user);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value="/userinfo")
-    public ResponseEntity<UserInfoDto> getUserInfo(Principal principal){
+    @GetMapping(value = "/userinfo")
+    public ResponseEntity<UserInfoDto> getUserInfo(Principal principal) {
         return userService.getUserInfo(principal);
     }
 

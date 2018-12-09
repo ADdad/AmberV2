@@ -160,8 +160,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void changeStatus(ListRequestChangeStatusDto requests) {
-        for (String requestId:
-             requests.getRequests()) {
+        for (String requestId :
+                requests.getRequests()) {
             changeStatus(new MyRequestStatusChangeDto(requestId, requests.getStatus()));
         }
     }
@@ -250,7 +250,7 @@ public class RequestServiceImpl implements RequestService {
         newRequest.setTitle(request.getTitle());
         newRequest.setCreatorId(request.getCreatorId());
         newRequest.setTypeId(requestTypeDao.getByName(request.getType()).getId());
-        if(request.getConnectedRequest() != null) newRequest.setConnectedRequestId(request.getConnectedRequest());
+        if (request.getConnectedRequest() != null) newRequest.setConnectedRequestId(request.getConnectedRequest());
         return newRequest;
     }
 

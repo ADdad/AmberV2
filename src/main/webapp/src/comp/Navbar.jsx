@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import SearchAppBar from "./SearchAppBar";
 class Navbar extends Component {
   state = {
-    tempVal: false
+    tempVal: false,
+      roles:[]
   };
 
   componentWillMount = () => {
@@ -10,7 +11,10 @@ class Navbar extends Component {
       fetch("/userinfo")
           .then(response => response.json())
           .then(data => {
-              this.setState({ tempVal: true });
+              this.setState({
+                  tempVal: true,
+                  roles : data.roles.map(role => role.name)
+              });
           })
           .catch(error => {
               this.setState({ tempVal: false });
@@ -21,7 +25,7 @@ class Navbar extends Component {
 
     return (
       <React.Fragment>
-        <SearchAppBar tempVal={this.state.tempVal} />
+        <SearchAppBar roles={this.state.roles} tempVal={this.state.tempVal} />
       </React.Fragment>
     );
   }

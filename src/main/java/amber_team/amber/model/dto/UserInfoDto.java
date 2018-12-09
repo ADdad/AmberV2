@@ -12,7 +12,8 @@ public class UserInfoDto {
     private String secondName;
     private List<Role> roles;
 
-    public UserInfoDto(){}
+    public UserInfoDto() {
+    }
 
     public UserInfoDto(String id, String email, String firstName, String secondName) {
         this.id = id;
@@ -21,7 +22,7 @@ public class UserInfoDto {
         this.secondName = secondName;
     }
 
-    public UserInfoDto(User user){
+    public UserInfoDto(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.firstName = user.getFirstName();

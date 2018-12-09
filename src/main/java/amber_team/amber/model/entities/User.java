@@ -66,5 +66,7 @@ public class User {
         this.comments = comments;
     }
 
-    public boolean addComment(Comment comment) { return comments.add(comment); }
+    public boolean addComment(Comment comment) {
+        return comments.add(comment);
+    }
 }

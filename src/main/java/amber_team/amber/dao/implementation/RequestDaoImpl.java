@@ -50,7 +50,7 @@ public class RequestDaoImpl implements RequestDao {
 
         jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
                 creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(), request.getTitle());
-        if(request.getConnectedRequestId() != null){
+        if (request.getConnectedRequestId() != null) {
             jdbcTemplate.update(SQLQueries.CONNECT_REQUEST, request.getConnectedRequestId(), id);
         }
         request.setId(id);
@@ -76,8 +76,6 @@ public class RequestDaoImpl implements RequestDao {
     }
 
 
-
-
     @Override
     public Request getByRequest(Request request) {
         return getById(request.getId());
@@ -97,8 +95,8 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public int getCountOfUsersActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[] { userId }, Integer.class);
-        if(count == null) return 0;
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[]{userId}, Integer.class);
+        if (count == null) return 0;
         return count;
     }
 
@@ -177,15 +175,15 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public int getCountOfKeeperActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[] { userId }, Integer.class);
-        if(count == null) return 0;
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId}, Integer.class);
+        if (count == null) return 0;
         return count;
     }
 
     @Override
     public int getCountOfAdminActiveRequests() {
         Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_ADMIN_REQUESTS, Integer.class);
-        if(count == null) return 0;
+        if (count == null) return 0;
         return count;
     }
 }

@@ -29,7 +29,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
     }
 
     @Override
-    public Warehouse getById(String id){
+    public Warehouse getById(String id) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         Warehouse warehouse = jdbcTemplate.queryForObject(SQLQueries.GET_WAREHOUSE_BY_ID, new Object[]{id}, new RowMapper<Warehouse>() {
             @Override
@@ -72,9 +72,9 @@ public class WarehouseDaoImpl implements WarehouseDao {
                     public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                         UserInfoDto c = new UserInfoDto();
                         c.setId(rs.getString("id"));
-                       c.setFirstName(rs.getString("f_name"));
-                       c.setSecondName(rs.getString("s_name"));
-                       c.setEmail(rs.getString("email"));
+                        c.setFirstName(rs.getString("f_name"));
+                        c.setSecondName(rs.getString("s_name"));
+                        c.setEmail(rs.getString("email"));
                         return c;
                     }
                 });

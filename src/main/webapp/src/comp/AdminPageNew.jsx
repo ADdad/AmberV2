@@ -22,9 +22,12 @@ class AdminPageNew extends Component {
       .then(data => {
         this.setState({
           userId: data.id,
-          userRoles: data.roles,
+          userRoles: data.roles.map(role => role.name),
           isLoading: false
         });
+          if(!this.state.userRoles.includes('ROLE_ADMIN')){
+              this.props.history.push('/errorpage');
+          }
       })
       .catch(error => console.log(error));
     fetch(`/users/data`, {

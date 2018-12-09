@@ -27,7 +27,9 @@ public class MvcConfig implements WebMvcConfigurer {
     }
 
     @GetMapping("/login")
-    public String login() { return "index.html"; }
+    public String login() {
+        return "index.html";
+    }
 
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")

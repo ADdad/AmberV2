@@ -27,7 +27,6 @@ public class RequestTypeDaoImpl implements RequestTypeDao {
     }
 
 
-
     @Override
     public Type getById(String id) {
         jdbcTemplate = new JdbcTemplate(dataSource);

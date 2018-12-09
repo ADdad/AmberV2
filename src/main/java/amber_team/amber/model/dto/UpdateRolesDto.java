@@ -8,7 +8,6 @@ public class UpdateRolesDto {
     private List<Integer> roles;
 
 
-
     public String getUserId() {
         return userId;
     }
