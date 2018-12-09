@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,7 +10,9 @@ import {withStyles} from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
-
+import {withRouter} from 'react-router-dom';
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 const styles = theme => ({
     root: {
@@ -71,35 +73,171 @@ const styles = theme => ({
         }
     }
 });
+const ITEM_HEIGHT = 48;
 
-function handleLogout() {
+class SearchAppBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            anchorEl : null,
+        }
+    }
+
+
+
+
+
+
+handleLogout = () => {
     fetch("/logout")
         .then(response => document.location.reload())
         .catch(error => console.log(error));
 }
 
-function handleDashboard() {
+ handleDashboard = () => {
+     this.handleClose();
   this.props.history.push("/dashboard");
 }
+    handleClick = event => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
 
-function buttonLogout() {
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    };
+
+    handleCreateRegularOrder = () => {
+        this.handleClose();
+        this.props.history.push("/order/create/order")
+    }
+
+    handleCreateReplenishmentOrder = () => {
+        this.handleClose();
+        this.props.history.push("/order/create/replenishment")
+    }
+
+    handleReports = () => {
+        this.handleClose();
+        this.props.history.push("/reports")
+    }
+
+    handleRoleChange = () => {
+        this.handleClose();
+        this.props.history.push("/admin")
+    }
+
+ renderLogout =() => {
     return (
-        <Button variant="raised" color="outlined" onClick={handleLogout}>
+        <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleLogout}>
             Logout
-        </Button>
+        </MenuItem>
     );
 }
 
-function buttonDashboard() {
+ renderDashboard = () => {
   return (
-    <Button variant="raised" color="outlined" onClick={handleDashboard}>
+    <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}}  onClick={this.handleDashboard}>
       Dashboard
-    </Button>
+    </MenuItem>
   );
 }
+renderUserButtons = () => {
+     if(this.props.roles.includes("ROLE_USER")){
+         return(
+             <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleCreateRegularOrder}>
+                 Create regular order
+             </MenuItem>
+         )
+     }
+}
+renderKeeperButtons = () => {
+        if(this.props.roles.includes("ROLE_KEEPER")) {
+            return(
+                <React.Fragment>
+                    <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleCreateReplenishmentOrder}>
+                        Create replenishment order
+                    </MenuItem>
+                    <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleReports}>
+                        Reports
+                    </MenuItem>
+                </React.Fragment>
+            )
+        }
 
-function SearchAppBar(props) {
-    const {classes} = props;
+}
+renderAdminButtons = () => {
+     if(this.props.roles.includes("ROLE_ADMIN") && !this.props.roles.includes("ROLE_KEEPER")){
+         return(
+             <React.Fragment>
+                 <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleReports}>
+                     Reports
+                 </MenuItem>
+                 <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleRoleChange}>
+                     Role change
+                 </MenuItem>
+             </React.Fragment>
+         )
+     } else if (this.props.roles.includes("ROLE_ADMIN")) {
+         return(
+             <MenuItem style={{color : '#ffffff',backgroundColor : '#c2185b'}} onClick={this.handleRoleChange}>
+                 Role change
+             </MenuItem>
+         )
+     }
+}
+
+renderMenuButtons = () => {
+        return (
+            <React.Fragment>
+                {this.renderDashboard()}
+                {this.renderUserButtons()}
+                {this.renderKeeperButtons()}
+                {this.renderAdminButtons()}
+                {this.renderLogout()}
+            </React.Fragment>
+        )
+}
+renderMenu = () => {
+
+    if(this.props.tempVal == true){
+        const { anchorEl } = this.state;
+        return(
+        <div>
+            <Button
+                aria-owns={anchorEl ? 'simple-menu' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleClick}
+                style={{color : '#ffffff',
+                    backgroundColor : '#c2185b'}}
+            >
+                Open Menu
+            </Button>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+                PaperProps={{
+                    style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: 200
+
+                    },
+                }}
+            >
+                {this.renderMenuButtons()}
+            </Menu>
+        </div>
+        )
+    } else {
+        return(<div></div>)
+    }
+}
+
+
+
+render() {
+    const {classes} = this.props;
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -113,18 +251,15 @@ function SearchAppBar(props) {
                         Amber
                     </Typography>
 
-          <div className={classes.grow} />
-          {props.tempVal && buttonDashboard()}
-          {props.tempVal && buttonLogout()}
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+                    <div className={classes.grow} />
+                    {this.renderMenu()}
+                </Toolbar>
+            </AppBar>
+        </div>
+    );
 }
 
-SearchAppBar.propTypes = {
-    classes: PropTypes.object.isRequired
-};
+}
 
 
-export default withStyles(styles)(SearchAppBar);
+export default withRouter(withStyles(styles)(SearchAppBar));

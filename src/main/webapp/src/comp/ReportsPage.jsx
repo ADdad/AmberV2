@@ -852,12 +852,8 @@ class ReportsPage extends Component {
     }
 
     renderGoToDashboard = () => {
-        return (
-            <div className="col-3">
-            <button className="btn btn-primary " onClick={this.goToDashboard}>Go to Dashboard</button>
-                <br/>
-            </div>
-        )
+
+        return(<div></div>)
     }
 
     goToDashboard = () => {

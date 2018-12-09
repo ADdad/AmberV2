@@ -307,15 +307,8 @@ class DashboardPage extends Component {
   };
 
   createRequestButton = () => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={this.handleOrderRequest}
-      >
-        Order items
-      </Button>
-    );
+
+    return (<div></div>)
   };
 
   createCancelManyButton = () => {
@@ -354,15 +347,8 @@ class DashboardPage extends Component {
   };
 
   createReportsButton = () => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={this.handleReportsPage}
-      >
-        Reports
-      </Button>
-    );
+    return(<div></div>)
+
   };
 
   handleOrderRequest = () => {

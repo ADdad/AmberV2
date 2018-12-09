@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import "bootstrap";
 import "jquery";
+import { rerenderNav } from './Navbar';
 class LogInForm extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +45,7 @@ class LogInForm extends Component {
       .then(response => {
           const regex = /dashboard$/gm;
           if(regex.test(response.url)) {
+              rerenderNav();
               this.props.history.push('/dashboard')
           } else {
               this.setState({ alert: "Fields are not filled propperly" })
