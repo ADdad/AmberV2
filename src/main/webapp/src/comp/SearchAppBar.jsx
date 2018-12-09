@@ -78,12 +78,24 @@ function handleLogout() {
         .catch(error => console.log(error));
 }
 
+function handleDashboard() {
+  this.props.history.push("/dashboard");
+}
+
 function buttonLogout() {
     return (
         <Button variant="raised" color="outlined" onClick={handleLogout}>
             Logout
         </Button>
     );
+}
+
+function buttonDashboard() {
+  return (
+    <Button variant="raised" color="outlined" onClick={handleDashboard}>
+      Dashboard
+    </Button>
+  );
 }
 
 function SearchAppBar(props) {
@@ -101,13 +113,13 @@ function SearchAppBar(props) {
                         Amber
                     </Typography>
 
-                    <div className={classes.grow}/>
-
-                    {props.tempVal && buttonLogout()}
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
+          <div className={classes.grow} />
+          {props.tempVal && buttonDashboard()}
+          {props.tempVal && buttonLogout()}
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
 }
 
 SearchAppBar.propTypes = {
