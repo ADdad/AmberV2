@@ -371,6 +371,9 @@ public class SQLQueries {
     public static final String CLEAR_USERS_ROLES = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id NOT IN (:roles)";
     public static final String UPDATE_ENABLED_USER = "UPDATE users SET enabled = ? WHERE id = ?";
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";
+    public static final String ADD_NEW_EQUIPMENT = "INSERT INTO equipment (id, model, producer, country)" +
+            " VALUES (?, ?, ?, ?)";
+
 
     private SQLQueries() {
     }

@@ -16,7 +16,10 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository(value = "equipmentDao")
@@ -93,6 +96,13 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit},
                 (rs, rowNum) -> getEquipment(rs));
         return equipment;
+    }
+
+    @Override
+    public void create(Equipment newEquipment) {
+        String id = UUID.randomUUID().toString();
+        jdbcTemplate.update(SQLQueries.ADD_NEW_EQUIPMENT, id, newEquipment.getModel(), newEquipment.getProducer(), newEquipment.getCountry());
+
     }
 
     @Override
