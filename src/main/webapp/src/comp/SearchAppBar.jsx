@@ -116,6 +116,11 @@ class SearchAppBar extends React.Component {
     this.props.history.push("/reports");
   };
 
+  handleRegisterEquipment = () => {
+    this.handleClose();
+    this.props.history.push("/equipment/create");
+  };
+
   handleRoleChange = () => {
     this.handleClose();
     this.props.history.push("/admin");
@@ -203,6 +208,12 @@ class SearchAppBar extends React.Component {
           >
             Add items
           </MenuItem>
+          <MenuItem
+            style={{ color: "#ffffff", backgroundColor: "#c2185b" }}
+            onClick={this.handleRegisterEquipment}
+          >
+            Register equipment
+          </MenuItem>
         </React.Fragment>
       );
     } else if (this.props.roles.includes("ROLE_ADMIN")) {
@@ -219,6 +230,12 @@ class SearchAppBar extends React.Component {
             onClick={this.handleAddItems}
           >
             Add items
+          </MenuItem>
+          <MenuItem
+            style={{ color: "#ffffff", backgroundColor: "#c2185b" }}
+            onClick={this.handleRegisterEquipment}
+          >
+            Register equipment
           </MenuItem>
         </React.Fragment>
       );
