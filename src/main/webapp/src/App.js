@@ -17,6 +17,7 @@ import AdminPageNew from "./comp/AdminPageNew";
 import DashboardPage from "./comp/DashboardPage";
 import SearchAppBar from "./comp/SearchAppBar";
 import EquipmentAdding from "./comp/EquipmentAdding";
+import CreateEquipment from "./comp/CreateEquipment";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -90,6 +91,7 @@ class App extends Component {
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/reports" component={ReportsPage} />
             <Route path="/equipment/add" component={EquipmentAdding} />
+            <Route path="/equipment/create" component={CreateEquipment} />
 
             <Route component={ErrorPage} />
           </Switch>

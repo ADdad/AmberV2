@@ -273,7 +273,7 @@ class EquipmentAdding extends Component {
               className="form-group col-md-3 btn btn-lg btn-outline-success"
               onClick={() => this.handleSubmit()}
             >
-              Send request
+              Add equipment
             </button>
             <button
               className="form-group col-md-3 btn btn-lg btn-outline-danger"
