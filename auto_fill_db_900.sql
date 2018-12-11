@@ -1,5 +1,5 @@
 WITH random_strings AS (
-    SELECT generate_series(1, 10000) AS id, 'str' || generate_series(1, 10000) AS value
+    SELECT generate_series(1, 900) AS id, 'str' || generate_series(1, 900) AS value
 ), new_users AS (
     SELECT uid.value, email.value || '@gmail.com', p.value, sn.value, fn.value, 1
     FROM (((random_strings AS uid INNER JOIN random_strings AS email ON uid.id = email.id)
@@ -25,7 +25,7 @@ LIMIT 50
 INSERT INTO user_roles (role_id, user_id)
 SELECT 2, id
 FROM users
-LIMIT 9850 OFFSET 50
+LIMIT 750 OFFSET 50
     ON CONFLICT DO NOTHING;
 -- -------------------------------------------------------------------------------------------------------
 
@@ -33,12 +33,12 @@ LIMIT 9850 OFFSET 50
 INSERT INTO user_roles (role_id, user_id)
 SELECT 3, id
 FROM users
-LIMIT 100 OFFSET 9900
+LIMIT 100 OFFSET 800
     ON CONFLICT DO NOTHING;
 -- -------------------------------------------------------------------------------------------------------
 
 WITH random_strings AS (
-    SELECT generate_series(1, 10000) AS id, 'str' || generate_series(1, 10000) AS value
+    SELECT generate_series(1, 900) AS id, 'str' || generate_series(1, 900) AS value
 ), new_equip AS (
     SELECT a.value, b.value, c.value, d.value
     FROM (((random_strings AS a INNER JOIN random_strings AS b ON a.id = b.id)
@@ -54,7 +54,7 @@ FROM new_equip
 
 
 WITH random_strings AS (
-    SELECT generate_series(1, 10000) AS id, 'str' || generate_series(1, 10000) AS value
+    SELECT generate_series(1, 900) AS id, 'str' || generate_series(1, 900) AS value
 ), new_warehouses AS (
     SELECT a.value, b.value, c.value
     FROM ((random_strings AS a INNER JOIN random_strings AS b ON a.id = b.id)
@@ -76,8 +76,8 @@ FROM users AS u
 -- -------------------------------------------------------------------------------------------------------
 
 WITH random_numb AS (
-    SELECT floor(random() * 10000 + 1): :int AS a
-    FROM (SELECT generate_series(1, 10000) AS a) AS b
+    SELECT floor(random() * 900 + 1)::int AS a
+    FROM (SELECT generate_series(1, 900) AS a) AS b
 )
 INSERT INTO warehouse_equipment (warehouse_id, equipment_id, quantity)
 SELECT w.id, e.id, q.a
@@ -99,10 +99,10 @@ WITH u_w AS (
     FROM u_3
            INNER JOIN u_w ON u_3.user_id = u_w.uid
 ), random_strings AS (
-    SELECT generate_series(1, 10000) AS id, 'str' || generate_series(1, 10000) AS value
+    SELECT generate_series(1, 900) AS id, 'str' || generate_series(1, 900) AS value
 ), random_numb AS (
-    SELECT floor(random() * 10000 + 1): :int AS a
-    FROM (SELECT generate_series(1, 10000) AS a) AS b
+    SELECT floor(random() * 900 + 1)::int AS a
+    FROM (SELECT generate_series(1, 900) AS a) AS b
 )
 
 INSERT INTO requests (id, warehouse_id, creator_id, executor_id, req_type_id, title, status, description, archive)
@@ -118,7 +118,7 @@ INSERT INTO requests (id, warehouse_id, creator_id, executor_id, req_type_id, ti
      FROM ((random_strings AS r INNER JOIN warehouses AS w ON r.value = w.id)
          INNER JOIN users AS u ON r.value = u.id)
             LEFT JOIN executors AS e ON r.value = e.uid
-     LIMIT 4000)
+     LIMIT 300)
 UNION
     (SELECT r.value,
             w.id,
@@ -132,7 +132,7 @@ UNION
      FROM ((random_strings AS r INNER JOIN warehouses AS w ON r.value = w.id)
          INNER JOIN users AS u ON r.value = u.id)
             LEFT JOIN executors AS e ON r.value = e.uid
-     LIMIT 3000 OFFSET 4000)
+     LIMIT 300 OFFSET 300)
 UNION
     (SELECT r.value,
             w.id,
@@ -146,5 +146,5 @@ UNION
      FROM ((random_strings AS r INNER JOIN warehouses AS w ON r.value = w.id)
          INNER JOIN users AS u ON r.value = u.id)
             LEFT JOIN executors AS e ON r.value = e.uid
-     LIMIT 3000 OFFSET 7000)
+     LIMIT 300 OFFSET 600)
     ON CONFLICT DO NOTHING;
