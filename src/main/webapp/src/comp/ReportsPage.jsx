@@ -32,15 +32,68 @@ class ReportsPage extends Component {
                 this.setState({userRoles: data.roles.map(role => role.name), isLoading:false })
                 if(!this.state.userRoles.includes('ROLE_ADMIN') && !this.state.userRoles.includes('ROLE_KEEPER')){
                     this.props.history.push('/errorpage');
-                } else {
-                this.loadMoreWarehouses();
-                this.loadMoreExecutors()
-                this.loadMoreCreators()
                 }
             })
             .catch(error => console.log(error))
 
 
+    }
+
+    loadFirstWarehouses = () => {
+        fetch('/warehouses-for-report', {
+            method : 'POST',
+            body : JSON.stringify({
+                "pageNumber" : 0,
+                "resultsPerPage" : this.state.resultsPerPage
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({warehouses : data})
+            })
+            .catch(error => console.log(error));
+        this.setState({warehousesPage : ++this.state.warehousesPage})
+    }
+
+    loadFirstExecutors = () => {
+        fetch('/executors-for-report', {
+            method : 'POST',
+            body : JSON.stringify( {
+                "pageNumber" : 0,
+                "resultsPerPage" : this.state.resultsPerPage
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({executors : data })
+            })
+            .catch(error => console.log(error));
+        this.setState({executorsPage : ++this.state.executorsPage})
+    }
+
+    loadFirstCreators = () => {
+        fetch('/creators-for-report', {
+            method : 'POST',
+            body : JSON.stringify( {
+                "pageNumber" : 0,
+                "resultsPerPage" : this.state.resultsPerPage
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({creators : data})
+            })
+            .catch(error => console.log(error));
+        this.setState({creatorsPage : ++this.state.creatorsPage})
     }
 
 
@@ -64,6 +117,15 @@ class ReportsPage extends Component {
             this._toDate.value = "";
         }
         this.setState({reportTypeId : event.target.value})
+        if(event.target.value < 5 && event.target.value > 0) {
+            this.loadFirstWarehouses()
+        }
+        if(event.target.value == 8) {
+            this.loadFirstCreators()
+        }
+        if(event.target.value == 7) {
+            this.loadFirstExecutors()
+        }
 
     }
     handleWarehouseChange = (event) => {
