@@ -16,6 +16,7 @@ import OrderEdit from "./comp/OrderEdit";
 import AdminPageNew from "./comp/AdminPageNew";
 import DashboardPage from "./comp/DashboardPage";
 import SearchAppBar from "./comp/SearchAppBar";
+import EquipmentAdding from "./comp/EquipmentAdding";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -78,7 +79,6 @@ class App extends Component {
               path="/login"
               render={() => <LogInForm isAuth={this.callbk} />}
             />
-
             <Route path="/registration" component={RegForm} />
             <Route path="/admin" component={AdminPageNew} />
             <Route path="/order/edit/:requestId" component={OrderEdit} />
@@ -88,7 +88,8 @@ class App extends Component {
             />
             <Route path="/order/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/reports" component={ReportsPage} />
+            <Route path="/reports" component={ReportsPage} />
+            <Route path="/equipment/add" component={EquipmentAdding} />
 
             <Route component={ErrorPage} />
           </Switch>

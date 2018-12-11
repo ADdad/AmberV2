@@ -14,8 +14,42 @@ class EquipmentAdding extends Component {
       resultItems: [],
       myItems: [],
       alert: "",
-      equipment: []
+      equipment: [],
+      initialized: false
     };
+  }
+
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    fetch("/userinfo")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ userId: data.id });
+      })
+      .catch(error => console.log(error));
+    fetch(`/equipment`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          myItems: data.equipment,
+          initialized: true
+        });
+      })
+      .catch(error => console.log(error));
+    fetch(`/warehouse`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          warehouses: data.warehouses
+        });
+      })
+      .catch(error => console.log(error));
   }
 
   itemName = item => {
@@ -29,6 +63,12 @@ class EquipmentAdding extends Component {
     editObject.quantity = e.target.value > -1 ? e.target.value : 0;
     readyItems[i] = editObject;
     this.setState({ resultItems: readyItems });
+  };
+  getItemsOptions = items => {
+    let itemsLocal = items;
+    let result = [];
+    itemsLocal.map(i => result.push({ label: this.itemName(i), value: i.id }));
+    return result;
   };
 
   loadOptions = (input, callback) => {
@@ -69,10 +109,42 @@ class EquipmentAdding extends Component {
     this.setState({ warehouseId: selectedWarehouse.value });
   };
 
+  validate = () => {
+    let resultItemsLocal = this.state.resultItems;
+    let localAlert = "";
+    let validated = true;
+    if (
+      typeof this.state.warehouseId === "undefined" ||
+      this.state.warehouseId == null ||
+      this.state.warehouseId == ""
+    ) {
+      validated = false;
+      localAlert += "Chose warehouse\n";
+    }
+    if (resultItemsLocal.length < 1) {
+      localAlert += "Enter some items\n";
+      validated = false;
+    } else {
+      for (let i = 0; i < resultItemsLocal.length; i++) {
+        if (resultItemsLocal[i].quantity < 1) {
+          localAlert += "Quantity of items cant be less than 1\n";
+          validated = false;
+          break;
+        }
+      }
+    }
+    let newAlert = localAlert.split("\n").map((item, i) => (
+      <p key={i} className="text-danger">
+        {item}
+      </p>
+    ));
+    this.setState({ alert: newAlert });
+    return validated;
+  };
+
   handleSubmit = () => {
-    if (true) {
-      const readyAttributes = this.compileAdditionalAttributes();
-      fetch("/equipment", {
+    if (this.validate()) {
+      fetch("/equipment/list", {
         method: "POST",
         body: JSON.stringify({
           warehouseId: this.state.warehouseId,
@@ -84,7 +156,7 @@ class EquipmentAdding extends Component {
       })
         .then(response => response.json())
         .then(data => {
-            this.handleCancel();
+          this.handleCancel();
         })
         .catch(error => {
           console.error("Error:", error);
@@ -93,6 +165,7 @@ class EquipmentAdding extends Component {
     } else {
       window.scrollTo(0, 0);
     }
+  };
 
   initReactSelect = () => {
     if (this.state.initialized)
@@ -119,6 +192,10 @@ class EquipmentAdding extends Component {
       viewItemsLocal.push(item.label);
     }
     this.setState({ resultItems: resItemsLocal, viewItems: viewItemsLocal });
+  };
+
+  handleCancel = () => {
+    this.props.history.push("/dashboard");
   };
 
   render() {
@@ -154,15 +231,12 @@ class EquipmentAdding extends Component {
       );
     }
 
-    handleCancel = () => {
-      this.props.history.push("/dashboard");
-    };
-
     return (
       <React.Fragment>
         <div className="container">
           <br />
           <h2>Adding equipment</h2>
+          {this.state.alert}
           <br />
           <div className="form-row">
             <div className="form-group col-md-8">
@@ -195,18 +269,17 @@ class EquipmentAdding extends Component {
             >
               Send request
             </button>
-            <div className="form-row">
-              <button
-                className="form-group col-md-3 btn btn-lg btn-outline-success"
-                onClick={() => this.handleCancel()}
-              >
-                Cancel
-              </button>
-            </div>
+            <button
+              className="form-group col-md-3 btn btn-lg btn-outline-danger"
+              onClick={() => this.handleCancel()}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </React.Fragment>
     );
   }
 }
-export default EquipmentAdding;
+
+export default withRouter(EquipmentAdding);
