@@ -54,10 +54,6 @@ CREATE TABLE equipment (
 );
 
 CREATE TABLE CREATE TABLE user_warehouses (
-                 user_id varchar(100) REFERENCES users(id) ON UPDATE CASCADE,
-                 warehouse_id varchar(100) REFERENCES warehouses(id) ON UPDATE CASCADE,
-                 CONSTRAINT user_warehouse_pkey PRIMARY KEY (user_id, warehouse_id)
-             ); (
     user_id varchar(100) REFERENCES users(id) ON UPDATE CASCADE,
     warehouse_id varchar(100) REFERENCES warehouses(id) ON UPDATE CASCADE,
     CONSTRAINT user_warehouse_pkey PRIMARY KEY (user_id, warehouse_id)
