@@ -150,6 +150,24 @@ public class UserDaoImpl implements UserDao {
         return info;
     }
 
+    @Override
+    public UserInfoDto getByIdWithRoles(String id) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.GET_USER_BY_ID, new Object[]{id}, new RowMapper<UserInfoDto>() {
+            @Override
+            public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
+                UserInfoDto info = new UserInfoDto();
+                info.setId(resultSet.getString("id"));
+                info.setEmail(resultSet.getString("email"));
+                info.setFirstName(resultSet.getString("f_name"));
+                info.setSecondName(resultSet.getString("s_name"));
+                return info;
+            }
+        });
+        info.setRoles(roleDao.getUserRoles(info.getId()));
+        return info;
+    }
+
     private boolean checkEmailAviability(String email) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         try {

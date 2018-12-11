@@ -33,9 +33,9 @@ class CreateEquipment extends Component {
         method: "POST",
         body: JSON.stringify({
           id: null,
-          model: "",
-          producer: "",
-          country: ""
+          model: this.state.model,
+          producer: this.state.producer,
+          country: this.state.country
         }),
         headers: {
           "Content-Type": "application/json"
@@ -46,6 +46,7 @@ class CreateEquipment extends Component {
           this.handleCancel();
         })
         .catch(error => {
+          this.handleCancel();
           console.error("Error:", error);
           this.setState({ alert: "Bad idea" });
         });

@@ -219,3 +219,17 @@ INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd2', 'Secon
 INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd3', 'Momo str, Lviv, Ukraine', '835-5885-35');
 INSERT INTO warehouses(id, adress, contact_number) VALUES ('jldkfgbhdd4', 'Down str, New York, USA', '835-5335-35');
 
+CREATE OR REPLACE FUNCTION update_equipment(p_warehouse_id VARCHAR(255), p_equipment_id VARCHAR(255), p_quantity INT)
+    RETURNS INT
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (SELECT COUNT(*) FROM warehouse_equipment WHERE warehouse_id = p_warehouse_id AND equipment_id = p_equipment_id) > 0
+    THEN
+UPDATE warehouse_equipment SET quantity = p_quantity WHERE warehouse_id = p_warehouse_id AND equipment_id = p_equipment_id;
+ELSE
+INSERT INTO warehouse_equipment VALUES (p_warehouse_id, p_equipment_id, p_quantity);
+END IF;
+RETURN p_quantity;
+END;
+$$;

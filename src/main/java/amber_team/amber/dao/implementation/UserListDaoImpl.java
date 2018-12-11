@@ -32,35 +32,6 @@ public class UserListDaoImpl implements UserListDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-//    @Override
-//    public ResponseEntity update(UpdateRolesListDto userDtos) {
-//
-//        String sql = SQLQueries.CHANGE_USERS_AND_THEIR_ROLES;
-//        String drop = SQLQueries.IF_EXISTS;
-//
-//        try {
-//            for (UpdateRolesDto u : userDtos.getUsers()) {
-//                if (!u.getUserId().isEmpty() && !(u.getRoles().isEmpty())) {
-//                    jdbcTemplate.update("DELETE FROM user_roles WHERE user_id = ? AND role_id NOT IN ?",
-//                            u.getUserId(), u.getRoles());
-//                    for (Integer r : u.getRoles()) {
-//                        Integer cnt = jdbcTemplate.queryForObject(
-//                                drop, Integer.class, u.getUserId(), r);
-//
-//                        if (cnt != null && cnt > 0) continue;
-//                        jdbcTemplate.update(sql, u.getUserId(), r);
-//                    }
-//                }
-//
-//            }
-//        } catch (JDBCException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body("Some error while invoking db");
-//        }
-//
-//
-//        return ResponseEntity.ok().body("Done");
-//    }
 
     @Override
     public ResponseEntity update(UpdateRolesListDto userDtos) {

@@ -166,7 +166,7 @@ class EquipmentAdding extends Component {
         })
         .catch(error => {
           console.error("Error:", error);
-          this.setState({ alert: "Bad idea" });
+          this.handleCancel();
         });
     } else {
       window.scrollTo(0, 0);

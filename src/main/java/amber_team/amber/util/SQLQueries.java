@@ -373,6 +373,20 @@ public class SQLQueries {
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";
     public static final String ADD_NEW_EQUIPMENT = "INSERT INTO equipment (id, model, producer, country)" +
             " VALUES (?, ?, ?, ?)";
+    public static final String ADD_EQUIPMENT_TO_WAREHOUSE = "CREATE OR REPLACE FUNCTION update_equipment(p_warehouse_id VARCHAR(255), p_equipment_id VARCHAR(255), p_quantity INT)\n" +
+            "  RETURNS INT\n" +
+            "LANGUAGE plpgsql\n" +
+            "AS $$\n" +
+            "BEGIN\n" +
+            "IF (SELECT COUNT(*) FROM warehouse_equipment WHERE warehouse_id = p_warehouse_id AND equipment_id = p_equipment_id) > 0\n" +
+            "THEN\n" +
+            "UPDATE warehouse_equipment SET quantity = p_quantity WHERE warehouse_id = p_warehouse_id AND equipment_id = p_equipment_id;\n" +
+            "ELSE\n" +
+            "INSERT INTO warehouse_equipment VALUES (p_warehouse_id, p_equipment_id, p_quantity);\n" +
+            "END IF;\n" +
+            "  RETURN p_quantity;\n" +
+            "END;\n" +
+            "$$;";
 
 
     private SQLQueries() {

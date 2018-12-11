@@ -375,7 +375,12 @@ class OrderReview extends Component {
         <div className="container">
           <div className="container">
             <h4 className="text-danger">{this.state.executorAlert}</h4>
-
+            <h2>
+              Creator:{" "}
+              {this.state.creator.firstName +
+                " " +
+                this.state.creator.secondName}{" "}
+            </h2>
             <h2>Title: {this.state.title} </h2>
             <h4 className="form-group">
               Status:

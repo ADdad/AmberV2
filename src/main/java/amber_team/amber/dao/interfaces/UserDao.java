@@ -16,6 +16,7 @@ public interface UserDao {
     List<UserInfoDto> getAllActive();
 
     User getById(String id);
+    UserInfoDto getByIdWithRoles(String id);
 
     UserInfoDto getUserByEmail(Principal principal);
 

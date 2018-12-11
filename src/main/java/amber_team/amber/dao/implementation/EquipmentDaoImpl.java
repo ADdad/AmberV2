@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -18,7 +19,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -186,23 +189,17 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public void addEquipmentToWarehouse(List<EquipmentDto> equipmentDtoList, String warehouseId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        equipmentDtoList.forEach(e -> addOneEquipmentToWarehouse(e, warehouseId));
+    }
 
-        jdbcTemplate.batchUpdate(SQLQueries.ADD_WAREHOUSE_EQUIPMENT, new BatchPreparedStatementSetter() {
+    private void addOneEquipmentToWarehouse(EquipmentDto equipmentDto, String warehouseId){
+        final SimpleJdbcCall updateEquipmentCall = new SimpleJdbcCall(jdbcTemplate).withFunctionName("update_equipment");
+        final Map<String, Object> params = new HashMap<>();
+        params.put("p_equipment_id", equipmentDto.getId());
+        params.put("p_warehouse_id", warehouseId);
+        params.put("p_quantity", equipmentDto.getQuantity());
 
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                EquipmentDto equipmentDto = equipmentDtoList.get(i);
-                ps.setString(1, warehouseId);
-                ps.setString(2, equipmentDto.getId());
-                ps.setInt(3, equipmentDto.getQuantity());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return equipmentDtoList.size();
-            }
-        });
+        final Map<String, Object> result = updateEquipmentCall.execute(params);
     }
 
     @Override
