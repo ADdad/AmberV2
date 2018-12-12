@@ -113,9 +113,7 @@ class CreateOrder extends Component {
             validated = false;
             break;
           }
-          if (
-            localEquipment[index].quantity < resultItemsLocal[i].quantity
-          ) {
+          if (localEquipment[index].quantity < resultItemsLocal[i].quantity) {
             localAlert += "You can`t refund more than have\n";
             validated = false;
             break;
@@ -156,14 +154,13 @@ class CreateOrder extends Component {
           initialized: true
         });
       })
-      .catch(error => console.error("Error:", error));
+      .catch(error => console.error("Error:", error)); //Change error out
     if (type === "refund") {
       fetch(`/request/${connectedRequest}`, {
         method: "GET"
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           this.setState({
             connectedRequest: data.id,
             warehouseId: data.warehouse.id,
@@ -171,7 +168,6 @@ class CreateOrder extends Component {
             equipment: data.equipment,
             isLoading: false
           });
-          console.log(this.state.userId);
           if (
             data.status != "Completed" ||
             data.creator.id != this.state.userId
@@ -182,6 +178,8 @@ class CreateOrder extends Component {
         .catch(error => console.log(error));
     }
   }
+
+  //Split in functions
 
   loadEquipment = localEquip => {
     console.log(this.state);

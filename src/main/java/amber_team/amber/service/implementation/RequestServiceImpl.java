@@ -272,10 +272,11 @@ public class RequestServiceImpl implements RequestService {
         if (request.getExecutorId() != null && !request.getExecutorId().isEmpty())
             requestInfoDto.setExecutor(userDao.getById(request.getExecutorId()));
         List<CommentDto> commentDtos = commentDao.getForRequest(request.getId());
+        //Add converter
         if (commentDtos != null && commentDtos.size() > 0) {
             List<Comment> comments = commentDtos.parallelStream().map(commentDto -> new Comment(commentDto, userDao.getById(commentDto.getUserId()))).collect(Collectors.toList());
             requestInfoDto.setComments(comments);
-        } else requestInfoDto.setComments(new ArrayList<Comment>());
+        } else requestInfoDto.setComments(new ArrayList<>());
 
         List<AttributeInfoDto> attributesValuesOfRequest = attributesDao.getAttributesValuesOfRequest(id);
         if (attributesValuesOfRequest != null)

@@ -96,8 +96,9 @@ public class RequestDaoImpl implements RequestDao {
     @Override
     public int getCountOfUsersActiveRequests(String userId) {
         Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[]{userId}, Integer.class);
-        if (count == null) return 0;
-        return count;
+//        if (count == null) return 0;
+        return count == null ? 0 : count;
+//        return count;
     }
 
     @Override

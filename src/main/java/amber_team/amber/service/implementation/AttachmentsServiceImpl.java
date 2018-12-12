@@ -49,6 +49,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
     }
 
     private void folderDropAndCreate(String requestId) {
+        //TODO Check if can create folder
         deleteRequestAttachments(requestId);
         File folder = new File(MAIN_PATH + requestId);
         folder.mkdir();
