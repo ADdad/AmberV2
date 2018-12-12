@@ -196,17 +196,17 @@ class ExecutorButtons extends Component {
   render() {
     if (
       (!(
-        this.props.userRoles.filter(role => role.name === "ROLE_ADMIN") &&
-        this.state.adminStates.includes(this.props.status)
+        this.props.userRoles.filter(role => role === "ROLE_ADMIN").length >
+          0 && this.state.adminStates.includes(this.props.status)
       ) &&
         !(
-          this.props.userRoles.filter(role => role.name === "ROLE_KEEPER") &&
-          this.state.keeperStates.includes(this.props.status)
+          this.props.userRoles.filter(role => role === "ROLE_KEEPER")
+            .length > 0 && this.state.keeperStates.includes(this.props.status)
         )) ||
-      this.props.state === "Canceled"
-    )
+      this.props.status === "Canceled"
+    ) {
       return <h3 />;
-
+    }
     if (this.state.confirmation) {
       return this.commentField();
     }

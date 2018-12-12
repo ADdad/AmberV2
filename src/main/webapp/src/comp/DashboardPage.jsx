@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Pagination from "react-js-pagination";
-import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Visibility from "@material-ui/icons/Visibility";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class DashboardPage extends Component {
   state = {
@@ -23,10 +23,10 @@ class DashboardPage extends Component {
     itemsPerPage: 25,
     isLoading: false,
     doubleList: false,
-    createdListSize: 0,
+    createdListSize: null,
     createdRequests: [],
     executingActivePage: 1,
-    executingListSize: 0,
+    executingListSize: null,
     executingRequests: [],
     executorDoubleList: false,
     createdDoubleList: false
@@ -307,8 +307,7 @@ class DashboardPage extends Component {
   };
 
   createRequestButton = () => {
-
-    return (<div></div>)
+    return <div />;
   };
 
   createCancelManyButton = () => {
@@ -347,11 +346,42 @@ class DashboardPage extends Component {
   };
 
   createReportsButton = () => {
-    return(<div></div>)
-
+    return <div />;
   };
 
   handleOrderRequest = () => {
+    this.props.history.push("/order/create/order");
+  };
+
+  renderHelloMessage = () => {
+    return (
+      <React.Fragment>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div>
+            <h4 className="text-muted">
+              Hello you don`t have created orders or for executing, so you
+              can...
+            </h4>
+          </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.handleCreateOrder}
+          >
+            Create order
+          </Button>
+        </div>
+      </React.Fragment>
+    );
+  };
+
+  handleCreateOrder = () => {
     this.props.history.push("/order/create/order");
   };
 
@@ -359,16 +389,36 @@ class DashboardPage extends Component {
     this.props.history.push("/reports");
   };
 
+  renderLoader = () => {
+    return (
+      <React.Fragment>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </div>
+      </React.Fragment>
+    );
+  };
+
   render() {
+    if (
+      this.state.executingListSize == null ||
+      this.state.createdListSize == null
+    ) {
+      return this.renderLoader();
+    }
     if (this.checkDoubleList() != this.state.doubleList) {
       this.setState({ doubleList: this.checkDoubleList() });
-    }
-    if (this.state.isLoading) {
-      return <p>Loading ...</p>;
     }
     return (
       <React.Fragment>
         <div className="container-fluid">
+          {this.state.executingListSize < 1 &&
+            this.state.createdListSize < 1 &&
+            this.renderHelloMessage()}
           <div className="from-row d-flex justify-content-between">
             <div>
               {this.state.userRoles.filter(role => role.name === "ROLE_USER")

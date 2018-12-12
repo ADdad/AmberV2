@@ -5,6 +5,7 @@ import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
 import Select from "react-select";
 import ExecutorRefundButtons from "./ExecutorRefundButtons";
+import CircularProgress from "@material-ui/core/CircularProgress";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
@@ -56,7 +57,7 @@ class OrderReview extends Component {
   choseExecutor = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("ROLE_ADMIN")
+      this.userRoles.filter(role => role.name === "ROLE_ADMIN").length > 0
     ) {
       if (this.state.executors.length < 1) {
         return <h4>Executors: that warehouse haven`t executors</h4>;
@@ -129,7 +130,10 @@ class OrderReview extends Component {
         });
       })
       .catch(error => console.log(error));
+    this.loadRequestData(requestId);
+  }
 
+  loadRequestData = requestId => {
     fetch(`/request/${requestId}`, {
       method: "GET"
     })
@@ -151,10 +155,9 @@ class OrderReview extends Component {
           equipment: data.equipment,
           isLoading: false
         });
-        this.loadExecutors();
       })
       .catch(error => console.log(error));
-  }
+  };
 
   additionalAttributes = () => {
     let localAttributes = this.state.attributes;
@@ -252,13 +255,30 @@ class OrderReview extends Component {
         this.setState({ attachments: data.listFiles });
       })
       .catch(error => console.log(error));
+    this.loadExecutors();
   }
 
+  renderLoader = () => {
+    return (
+      <React.Fragment>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </div>
+      </React.Fragment>
+    );
+  };
+
   loadExecutors = () => {
+    console.log("WorkEx1");
     if (
       this.state.status === "On reviewing" &&
-      this.state.userRoles.includes("ROLE_ADMIN")
+      this.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
     ) {
+      console.log("WorkEx");
       fetch(`/request/executors/${this.state.warehouse.id}`)
         .then(response => response.json())
         .then(data => {
@@ -361,6 +381,10 @@ class OrderReview extends Component {
   };
 
   render() {
+    if (this.state.userRoles.length == 0 || this.state.status == "") {
+      return this.renderLoader();
+    }
+
     let attachmetsListLocal = "";
     if (
       this.state.attachments != null &&
