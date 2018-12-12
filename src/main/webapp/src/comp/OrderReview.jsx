@@ -57,7 +57,7 @@ class OrderReview extends Component {
   choseExecutor = () => {
     if (
       this.state.status === "On reviewing" &&
-      this.userRoles.filter(role => role.name === "ROLE_ADMIN").length > 0
+      this.state.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
     ) {
       if (this.state.executors.length < 1) {
         return <h4>Executors: that warehouse haven`t executors</h4>;
@@ -255,7 +255,6 @@ class OrderReview extends Component {
         this.setState({ attachments: data.listFiles });
       })
       .catch(error => console.log(error));
-    this.loadExecutors();
   }
 
   renderLoader = () => {
@@ -273,12 +272,16 @@ class OrderReview extends Component {
   };
 
   loadExecutors = () => {
-    console.log("WorkEx1");
+    console.log("Before load");
+    console.log(this.state.status);
+    console.log(
+      this.state.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
+    );
     if (
       this.state.status === "On reviewing" &&
-      this.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
+      this.state.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
     ) {
-      console.log("WorkEx");
+      console.log("done");
       fetch(`/request/executors/${this.state.warehouse.id}`)
         .then(response => response.json())
         .then(data => {
@@ -383,6 +386,10 @@ class OrderReview extends Component {
   render() {
     if (this.state.userRoles.length == 0 || this.state.status == "") {
       return this.renderLoader();
+    } else {
+      if (this.state.executors == null) {
+        this.loadExecutors();
+      }
     }
 
     let attachmetsListLocal = "";
