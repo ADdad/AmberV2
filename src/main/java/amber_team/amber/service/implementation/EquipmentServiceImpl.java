@@ -2,15 +2,14 @@ package amber_team.amber.service.implementation;
 
 import amber_team.amber.dao.interfaces.EquipmentDao;
 import amber_team.amber.dao.interfaces.WarehouseDao;
-import amber_team.amber.model.dto.EquipmentAddingDto;
-import amber_team.amber.model.dto.EquipmentListDto;
-import amber_team.amber.model.dto.EquipmentSearchDto;
+import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Equipment;
 import amber_team.amber.model.entities.Warehouse;
 import amber_team.amber.service.interfaces.EquipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,10 +42,23 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public EquipmentListDto unavailableEquipmentByRequestId(String requestId) {
+        List<EquipmentDto> registeredEquipmentUnavalibleOnWarehouse = equipmentDao.getUnavailableEquipmentQuantity(requestId)
+                .stream().filter(equip -> equip.getQuantity() > 0).collect(Collectors.toList());
+        List<EquipmentInfoDto> requestEquipment = equipmentDao.getRequestEquipment(requestId);
+        List<EquipmentDto> allUnavalibleEquipment = new ArrayList<>(registeredEquipmentUnavalibleOnWarehouse);
+        for (EquipmentInfoDto equipInfo:
+             requestEquipment) {
+            if(findEquipmentById(registeredEquipmentUnavalibleOnWarehouse, equipInfo.getId()) == null){
+                allUnavalibleEquipment.add(new EquipmentDto(equipInfo.getId(), equipInfo.getQuantity()));
+            }
+        }
         EquipmentListDto equipmentListDto = new EquipmentListDto();
-        equipmentListDto.setList(equipmentDao.getUnavailableEquipmentQuantity(requestId)
-                .stream().filter(equip -> equip.getQuantity() > 0).collect(Collectors.toList()));
+        equipmentListDto.setList(allUnavalibleEquipment);
         return equipmentListDto;
+    }
+
+    private EquipmentDto findEquipmentById(List<EquipmentDto> listEquipment, String equipmentId) {
+        return listEquipment.stream().filter(equip -> equipmentId.equals(equip.getId())).findFirst().orElse(null);
     }
 
     @Override

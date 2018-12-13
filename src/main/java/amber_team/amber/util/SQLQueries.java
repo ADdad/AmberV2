@@ -373,6 +373,10 @@ public class SQLQueries {
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";
     public static final String ADD_NEW_EQUIPMENT = "INSERT INTO equipment (id, model, producer, country)" +
             " VALUES (?, ?, ?, ?)";
+    public static final String GET_UNAVAILABLE_EQUIPMENT_OF_REQUEST = "SELECT re.equipment_id AS id, " +
+            "re.quantity-we.quantity AS quantity_diff FROM request_equipment AS re JOIN warehouse_equipment AS we ON " +
+            "we.equipment_id = re.equipment_id " +
+            " WHERE re.request_id = ? AND we.warehouse_id = ?";
 
 
     private SQLQueries() {

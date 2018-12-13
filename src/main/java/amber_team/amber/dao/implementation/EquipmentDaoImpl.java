@@ -1,9 +1,11 @@
 package amber_team.amber.dao.implementation;
 
 import amber_team.amber.dao.interfaces.EquipmentDao;
+import amber_team.amber.dao.interfaces.RequestDao;
 import amber_team.amber.model.dto.EquipmentDto;
 import amber_team.amber.model.dto.EquipmentInfoDto;
 import amber_team.amber.model.entities.Equipment;
+import amber_team.amber.model.entities.Request;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,6 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +28,25 @@ import java.util.stream.Collectors;
 @Repository(value = "equipmentDao")
 public class EquipmentDaoImpl implements EquipmentDao {
 
-    @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
+    private final RequestDao requestDao;
 
-
-    public void setDataSource(DataSource dataSource) {
+    @Autowired
+    public EquipmentDaoImpl(DataSource dataSource, RequestDao requestDao) {
         this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.requestDao = requestDao;
     }
+
+
+//    public void setDataSource(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 
     @Override
     public Equipment getById(String id) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         Equipment equipment = jdbcTemplate.queryForObject(
                 SQLQueries.GET_EQUIPMENT_BY_ID, new Object[]{id},
                 (rs, rowNum) -> getEquipment(rs));
@@ -58,7 +64,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<Equipment> getAll() {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.GET_ALL_EQUIPMENT,
                 (rs, rowNum) -> getEquipment(rs));
@@ -69,7 +75,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public List<Equipment> search(String value) {
         String formatValue = "%" + value + "%";
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.FIND_EQUIPMENT_BY_VALUE, new Object[]{formatValue, formatValue, formatValue},
                 (rs, rowNum) -> getEquipment(rs));
@@ -79,7 +85,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public ResponseEntity update(EquipmentDto e, String ware_id, int new_val) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         String drop = SQLQueries.IF_EXISTS_EQUIP_ITS_QUANTITY;
         Integer cnt = jdbcTemplate.queryForObject(
                 drop, Integer.class, e.getId(), ware_id);
@@ -94,7 +100,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<Equipment> getLimited(int limit) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         List<Equipment> equipment = jdbcTemplate.query(
                 SQLQueries.GET_LIMITED_EQUIPMENT, new Object[]{limit},
                 (rs, rowNum) -> getEquipment(rs));
@@ -110,13 +116,13 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public void removeEquipmentFromRequest(String requestId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         jdbcTemplate.update(SQLQueries.DELETE_REQUEST_EQUIPMENT, new Object[]{requestId});
     }
 
     @Override
     public void increaseEquipment(String requestId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
 
         List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
 
@@ -143,7 +149,6 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 .filter(equipmentDto -> equipmentDto.getQuantity() > 0)
                 .collect(Collectors.toList());
         if (unavailableEquipment.isEmpty()) {
-            jdbcTemplate = new JdbcTemplate(dataSource);
 
             List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
 
@@ -168,7 +173,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String requestId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
 
         jdbcTemplate.batchUpdate(SQLQueries.ADD_REQUEST_EQUIPMENT, new BatchPreparedStatementSetter() {
 
@@ -192,7 +197,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         equipmentDtoList.forEach(e -> addOneEquipmentToWarehouse(e, warehouseId));
     }
 
-    private void addOneEquipmentToWarehouse(EquipmentDto equipmentDto, String warehouseId){
+    private void addOneEquipmentToWarehouse(EquipmentDto equipmentDto, String warehouseId) {
         final SimpleJdbcCall updateEquipmentCall = new SimpleJdbcCall(jdbcTemplate).withFunctionName("update_equipment");
         final Map<String, Object> params = new HashMap<>();
         params.put("p_equipment_id", equipmentDto.getId());
@@ -205,7 +210,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public List<EquipmentInfoDto> getRequestEquipment(String requestId) {
 
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         List<EquipmentInfoDto> equipment = jdbcTemplate.query(
                 SQLQueries.GET_REQUEST_EQUIPMENT, new Object[]{requestId},
                 new RowMapper<EquipmentInfoDto>() {
@@ -219,7 +224,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<EquipmentInfoDto> getWarehouseEquipment(String warehouseId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+
         return jdbcTemplate.query(
                 SQLQueries.EQUIPMENT_INFO_BY_WAREHOUSE, new Object[]{warehouseId},
                 (rs, rowNum) -> getEquipmentInfoDto(rs));
@@ -235,11 +240,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
         return c;
     }
 
+    //returns unavailable equipment from warehouse which was on it before
     @Override
     public List<EquipmentDto> getUnavailableEquipmentQuantity(String requestId) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        Request request = requestDao.getById(requestId);
         List<EquipmentDto> equipment = jdbcTemplate.query(
-                SQLQueries.GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE, new Object[]{requestId},
+                SQLQueries.GET_UNAVAILABLE_EQUIPMENT_OF_REQUEST, new Object[]{requestId, request.getWarehouseId()},
                 new RowMapper<EquipmentDto>() {
                     public EquipmentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                         EquipmentDto c = new EquipmentDto();

@@ -17,19 +17,6 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-//    @PreAuthorize("isAuthenticated()")
-//    @GetMapping(value = "/admin")
-//    public UserListDto getUserList() {
-//        System.out.println("Controller: \n" + adminService.returnUsers().toString());
-//        return adminService.returnUsers();
-//    }
-//
-//    @PreAuthorize("isAuthenticated()")
-//    @PostMapping(value = "/admin")
-//    public UserListDto getRequestInfo(UserListDto request){
-//        return adminService.update(request);
-//    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/users/data")
     public AdminPageUsersDataDto getUsersData() {

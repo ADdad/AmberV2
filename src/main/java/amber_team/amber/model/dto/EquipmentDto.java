@@ -1,6 +1,13 @@
 package amber_team.amber.model.dto;
 
 public class EquipmentDto {
+    public EquipmentDto(String id, int quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
+
+    public EquipmentDto() {}
+
     private String id;
     private int quantity;
 

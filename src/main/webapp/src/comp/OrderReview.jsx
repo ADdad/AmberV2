@@ -28,7 +28,8 @@ class OrderReview extends Component {
       attachments: [],
       comments: [],
       executors: null,
-      executorId: null
+      executorId: null,
+      unavalibleEquipment: null
     };
     this.executorAlert = this.executorAlert.bind(this);
   }
@@ -157,6 +158,7 @@ class OrderReview extends Component {
         });
       })
       .catch(error => console.log(error));
+    this.loadUnavalibleEquipment(requestId);
   };
 
   additionalAttributes = () => {
@@ -182,6 +184,19 @@ class OrderReview extends Component {
         ))}
       </React.Fragment>
     );
+  };
+
+  loadUnavalibleEquipment = requestId => {
+    console.log(requestId);
+    fetch(`/equipment/unavalible/${requestId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          unavalibleEquipment: data.list
+        });
+      })
+      .catch(error => console.log(error));
   };
 
   buttonsSpace = () => {
@@ -272,16 +287,10 @@ class OrderReview extends Component {
   };
 
   loadExecutors = () => {
-    console.log("Before load");
-    console.log(this.state.status);
-    console.log(
-      this.state.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
-    );
     if (
       this.state.status === "On reviewing" &&
       this.state.userRoles.filter(role => role === "ROLE_ADMIN").length > 0
     ) {
-      console.log("done");
       fetch(`/request/executors/${this.state.warehouse.id}`)
         .then(response => response.json())
         .then(data => {
@@ -384,7 +393,11 @@ class OrderReview extends Component {
   };
 
   render() {
-    if (this.state.userRoles.length == 0 || this.state.status == "") {
+    if (
+      this.state.userRoles.length == 0 ||
+      this.state.status == "" ||
+      this.state.unavalibleEquipment == null
+    ) {
       return this.renderLoader();
     } else {
       if (this.state.executors == null) {
@@ -457,7 +470,15 @@ class OrderReview extends Component {
 
             {this.state.executors != null && this.choseExecutor()}
             <h3>Order items</h3>
-            <ItemsList equipment={this.state.equipment} />
+            {this.state.unavalibleEquipment.length > 0 && (
+              <h4 className="text-danger">
+                This order has unavalibe equipment
+              </h4>
+            )}
+            <ItemsList
+              equipment={this.state.equipment}
+              unavalibleEquipment={this.state.unavalibleEquipment}
+            />
             <div className="form-row">
               <div className="form-group">{this.additionalAttributes()}</div>
             </div>
