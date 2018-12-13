@@ -60,7 +60,7 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public Request update(Request request) {
-        Request oldRequest = this.getByRequest(request);
+        Request oldRequest = this.getById(request.getId());
         Request newRequest = null;
         try {
             newRequest = MergeReflectionUtil.mergeObjects(request, oldRequest);

@@ -149,7 +149,7 @@ public class RequestServiceImpl implements RequestService {
             Comment newComment = new Comment();
             newComment.setText(request.getCommentText());
             newComment.setUser(userDao.getById(request.getUserId()));
-            newComment.setRequest(requestDao.getByRequest(requestDao.getByRequest(requestNew)));
+            newComment.setRequest(requestNew);
             commentDao.create(newComment);
         }
 
@@ -262,9 +262,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestInfoDto getRequestInfo(String id) {
-        Request request = new Request();
-        request.setId(id);
-        request = requestDao.getByRequest(request);
+        Request request = requestDao.getById(id);
         RequestInfoDto requestInfoDto = new RequestInfoDto(request);
         requestInfoDto.setWarehouse(warehouseDao.getById(request.getWarehouseId()));
         requestInfoDto.setType(requestTypeDao.getById(request.getTypeId()));

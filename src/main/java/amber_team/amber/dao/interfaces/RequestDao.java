@@ -2,7 +2,6 @@ package amber_team.amber.dao.interfaces;
 
 
 import amber_team.amber.model.entities.Request;
-import amber_team.amber.model.entities.Role;
 
 import java.util.List;
 
