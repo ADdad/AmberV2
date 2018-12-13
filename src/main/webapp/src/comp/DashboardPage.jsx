@@ -249,7 +249,6 @@ class DashboardPage extends Component {
   };
 
   renderCreatedRequests = () => {
-    console.log(this.state.createdListSize);
     let createdRequests = this.state.createdRequests.map(u =>
       this.renderCreatedRequest(u)
     );
@@ -259,6 +258,7 @@ class DashboardPage extends Component {
           this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
         }
       >
+        <h4>Created requests</h4>
         <List className="col-md-12">{createdRequests}</List>
         <div className="form-row">
           <div className="form-group mx-auto">
@@ -290,6 +290,7 @@ class DashboardPage extends Component {
           this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
         }
       >
+        <h4>To execute</h4>
         <List className="col-md-12">{executingRequests}</List>
         <div className="form-row">
           <div className="form-group mx-auto">
@@ -304,10 +305,6 @@ class DashboardPage extends Component {
         </div>
       </div>
     );
-  };
-
-  createRequestButton = () => {
-    return <div />;
   };
 
   createCancelManyButton = () => {
@@ -343,10 +340,6 @@ class DashboardPage extends Component {
           console.error("Error:", error);
         });
     }
-  };
-
-  createReportsButton = () => {
-    return <div />;
   };
 
   handleOrderRequest = () => {
@@ -422,17 +415,10 @@ class DashboardPage extends Component {
           <div className="from-row d-flex justify-content-between">
             <div>
               {this.state.userRoles.filter(role => role.name === "ROLE_USER")
-                .length > 0 && this.createRequestButton()}
-              {this.state.userRoles.filter(role => role.name === "ROLE_USER")
                 .length > 0 &&
                 this.state.createdChecked.length > 0 &&
                 this.createCancelManyButton()}
             </div>
-            {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
-              .length > 0 ||
-              this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
-                .length > 0) &&
-              this.createReportsButton()}
           </div>
           <div className="form-row">
             {this.state.userRoles.filter(role => role.name === "ROLE_USER")

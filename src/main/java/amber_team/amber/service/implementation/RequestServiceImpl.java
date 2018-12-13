@@ -204,9 +204,9 @@ public class RequestServiceImpl implements RequestService {
         UserInfoDto userByEmail = userDao.getUserByEmail(principal);
         page--;
         List<Request> requestsList = new ArrayList<>();
-        if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
-            requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
         if (userByEmail.getRoles().contains(roleDao.getByName(KEEPER_ROLE_NAME)))
+            requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
+        if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
             requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
 
         Collections.sort(requestsList, new Comparator<Request>() {
