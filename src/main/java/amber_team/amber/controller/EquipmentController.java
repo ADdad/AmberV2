@@ -1,6 +1,7 @@
 package amber_team.amber.controller;
 
 import amber_team.amber.model.dto.EquipmentAddingDto;
+import amber_team.amber.model.dto.EquipmentListDto;
 import amber_team.amber.model.dto.EquipmentSearchDto;
 import amber_team.amber.model.dto.WarehouseListDto;
 import amber_team.amber.model.entities.Equipment;
@@ -36,12 +37,20 @@ public class EquipmentController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
+    @GetMapping("/equipment/unavalible/{requestId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EquipmentListDto getUnavalibleEquipmentOfRequest(@PathVariable String requestId) {
+        return equipmentService.unavailableEquipmentByRequestId(requestId);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/equipment")
     @ResponseStatus(HttpStatus.OK)
     public EquipmentSearchDto getItems() {
         return equipmentService.getLimitedEquipment();
     }
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/warehouse")

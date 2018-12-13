@@ -20,8 +20,6 @@ public interface RequestService {
 
     EquipmentSearchDto searchEquipment(String value);
 
-    EquipmentListDto unavailableEquipmentByRequestId(String requestId);
-
     UserListDto getWarehouseExecutors(String warehouseId);
 
     Request changeStatus(MyRequestStatusChangeDto request);

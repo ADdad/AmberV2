@@ -101,13 +101,6 @@ public class RequestServiceImpl implements RequestService {
         return result;
     }
 
-    @Override
-    public EquipmentListDto unavailableEquipmentByRequestId(String requestId) {
-        //TODO filter out negative quantity equipment
-        EquipmentListDto equipmentListDto = new EquipmentListDto();
-        equipmentListDto.setList(equipmentDao.getUnavailableEquipmentQuantity(requestId));
-        return equipmentListDto;
-    }
 
     @Override
     public UserListDto getWarehouseExecutors(String warehouseId) {
@@ -272,7 +265,8 @@ public class RequestServiceImpl implements RequestService {
         List<CommentDto> commentDtos = commentDao.getForRequest(request.getId());
         //Add converter
         if (commentDtos != null && commentDtos.size() > 0) {
-            List<Comment> comments = commentDtos.parallelStream().map(commentDto -> new Comment(commentDto, userDao.getById(commentDto.getUserId()))).collect(Collectors.toList());
+            List<Comment> comments = commentDtos.parallelStream().map(commentDto -> new Comment(commentDto,
+                    userDao.getById(commentDto.getUserId()))).collect(Collectors.toList());
             requestInfoDto.setComments(comments);
         } else requestInfoDto.setComments(new ArrayList<>());
 
