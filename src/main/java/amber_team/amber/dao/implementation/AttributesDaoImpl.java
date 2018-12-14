@@ -144,7 +144,8 @@ public class AttributesDaoImpl implements AttributesDao {
     }
 
     private void getAttributeValues(AttributeDto attr, JdbcTemplate jdbcTemplate) {
-        List<String> values = jdbcTemplate.query(SQLQueries.RESERVED_VALUES_FOR_ATTRIBUTE_ID, new Object[]{attr.getId()}, new RowMapper<String>() {
+        List<String> values = jdbcTemplate.query(SQLQueries.RESERVED_VALUES_FOR_ATTRIBUTE_ID,
+                new Object[]{attr.getId()}, new RowMapper<String>() {
             public String mapRow(ResultSet rs, int rowNum)
                     throws SQLException {
                 return rs.getString(1);

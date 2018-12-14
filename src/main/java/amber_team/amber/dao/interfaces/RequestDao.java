@@ -6,13 +6,13 @@ import amber_team.amber.model.entities.Request;
 import java.util.List;
 
 public interface RequestDao {
-    public Request create(Request request);
+    Request create(Request request);
 
-    public Request update(Request request);
+    Request update(Request request);
 
-    public Request getByRequest(Request requestId);
+    Request getByRequest(Request requestId);
 
-    public Request getById(String requestId);
+    Request getById(String requestId);
 
     int getCountOfUsersActiveRequests(String userId);
 
@@ -20,7 +20,7 @@ public interface RequestDao {
 
     List<Request> getAllUsersRequestsPagination(String userId, int offset, int limit);
 
-    public void archiveOldRequests();
+    void archiveOldRequests();
 
     List<Request> getAdminRequestsPagination(String id, int i, int pagination);
 

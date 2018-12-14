@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService {
         } else if (!checkEmailReg(user.getEmail())) {
             return ResponseEntity.badRequest()
                     .body(ErrorMessages.INVALID_EMAIL);
+        } else if (!checkEmailAvailability(user.getEmail())) {
+            return ResponseEntity.badRequest().body(ErrorMessages.ALREADY_REGISTERED_EMAIL);
         } else {
             User newUser = new User();
             newUser.setEmail(user.getEmail());
@@ -58,6 +60,10 @@ public class UserServiceImpl implements UserService {
             return userDao.save(newUser);
 
         }
+    }
+
+    private boolean checkEmailAvailability(String email) {
+        return userDao.checkEmailAvailability(email);
     }
 
     @Override

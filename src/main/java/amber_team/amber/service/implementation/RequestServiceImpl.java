@@ -37,7 +37,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     public RequestServiceImpl(RequestDao requestDao, WarehouseDao warehouseDao, EquipmentDao equipmentDao,
-                              RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao, AttributesDao attributesDao,
+                              RequestTypeDao requestTypeDao, UserDao userDao, CommentDao commentDao,
+                              AttributesDao attributesDao,
                               RoleDao roleDao, EmailServiceImpl emailService) {
         this.requestDao = requestDao;
         this.warehouseDao = warehouseDao;
@@ -161,7 +162,8 @@ public class RequestServiceImpl implements RequestService {
 
     private void sendChangeStatusEmail(Request requestNew, String existedStatus) {
         User userInfo = userDao.getById(requestNew.getCreatorId());
-        emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(), existedStatus,
+        emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(),
+                existedStatus,
                 requestNew.getStatus());
     }
 
@@ -198,9 +200,11 @@ public class RequestServiceImpl implements RequestService {
         page--;
         List<Request> requestsList = new ArrayList<>();
         if (userByEmail.getRoles().contains(roleDao.getByName(KEEPER_ROLE_NAME)))
-            requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
+            requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page *
+                    PAGINATION, PAGINATION));
         if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
-            requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION));
+            requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page *
+                    PAGINATION, PAGINATION));
 
         Collections.sort(requestsList, new Comparator<Request>() {
             @Override
@@ -228,7 +232,8 @@ public class RequestServiceImpl implements RequestService {
     public RequestListDtoPagination getCreatedRequests(Principal userData, int page) {
         UserInfoDto userByEmail = userDao.getUserByEmail(userData);
         page--;
-        List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userByEmail.getId(), page * PAGINATION, PAGINATION);
+        List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userByEmail.getId(), page *
+                PAGINATION, PAGINATION);
         RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
         requestListDtoPagination.setRequests(listRequests);
         requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersActiveRequests(userByEmail.getId()));
@@ -284,7 +289,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private boolean cancelValidation(RequestStatusChangeDto request) {
-        return !request.getStatus().equals("On Reviewing") && !request.getStatus().equals("Delivering") && !request.getStatus().equals("Completed");
+        return !request.getStatus().equals("On Reviewing") && !request.getStatus().equals("Delivering") &&
+                !request.getStatus().equals("Completed");
     }
 
     private boolean rejectValidation(RequestStatusChangeDto request) {

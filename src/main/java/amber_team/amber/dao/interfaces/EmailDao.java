@@ -1,11 +1,11 @@
 package amber_team.amber.dao.interfaces;
 
 public interface EmailDao {
-    public String getRegistrationTemplate();
+    String getRegistrationTemplate();
 
-    public String getRequestStatusChangedTemplate();
+    String getRequestStatusChangedTemplate();
 
-    public String getUserRolesChangedTemplate();
+    String getUserRolesChangedTemplate();
 
-    public String getRequestCreatedTemplate();
+    String getRequestCreatedTemplate();
 }

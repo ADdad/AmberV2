@@ -36,7 +36,8 @@ public class EmailServiceImpl {
         sendSimpleMessage(to, subject, text);
     }
 
-    public void sendRequestStatusChanged(String to, String firstName, String requestTitle, String existedStatus, String currentStatus) {
+    public void sendRequestStatusChanged(String to, String firstName, String requestTitle, String existedStatus,
+                                         String currentStatus) {
         String requestStatusChangedTemplate = emailDao.getRequestStatusChangedTemplate();
         String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, existedStatus, currentStatus);
         String subject = "Request status changed!";

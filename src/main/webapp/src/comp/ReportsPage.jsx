@@ -271,7 +271,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 4) {
-            if ((this.state.warehouseId != "") && this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate) {
+            if ((this.state.warehouseId != "") && this.state.fromDate != "1970-01-01" &&
+                this.state.toDate >= this.state.fromDate) {
                 fetch('/reports/equipment/delivered', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -341,7 +342,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 7) {
-            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.executorId != "") {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate
+                && this.state.executorId != "") {
                 fetch('/reports/orders/executed', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -365,7 +367,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 8) {
-            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.creatorId != "") {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate
+                && this.state.creatorId != "") {
                 fetch('/reports/orders/created', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -399,7 +402,8 @@ class ReportsPage extends Component {
                     <label>Select warehouse:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect02">
+                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node}
+                                className="custom-select form-control" id="inputGroupSelect02">
                             <option value="" disabled selected>Warehouse</option>
                             {this.state.warehouses.map(w => (
                                 <option value={w.id}>{w.address}</option>
@@ -410,7 +414,8 @@ class ReportsPage extends Component {
 
                 </div>
                 <div className="col-3 ">
-                    <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                    <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                        Generate report</button>
                 </div>
                 </React.Fragment>
             );
@@ -421,7 +426,8 @@ class ReportsPage extends Component {
                     <label>Select warehouse:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect03">
+                        <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node}
+                                className="custom-select form-control" id="inputGroupSelect03">
                             <option value="" disabled selected>Warehouse</option>
                             {this.state.warehouses.map(w => (
                                 <option value={w.id}>{w.address}</option>
@@ -434,10 +440,12 @@ class ReportsPage extends Component {
                 </div>
                     <div className="col-3">
                         <label>Minimum number of equipment:</label>
-                        <input onChange={this.handleMinChange} ref={(node) => this._input = node} className="form-control" type="number" min="0" defaultValue="1" />
+                        <input onChange={this.handleMinChange} ref={(node) => this._input = node}
+                               className="form-control" type="number" min="0" defaultValue="1" />
                     </div>
                     <div className="col-3">
-                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                            Generate report</button>
                     </div>
                 </React.Fragment>
             );
@@ -448,7 +456,8 @@ class ReportsPage extends Component {
                         <label>Select warehouse:</label>
                         <div className="input-group">
                             {this.renderLoadMoreInputRows()}
-                            <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node} className="custom-select form-control" id="inputGroupSelect04">
+                            <select onChange={this.handleWarehouseChange} ref={(node) => this._warehouse = node}
+                                    className="custom-select form-control" id="inputGroupSelect04">
                                 <option value="" disabled selected>Warehouse</option>
                                 {this.state.warehouses.map(w => (
                                     <option value={w.id}>{w.address}</option>
@@ -459,14 +468,17 @@ class ReportsPage extends Component {
                     </div>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date4" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
+                               id="from-date4" className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date4" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node}
+                               id="to-date4" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
-                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                            Generate report</button>
                     </div>
                 </React.Fragment>
             )
@@ -475,15 +487,18 @@ class ReportsPage extends Component {
                 <React.Fragment>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date5" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
+                               id="from-date5" className="form-control" type="date"/>
                     <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date5" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node}
+                               id="to-date5" min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
-                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                            Generate report</button>
                     </div>
                 </React.Fragment>
             )
@@ -492,15 +507,18 @@ class ReportsPage extends Component {
                 <React.Fragment>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date6" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
+                               id="from-date6" className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date6" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date6"
+                               min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
-                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                            Generate report</button>
                     </div>
                 </React.Fragment>
             )
@@ -511,7 +529,8 @@ class ReportsPage extends Component {
                     <label>Select executor:</label>
                     <div className="input-group">
                         {this.renderLoadMoreInputRows()}
-                        <select onChange={this.handleExecutorsChange} ref={(node) => this._executor = node} className="custom-select form-control" id="inputGroupSelect07">
+                        <select onChange={this.handleExecutorsChange} ref={(node) => this._executor = node}
+                                className="custom-select form-control" id="inputGroupSelect07">
                             <option value="" disabled selected>Executor</option>
                             {this.state.executors.map(e => (
                                 <option value={e.id}>{e.pib}</option>
@@ -521,15 +540,18 @@ class ReportsPage extends Component {
                 </div>
                 <div className="col-2">
                     <label>From date:</label>
-                    <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date7" className="form-control" type="date"/>
+                    <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date7"
+                           className="form-control" type="date"/>
                     <br/>
                 </div>
                 <div className="col-2">
                     <label>To date:</label>
-                    <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date7" min={this.state.fromDate} className="form-control" type="date"/>
+                    <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date7"
+                           min={this.state.fromDate} className="form-control" type="date"/>
                 </div>
                 <div className="col-2">
-                    <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                    <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                        Generate report</button>
                 </div>
             </React.Fragment>
             )
@@ -540,7 +562,8 @@ class ReportsPage extends Component {
                         <label>Select creator:</label>
                         <div className="input-group">
                             {this.renderLoadMoreInputRows()}
-                            <select onChange={this.handleCreatorsChange} ref={(node) => this._creator = node} className="custom-select form-control" id="inputGroupSelect08">
+                            <select onChange={this.handleCreatorsChange} ref={(node) => this._creator = node}
+                                    className="custom-select form-control" id="inputGroupSelect08">
                                 <option value="" disabled selected>Creator</option>
                                 {this.state.creators.map(c => (
                                     <option value={c.id}>{c.pib}</option>
@@ -550,15 +573,18 @@ class ReportsPage extends Component {
                     </div>
                     <div className="col-2">
                         <label>From date:</label>
-                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date8" className="form-control" type="date"/>
+                        <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
+                               id="from-date8" className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
-                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date8" min={this.state.fromDate} className="form-control" type="date"/>
+                        <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date8"
+                               min={this.state.fromDate} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
-                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">Generate report</button>
+                        <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
+                            Generate report</button>
                     </div>
                 </React.Fragment>
             )
@@ -643,22 +669,28 @@ class ReportsPage extends Component {
     }
 
     renderLoadMoreInputRows = () => {
-        if(this.state.reportTypeId < 5 && this.state.warehouses.length == this.state.warehousesPage*this.state.resultsPerPage){
+        if(this.state.reportTypeId < 5 && this.state.warehouses.length == this.state.warehousesPage*
+            this.state.resultsPerPage){
             return (
                 <div className="input-group-prepend">
-                    <button onClick={this.loadMoreWarehouses} className="btn btn-outline-secondary" type="button">Load More</button>
+                    <button onClick={this.loadMoreWarehouses} className="btn btn-outline-secondary" type="button">
+                        Load More</button>
                 </div>
             )
-        } else if (this.state.reportTypeId == 7 && this.state.executors.length == this.state.executorsPage*this.state.resultsPerPage) {
+        } else if (this.state.reportTypeId == 7 && this.state.executors.length == this.state.executorsPage*
+            this.state.resultsPerPage) {
             return (
                 <div className="input-group-prepend">
-                    <button onClick={this.loadMoreExecutors} className="btn btn-outline-secondary" type="button">Load More</button>
+                    <button onClick={this.loadMoreExecutors} className="btn btn-outline-secondary" type="button">
+                        Load More</button>
                 </div>
             )
-        } else if (this.state.reportTypeId == 8 && this.state.creators.length == this.state.creatorsPage*this.state.resultsPerPage) {
+        } else if (this.state.reportTypeId == 8 && this.state.creators.length == this.state.creatorsPage*
+            this.state.resultsPerPage) {
             return (
                 <div className="input-group-prepend">
-                    <button onClick={this.loadMoreCreators} className="btn btn-outline-secondary" type="button">Load More</button>
+                    <button onClick={this.loadMoreCreators} className="btn btn-outline-secondary" type="button">
+                        Load More</button>
                 </div>
             )
         } else {
@@ -669,7 +701,8 @@ class ReportsPage extends Component {
     renderLoadExcel = () => {
         if(this.state.reportRows.length > 0) {
             return (
-                <button className="btn btn-outline-primary col-3" onClick={this.handleLoadExcel}>Load Excel version</button>
+                <button className="btn btn-outline-primary col-3" onClick={this.handleLoadExcel}>
+                    Load Excel version</button>
             )
         } else {
             return(<div></div>)
@@ -763,7 +796,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 4) {
-            if ((this.state.warehouseId != "") && this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate) {
+            if ((this.state.warehouseId != "") && this.state.fromDate != "1970-01-01" && this.state.toDate >=
+                this.state.fromDate) {
                 fetch('/reports/equipment/delivered/excel', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -851,7 +885,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 7) {
-            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.executorId != "") {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate &&
+                this.state.executorId != "") {
                 fetch('/reports/orders/executed/excel', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -881,7 +916,8 @@ class ReportsPage extends Component {
                 alert("Wrong inputs!")
             }
         } else if (this.state.reportTypeId == 8) {
-            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate && this.state.creatorId != "") {
+            if(this.state.fromDate != "1970-01-01" && this.state.toDate >= this.state.fromDate &&
+                this.state.creatorId != "") {
                 fetch('/reports/orders/created/excel', {
                     method: 'POST',
                     body: JSON.stringify({

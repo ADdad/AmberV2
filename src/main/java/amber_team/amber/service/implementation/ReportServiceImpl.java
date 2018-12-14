@@ -154,13 +154,16 @@ public class ReportServiceImpl implements ReportService {
         generateOrdersExcel(orders, response, fileName);
     }
 
-    private void generateEquipmentExcel(List<ReportEquipmentResponseDto> equipment, HttpServletResponse response, String fileName) {
+    private void generateEquipmentExcel(List<ReportEquipmentResponseDto> equipment, HttpServletResponse response,
+                                        String fileName) {
         List<String> headers = Arrays.asList("Model", "Quantity", "Producer", "Country");
         try {
             LocalDateTime timestamp = LocalDateTime.now();
-            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-equipment-" + timestamp + ".xls");
+            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-equipment-" +
+                    timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
-            new SimpleExporter().gridExport(headers, equipment, "equipmentModel, quantity, equipmentProducer," +
+            new SimpleExporter().gridExport(headers, equipment,
+                    "equipmentModel, quantity, equipmentProducer," +
                     " equipmentCountry", response.getOutputStream());
             response.flushBuffer();
         } catch (IOException e) {
@@ -168,12 +171,14 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private void generateOrdersExcel(List<ReportOrdersResponseExcelDto> orders, HttpServletResponse response, String fileName) {
+    private void generateOrdersExcel(List<ReportOrdersResponseExcelDto> orders, HttpServletResponse response,
+                                     String fileName) {
         List<String> headers = Arrays.asList("Order Type", "Status", "Creator", "Executor", "Creation date",
                 "Last modified date", " Warehouse", "Title", "Description");
         try {
             LocalDateTime timestamp = LocalDateTime.now();
-            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-orders-" + timestamp + ".xls");
+            response.addHeader("Content-disposition", "attachment; filename=" + fileName + "-orders-" +
+                    timestamp + ".xls");
             response.setContentType("application/vnd.ms-excel");
             new SimpleExporter().gridExport(headers, orders, "orderType, orderStatus, creator, executor," +
                     " creationDate, modifiedDate, warehouse, title, orderDescription", response.getOutputStream());
@@ -184,7 +189,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private boolean checkReportAvailableEquipmentDto(ReportAvailableEquipmentDto reportDto) {
-        return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() < 0 || reportDto.getResultsPerPage() < 0);
+        return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() < 0 ||
+                reportDto.getResultsPerPage() < 0);
     }
 
 }

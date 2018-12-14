@@ -20,7 +20,7 @@ class LogInForm extends Component {
     const v = p.target.value;
     // Remembering mail value for submit
     this.setState({ mail: v });
-    console.log(this.state.mail);
+    //console.log(this.state.mail);
     // Check regex notation
     /[a-zA-Z0-9._+-]+@[a-zA-Z+-]+\.[a-z]+$/.test(p.target.value)
       ? this.setState({ error: false })
@@ -32,7 +32,7 @@ class LogInForm extends Component {
     this.setState({ password: v });
   };
   handleSubmit = () => {
-    console.log(this.state.mail, "\n", this.state.password);
+    //console.log(this.state.mail, "\n", this.state.password);
     var params = new URLSearchParams([['email',this.state.mail],['password',this.state.password]]);
     
     fetch("/perform_login", {

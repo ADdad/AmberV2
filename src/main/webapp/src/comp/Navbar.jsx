@@ -6,7 +6,9 @@ class Navbar extends Component {
         super(props);
         this.state = {
             tempVal : false,
-            roles : []
+            roles : [],
+            userMail : "",
+            userName : ""
         };
         rerenderNav = rerenderNav.bind(this);
     }
@@ -20,7 +22,8 @@ class Navbar extends Component {
 
     return (
       <React.Fragment>
-        <SearchAppBar roles={this.state.roles} tempVal={this.state.tempVal} />
+        <SearchAppBar userMail={this.state.userMail} userName={this.state.userName} roles={this.state.roles}
+                      tempVal={this.state.tempVal} />
       </React.Fragment>
     );
   }
@@ -32,7 +35,9 @@ export function rerenderNav() {
         .then(data => {
             this.setState({
                 tempVal: true,
-                roles : data.roles.map(role => role.name)
+                roles : data.roles.map(role => role.name),
+                userMail : data.email,
+                userName : data.firstName
             });
         })
         .catch(error => {
