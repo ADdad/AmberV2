@@ -5,6 +5,8 @@ import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.service.interfaces.AttachmentsService;
 import amber_team.amber.service.interfaces.RequestService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.Arrays;
 @RestController
 public class RequestController {
 
+    private static Logger logger = LogManager.getLogger(RequestController.class);
 
     private final RequestService requestService;
 
@@ -72,6 +75,7 @@ public class RequestController {
     @GetMapping("/request/create/{type}")
     @ResponseStatus(HttpStatus.OK)
     public CreateOrderDto creationData(@PathVariable String type) {
+        logger.info("Getting creation data for type " + type);
         return requestService.creationData(type);
     }
 
@@ -108,6 +112,7 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile,
                                         @PathVariable String requestId) throws IOException {
+        logger.info("Upload attachments for id" + requestId + "size " + multipartFile.length);
         if (multipartFile.length < 1) {
             attachmentsService.deleteRequestAttachments(requestId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
