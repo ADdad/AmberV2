@@ -256,6 +256,7 @@ class SearchAppBar extends React.Component {
   renderMenu = () => {
     if (this.props.tempVal == true) {
       const { anchorEl } = this.state;
+      let  user  = this.props.userName + " "+this.props.userMail;
       return (
         <div>
           <Button
@@ -264,7 +265,7 @@ class SearchAppBar extends React.Component {
             onClick={this.handleClick}
             style={{ color: "#ffffff", backgroundColor: "#c2185b" }}
           >
-            Open Menu
+              {user}
           </Button>
           <Menu
             id="simple-menu"

@@ -31,7 +31,8 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
-        List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION,
+        List<ReportEquipmentResponseDto> response =
+                jdbcTemplate.query(SQLQueries.GET_AVAILABLE_EQUIPMENT_WITH_PAGINATION,
                 new Object[]{reportDto.getWarehouseId(), limit, offset}, (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
@@ -41,7 +42,8 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportEquipmentResponseDto> getAllAvailableEquipment(ReportAvailableEquipmentDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_AVAILABLE_EQUIPMENT, new Object[]{reportDto.getWarehouseId()}, (resultSet, i) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_AVAILABLE_EQUIPMENT, new Object[]{reportDto.getWarehouseId()},
+                (resultSet, i) -> {
             return getReportEquipmentResponseDto(resultSet);
         });
     }
@@ -52,7 +54,8 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
-        List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION,
+        List<ReportEquipmentResponseDto> response =
+                jdbcTemplate.query(SQLQueries.GET_NONAVAILABLE_EQUIPMENT_WITH_PAGINATION,
                 new Object[]{reportDto.getWarehouseId(), limit, offset}, (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
@@ -62,7 +65,8 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportEquipmentResponseDto> getAllNonAvailableEquipment(ReportAvailableEquipmentDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_NONAVAILABLE_EQIPMENT, new Object[]{reportDto.getWarehouseId()}, (resultSet, i) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_NONAVAILABLE_EQIPMENT, new Object[]{reportDto.getWarehouseId()},
+                (resultSet, i) -> {
             return getReportEquipmentResponseDto(resultSet);
         });
     }
@@ -83,7 +87,8 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportEquipmentResponseDto> getAllDeliveredEquipment(ReportDeliveredEquipmentDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_DELIVERED_EQUIPMENT, new Object[]{reportDto.getWarehouseId(), reportDto.getFromDate(), reportDto.getToDate()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_DELIVERED_EQUIPMENT, new Object[]{reportDto.getWarehouseId(),
+                reportDto.getFromDate(), reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportEquipmentResponseDto(resultSet);
         });
     }
@@ -95,7 +100,8 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_ENDING_EQUIPMENT_WITH_PAGINATION,
-                new Object[]{reportDto.getWarehouseId(), reportDto.getEquipmentThreshold(), limit, offset}, (resultSet, rowNum) -> {
+                new Object[]{reportDto.getWarehouseId(), reportDto.getEquipmentThreshold(), limit, offset},
+                (resultSet, rowNum) -> {
                     return getReportEquipmentResponseDto(resultSet);
                 });
         return ResponseEntity.ok(response);
@@ -104,7 +110,8 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportEquipmentResponseDto> getAllEndingEquipment(ReportEndingEquipmentDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_ENDING_EQUIPMENT, new Object[]{reportDto.getWarehouseId(), reportDto.getEquipmentThreshold()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_ENDING_EQUIPMENT, new Object[]{reportDto.getWarehouseId(),
+                reportDto.getEquipmentThreshold()}, (resultSet, rowNum) -> {
             return getReportEquipmentResponseDto(resultSet);
         });
     }
@@ -125,7 +132,8 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportOrdersResponseExcelDto> getAllProcessedOrders(ReportOrdersDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_PROCESSED_ORDERS, new Object[]{reportDto.getFromDate(), reportDto.getToDate()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_PROCESSED_ORDERS, new Object[]{reportDto.getFromDate(),
+                reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
         });
     }
@@ -137,14 +145,16 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_UNPROCESSED_ORDERS_WITH_PAGINATION,
-                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), limit, offset}, (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
+                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), limit, offset}, (resultSet, rowNum) ->
+                        getReportOrdersResponseDto(resultSet));
         return ResponseEntity.ok(response);
     }
 
     @Override
     public List<ReportOrdersResponseExcelDto> getAllUnprocessedOrders(ReportOrdersDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_UNPROCESSED_ORDERS, new Object[]{reportDto.getFromDate(), reportDto.getToDate()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_UNPROCESSED_ORDERS, new Object[]{reportDto.getFromDate(),
+                reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
         });
     }
@@ -156,14 +166,16 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_EXECUTED_ORDERS_BY_WITH_PAGINATION,
-                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset}, (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
+                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset},
+                (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
         return ResponseEntity.ok(response);
     }
 
     @Override
     public List<ReportOrdersResponseExcelDto> getAllExecutedOrders(ReportOrdersWithUserDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_EXECUTED_ORDERS, new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_EXECUTED_ORDERS, new Object[]{reportDto.getFromDate(),
+                reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
         });
     }
@@ -174,14 +186,16 @@ public class ReportDaoImpl implements ReportDao {
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_CREATED_ORDERS_BY_WITH_PAGINATION,
-                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset}, (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
+                new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset},
+                (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
         return ResponseEntity.ok(response);
     }
 
     @Override
     public List<ReportOrdersResponseExcelDto> getAllCreatedOrders(ReportOrdersWithUserDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(SQLQueries.GET_ALL_CREATED_ORDERS, new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(SQLQueries.GET_ALL_CREATED_ORDERS, new Object[]{reportDto.getFromDate(),
+                reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
         });
     }
@@ -191,7 +205,8 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = helperDto.getPageNumber() * helperDto.getResultsPerPage();
         int limit = helperDto.getResultsPerPage();
-        List<ReportWarehouseDto> response = jdbcTemplate.query(SQLQueries.GET_WAREHOUSES_WITH_PAGINATION, new Object[]{limit, offset}, (resultSet, rowNum) -> {
+        List<ReportWarehouseDto> response = jdbcTemplate.query(SQLQueries.GET_WAREHOUSES_WITH_PAGINATION,
+                new Object[]{limit, offset}, (resultSet, rowNum) -> {
             ReportWarehouseDto warehouse = new ReportWarehouseDto();
             warehouse.setId(resultSet.getString("id"));
             warehouse.setAddress(resultSet.getString("address"));
@@ -205,7 +220,8 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = helperDto.getPageNumber() * helperDto.getResultsPerPage();
         int limit = helperDto.getResultsPerPage();
-        List<ReportUserDto> response = jdbcTemplate.query(SQLQueries.GET_EXECUTORS_WITH_PAGINATION, new Object[]{limit, offset}, (resultSet, rowNum) -> {
+        List<ReportUserDto> response = jdbcTemplate.query(SQLQueries.GET_EXECUTORS_WITH_PAGINATION,
+                new Object[]{limit, offset}, (resultSet, rowNum) -> {
             return getReportUserDto(resultSet);
         });
         return ResponseEntity.ok(response);
@@ -216,7 +232,8 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = helperDto.getPageNumber() * helperDto.getResultsPerPage();
         int limit = helperDto.getResultsPerPage();
-        List<ReportUserDto> response = jdbcTemplate.query(SQLQueries.GET_CREATORS_WITH_PAGINATION, new Object[]{limit, offset}, (resultSet, rowNum) -> {
+        List<ReportUserDto> response = jdbcTemplate.query(SQLQueries.GET_CREATORS_WITH_PAGINATION,
+                new Object[]{limit, offset}, (resultSet, rowNum) -> {
             return getReportUserDto(resultSet);
         });
         return ResponseEntity.ok(response);
@@ -234,12 +251,14 @@ public class ReportDaoImpl implements ReportDao {
         ReportOrdersResponseDto orderInfo = new ReportOrdersResponseDto();
         orderInfo.setCreationDate(resultSet.getDate("creation_date"));
         orderInfo.setCreatorEmail(resultSet.getString("creator_email"));
-        orderInfo.setCreatorPib(resultSet.getString("creator_surname") + " " + resultSet.getString("creator_name"));
+        orderInfo.setCreatorPib(resultSet.getString("creator_surname") + " " +
+                resultSet.getString("creator_name"));
         orderInfo.setExecutorEmail(resultSet.getString("executor_email"));
         if (resultSet.wasNull()) {
             orderInfo.setExecutorEmail("");
         }
-        orderInfo.setExecutorPib(resultSet.getString("executor_surname") + " " + resultSet.getString("executor_name"));
+        orderInfo.setExecutorPib(resultSet.getString("executor_surname") + " " +
+                resultSet.getString("executor_name"));
         if (resultSet.wasNull()) {
             orderInfo.setExecutorPib("");
         }
@@ -256,15 +275,18 @@ public class ReportDaoImpl implements ReportDao {
     private ReportOrdersResponseExcelDto getReportOrdersResponseExcelDto(ResultSet resultSet) throws SQLException {
         ReportOrdersResponseExcelDto orderInfo = new ReportOrdersResponseExcelDto();
         orderInfo.setCreationDate(resultSet.getDate("creation_date"));
-        orderInfo.setCreator(resultSet.getString("creator_surname") + " " + resultSet.getString("creator_name")
+        orderInfo.setCreator(resultSet.getString("creator_surname") + " " +
+                resultSet.getString("creator_name")
                 + " " + resultSet.getString("creator_email"));
-        orderInfo.setExecutor(resultSet.getString("executor_surname") + " " + resultSet.getString("executor_name")
+        orderInfo.setExecutor(resultSet.getString("executor_surname") + " " +
+                resultSet.getString("executor_name")
                 + " " + resultSet.getString("executor_email"));
         orderInfo.setModifiedDate(resultSet.getDate("modified_date"));
         orderInfo.setOrderDescription(resultSet.getString("description"));
         orderInfo.setOrderStatus(resultSet.getString("status"));
         orderInfo.setOrderType(resultSet.getString("order_type"));
-        orderInfo.setWarehouse(resultSet.getString("warehouse_address") + " " + resultSet.getString("warehouse_phone"));
+        orderInfo.setWarehouse(resultSet.getString("warehouse_address") + " " +
+                resultSet.getString("warehouse_phone"));
         orderInfo.setTitle(resultSet.getString("title"));
         return orderInfo;
     }

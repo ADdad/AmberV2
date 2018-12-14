@@ -9,9 +9,9 @@ import java.security.Principal;
 import java.util.List;
 
 public interface UserDao {
-    public ResponseEntity save(User user);
+    ResponseEntity save(User user);
 
-    public ResponseEntity getUserInfo(Principal principal);
+    ResponseEntity getUserInfo(Principal principal);
 
     List<UserInfoDto> getAllActive();
 
@@ -23,4 +23,6 @@ public interface UserDao {
     List<UserInfoDto> getUsersPagination(int offset, int limit);
 
     List<UserInfoDto> getAll();
+
+    boolean checkEmailAvailability(String email);
 }

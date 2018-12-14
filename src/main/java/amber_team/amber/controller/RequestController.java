@@ -106,7 +106,8 @@ public class RequestController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/request/create/attachments/{requestId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile, @PathVariable String requestId) throws IOException {
+    public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile,
+                                        @PathVariable String requestId) throws IOException {
         if (multipartFile.length < 1) {
             attachmentsService.deleteRequestAttachments(requestId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -116,7 +117,8 @@ public class RequestController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/attachments/{requestId}")
-    public ResponseEntity<byte[]> downloadAttachment(@PathVariable String requestId, @RequestParam("filename") String filename) throws IOException {
+    public ResponseEntity<byte[]> downloadAttachment(@PathVariable String requestId,
+                                                     @RequestParam("filename") String filename) throws IOException {
         return attachmentsService.downloadAttachment(requestId, filename);
     }
 

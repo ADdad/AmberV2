@@ -48,7 +48,8 @@ public class CommentDaoImpl implements CommentDao {
 
         Timestamp creationDate = Timestamp.valueOf(LocalDateTime.now());
 
-        jdbcTemplate.update(SQLQueries.ADD_NEW_COMMENT, id, comment.getRequest().getId(), comment.getUser().getId(), comment.getText(), creationDate);
+        jdbcTemplate.update(SQLQueries.ADD_NEW_COMMENT, id, comment.getRequest().getId(), comment.getUser().getId(),
+                comment.getText(), creationDate);
 
     }
 

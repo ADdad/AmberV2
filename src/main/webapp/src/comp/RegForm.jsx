@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import {rerenderNav} from "./Navbar";
 class RegForm extends Component {
   state = {
     //   To compare passwords
@@ -99,8 +100,8 @@ class RegForm extends Component {
           if (res.status == 200) {
             this.setState({ alert: "Succesfuly registered" });
             this.setState({ loginStatus: true });
-            console.log("Success:", JSON.stringify(res));
-            console.log(res.status);
+            //console.log("Success:", JSON.stringify(res));
+            //console.log(res.status);
           } else {
             this.setState({ alert: "You are already registered" });
           }
@@ -128,6 +129,7 @@ class RegForm extends Component {
         .then(response => {
           const regex = /dashboard$/gm;
           if (regex.test(response.url)) {
+              rerenderNav();
             this.props.history.push("/dashboard");
           } else {
             this.setState({ alert: "Unknown exception" });

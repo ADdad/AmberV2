@@ -27,7 +27,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/equipment/available/excel")
-    public void downloadAvailableOutputExcel(HttpServletResponse response, @RequestBody ReportAvailableEquipmentDto reportDto) {
+    public void downloadAvailableOutputExcel(HttpServletResponse response,
+                                             @RequestBody ReportAvailableEquipmentDto reportDto) {
         reportService.createAvailableExcel(response, reportDto);
     }
 
@@ -39,7 +40,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/equipment/nonavailable/excel")
-    public void downloadNonAvailableOutputExcel(HttpServletResponse response, @RequestBody ReportAvailableEquipmentDto reportDto) {
+    public void downloadNonAvailableOutputExcel(HttpServletResponse response,
+                                                @RequestBody ReportAvailableEquipmentDto reportDto) {
         reportService.createNonAvailableExcel(response, reportDto);
     }
 
@@ -51,7 +53,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/equipment/delivered/excel")
-    public void downloadDeliveredOutputExcel(HttpServletResponse response, @RequestBody ReportDeliveredEquipmentDto reportDto) {
+    public void downloadDeliveredOutputExcel(HttpServletResponse response,
+                                             @RequestBody ReportDeliveredEquipmentDto reportDto) {
         reportService.createDeliveredExcel(response, reportDto);
     }
 
@@ -63,7 +66,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/equipment/ending/excel")
-    public void downloadEndingOutputExcel(HttpServletResponse response, @RequestBody ReportEndingEquipmentDto reportDto) {
+    public void downloadEndingOutputExcel(HttpServletResponse response,
+                                          @RequestBody ReportEndingEquipmentDto reportDto) {
         reportService.createEndingExcel(response, reportDto);
     }
 
@@ -75,7 +79,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/orders/processed/excel")
-    public void downloadProcessedOutputExcel(HttpServletResponse response, @RequestBody ReportOrdersDto reportDto) {
+    public void downloadProcessedOutputExcel(HttpServletResponse response,
+                                             @RequestBody ReportOrdersDto reportDto) {
         reportService.createProcessedExcel(response, reportDto);
     }
 
@@ -87,7 +92,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/orders/unprocessed/excel")
-    public void downloadUnprocessedOutputExcel(HttpServletResponse response, @RequestBody ReportOrdersDto reportDto) {
+    public void downloadUnprocessedOutputExcel(HttpServletResponse response,
+                                               @RequestBody ReportOrdersDto reportDto) {
         reportService.createUnprocessedExcel(response, reportDto);
     }
 
@@ -99,7 +105,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/orders/executed/excel")
-    public void downloadExecutedOutputExcel(HttpServletResponse response, @RequestBody ReportOrdersWithUserDto reportDto) {
+    public void downloadExecutedOutputExcel(HttpServletResponse response,
+                                            @RequestBody ReportOrdersWithUserDto reportDto) {
         reportService.createExecutedExcel(response, reportDto);
     }
 
@@ -111,7 +118,8 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
     @PostMapping(value = "/reports/orders/created/excel")
-    public void downloadCreatedOutputExcel(HttpServletResponse response, @RequestBody ReportOrdersWithUserDto reportDto) {
+    public void downloadCreatedOutputExcel(HttpServletResponse response,
+                                           @RequestBody ReportOrdersWithUserDto reportDto) {
         reportService.createCreatedExcel(response, reportDto);
     }
 

@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.RoleDao;
 import amber_team.amber.dao.interfaces.UserDao;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.entities.User;
+import amber_team.amber.util.Constants;
 import amber_team.amber.util.ErrorMessages;
 import amber_team.amber.util.SQLQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,30 +37,23 @@ public class UserDaoImpl implements UserDao {
     }
 
     public ResponseEntity save(User user) {
-        if (!checkEmailAviability(user.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorMessages.ALREADY_REGISTERED_EMAIL);
-
-        } else {
             jdbcTemplate = new JdbcTemplate(dataSource);
             String id = UUID.randomUUID().toString();
-            int role_id = 2; //Role_User
-            int enabled = 1;
-            jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, new Object[]{id, user.getEmail(), user.getPassword(),
-                    user.getSecondName(), user.getFirstName(), enabled, id, role_id});
+            jdbcTemplate.update(SQLQueries.ADD_NEW_USER_AND_HIS_ROLE, id, user.getEmail(), user.getPassword(),
+                    user.getSecondName(), user.getFirstName(), Constants.ENABLED_USER, id, Constants.ROLE_USER);
             User result = new User();
             result.setId(id);
             result.setFirstName(user.getFirstName());
             result.setSecondName(user.getSecondName());
             result.setEmail(user.getEmail());
             return ResponseEntity.ok(result);
-        }
     }
 
     @Override
     public ResponseEntity getUserInfo(Principal principal) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME, new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME,
+                new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
             @Override
             public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
                 return getUserInfoDto(resultSet);
@@ -72,7 +66,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public UserInfoDto getUserByEmail(Principal principal) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME, new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.USER_INFO_BY_USERNAME,
+                new Object[]{principal.getName()}, new RowMapper<UserInfoDto>() {
             @Override
             public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
                 return getUserInfoDto(resultSet);
@@ -110,7 +105,9 @@ public class UserDaoImpl implements UserDao {
                 SQLQueries.GET_ALL_USERS,
                 new RowMapper<UserInfoDto>() {
                     public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
+                        UserInfoDto c = new UserInfoDto(rs.getString("id"),
+                                rs.getString("email"), rs.getString("f_name"),
+                                rs.getString("s_name"));
                         return c;
                     }
                 });
@@ -124,7 +121,9 @@ public class UserDaoImpl implements UserDao {
                 SQLQueries.GET_ALL_ACTIVE_USERS,
                 new RowMapper<UserInfoDto>() {
                     public UserInfoDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        UserInfoDto c = new UserInfoDto(rs.getString("id"), rs.getString("email"), rs.getString("f_name"), rs.getString("s_name"));
+                        UserInfoDto c = new UserInfoDto(rs.getString("id"),
+                                rs.getString("email"), rs.getString("f_name"),
+                                rs.getString("s_name"));
                         return c;
                     }
                 });
@@ -153,22 +152,18 @@ public class UserDaoImpl implements UserDao {
     @Override
     public UserInfoDto getByIdWithRoles(String id) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.GET_USER_BY_ID, new Object[]{id}, new RowMapper<UserInfoDto>() {
+        UserInfoDto info = jdbcTemplate.queryForObject(SQLQueries.GET_USER_BY_ID, new Object[]{id},
+                new RowMapper<UserInfoDto>() {
             @Override
             public UserInfoDto mapRow(ResultSet resultSet, int i) throws SQLException {
-                UserInfoDto info = new UserInfoDto();
-                info.setId(resultSet.getString("id"));
-                info.setEmail(resultSet.getString("email"));
-                info.setFirstName(resultSet.getString("f_name"));
-                info.setSecondName(resultSet.getString("s_name"));
-                return info;
+                return getUserInfoDto(resultSet);
             }
         });
         info.setRoles(roleDao.getUserRoles(info.getId()));
         return info;
     }
 
-    private boolean checkEmailAviability(String email) {
+    public boolean checkEmailAvailability(String email) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         try {
             jdbcTemplate.queryForObject(SQLQueries.EXISTING_THIS_EMAIL, new Object[]{email}, String.class);

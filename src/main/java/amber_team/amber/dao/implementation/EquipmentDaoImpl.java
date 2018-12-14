@@ -110,7 +110,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public void create(Equipment newEquipment) {
         String id = UUID.randomUUID().toString();
-        jdbcTemplate.update(SQLQueries.ADD_NEW_EQUIPMENT, id, newEquipment.getModel(), newEquipment.getProducer(), newEquipment.getCountry());
+        jdbcTemplate.update(SQLQueries.ADD_NEW_EQUIPMENT, id, newEquipment.getModel(), newEquipment.getProducer(),
+                newEquipment.getCountry());
 
     }
 
@@ -126,7 +127,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
         List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
 
-        jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST, new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST,
+                new BatchPreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -152,7 +154,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
             List<EquipmentInfoDto> equipment = getRequestEquipment(requestId);
 
-            jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST, new BatchPreparedStatementSetter() {
+            jdbcTemplate.batchUpdate(SQLQueries.UPDATE_EQUIPMENT_IN_WAREHOUSE_FROM_REQUEST,
+                    new BatchPreparedStatementSetter() {
 
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {

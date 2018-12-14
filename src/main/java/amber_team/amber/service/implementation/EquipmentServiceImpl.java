@@ -42,7 +42,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public EquipmentListDto unavailableEquipmentByRequestId(String requestId) {
-        List<EquipmentDto> registeredEquipmentUnavalibleOnWarehouse = equipmentDao.getUnavailableEquipmentQuantity(requestId)
+        List<EquipmentDto> registeredEquipmentUnavalibleOnWarehouse =
+                equipmentDao.getUnavailableEquipmentQuantity(requestId)
                 .stream().filter(equip -> equip.getQuantity() > 0).collect(Collectors.toList());
         List<EquipmentInfoDto> requestEquipment = equipmentDao.getRequestEquipment(requestId);
         List<EquipmentDto> allUnavalibleEquipment = new ArrayList<>(registeredEquipmentUnavalibleOnWarehouse);

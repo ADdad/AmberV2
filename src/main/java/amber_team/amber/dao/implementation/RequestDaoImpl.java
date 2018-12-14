@@ -49,7 +49,8 @@ public class RequestDaoImpl implements RequestDao {
         Timestamp creationDate = Timestamp.valueOf(LocalDateTime.now());
 
         jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
-                creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(), request.getTitle());
+                creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(),
+                request.getTitle());
         if (request.getConnectedRequestId() != null) {
             jdbcTemplate.update(SQLQueries.CONNECT_REQUEST, request.getConnectedRequestId(), id);
         }
@@ -68,7 +69,8 @@ public class RequestDaoImpl implements RequestDao {
             jdbcTemplate.update(SQLQueries.UPDATE_REQUEST, newRequest.getWarehouseId(), newRequest.getCreatorId(),
                     newRequest.getExecutorId(), newRequest.getTypeId(), newRequest.getConnectedRequestId(),
                     newRequest.getTitle(), newRequest.getStatus(), newRequest.getCreationDate(),
-                    newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(), newRequest.getId());
+                    newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(),
+                    newRequest.getId());
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -83,7 +85,8 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public Request getById(String requestId) {
-        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[]{requestId}, new RowMapper<Request>() {
+        Request info = jdbcTemplate.queryForObject(SQLQueries.REQUEST_INFO_BY_ID, new Object[]{requestId},
+                new RowMapper<Request>() {
             @Override
             public Request mapRow(ResultSet resultSet, int i) throws SQLException {
                 return mapRequest(resultSet);
@@ -95,7 +98,8 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public int getCountOfUsersActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[]{userId}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[]{userId},
+                Integer.class);
 //        if (count == null) return 0;
         return count == null ? 0 : count;
 //        return count;
@@ -176,7 +180,8 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public int getCountOfKeeperActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId},
+                Integer.class);
         if (count == null) return 0;
         return count;
     }

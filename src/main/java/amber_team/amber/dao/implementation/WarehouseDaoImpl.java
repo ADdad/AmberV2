@@ -31,7 +31,8 @@ public class WarehouseDaoImpl implements WarehouseDao {
     @Override
     public Warehouse getById(String id) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        Warehouse warehouse = jdbcTemplate.queryForObject(SQLQueries.GET_WAREHOUSE_BY_ID, new Object[]{id}, new RowMapper<Warehouse>() {
+        Warehouse warehouse = jdbcTemplate.queryForObject(SQLQueries.GET_WAREHOUSE_BY_ID, new Object[]{id},
+                new RowMapper<Warehouse>() {
             @Override
             public Warehouse mapRow(ResultSet resultSet, int i) throws SQLException {
                 Warehouse info = new Warehouse();

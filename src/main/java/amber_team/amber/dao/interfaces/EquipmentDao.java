@@ -20,7 +20,7 @@ public interface EquipmentDao {
 
     void create(Equipment newEquipment);
 
-    public ResponseEntity update(EquipmentDto e, String ware_id, int new_val);
+    ResponseEntity update(EquipmentDto e, String ware_id, int new_val);
 
     void addEquipmentToRequest(List<EquipmentDto> equipmentDtos, String request_id);
 
