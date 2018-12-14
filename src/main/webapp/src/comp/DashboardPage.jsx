@@ -193,7 +193,7 @@ class DashboardPage extends Component {
           secondary={request.description.substr(0, 30)}
         />
         <ListItemText primary={request.typeId} className="col-md-2" />
-        <ListItemText
+        {/* <ListItemText
           className="col-md-2 ml-0 p-0"
           primary={request.creator.email.substr(0, 10)}
           secondary={
@@ -201,7 +201,7 @@ class DashboardPage extends Component {
             " " +
             request.creator.secondName.substr(0, 5)
           }
-        />
+        /> */}
         <ListItemText
           className="col-md-2 ml-0 p-0"
           primary={request.creationDate.substr(0, 10)}

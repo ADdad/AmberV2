@@ -25,9 +25,9 @@ class AdminPageNew extends Component {
           userRoles: data.roles.map(role => role.name),
           isLoading: false
         });
-          if(!this.state.userRoles.includes('ROLE_ADMIN')){
-              this.props.history.push('/errorpage');
-          }
+        if (!this.state.userRoles.includes("ROLE_ADMIN")) {
+          this.props.history.push("/errorpage");
+        }
       })
       .catch(error => console.log(error));
     fetch(`/users/data`, {
@@ -145,18 +145,6 @@ class AdminPageNew extends Component {
     return (
       <React.Fragment>
         <div className="col-md-12">
-          {user}
-          <div className="form-row">
-            <div className="form-group mx-auto">
-              <Pagination
-                activePage={this.state.activePage}
-                itemsCountPerPage={this.state.itemsPerPage}
-                totalItemsCount={this.state.listSize}
-                pageRangeDisplayed={5}
-                onChange={this.handlePageChange}
-              />
-            </div>
-          </div>
           <div className="form-row">
             <button
               className={
@@ -168,6 +156,18 @@ class AdminPageNew extends Component {
             >
               Save changes
             </button>
+          </div>
+          {user}
+          <div className="form-row">
+            <div className="form-group mx-auto">
+              <Pagination
+                activePage={this.state.activePage}
+                itemsCountPerPage={this.state.itemsPerPage}
+                totalItemsCount={this.state.listSize}
+                pageRangeDisplayed={5}
+                onChange={this.handlePageChange}
+              />
+            </div>
           </div>
         </div>
       </React.Fragment>

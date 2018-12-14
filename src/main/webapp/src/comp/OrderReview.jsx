@@ -5,7 +5,9 @@ import ExecutorButtons from "./ExecutorButtons";
 import CreatorButtons from "./CreatorButtons";
 import Select from "react-select";
 import ExecutorRefundButtons from "./ExecutorRefundButtons";
+import ExecutorReplenishmentButtons from "./ExecutorReplenishmentButtons";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Button from "@material-ui/core/Button";
 class OrderReview extends Component {
   constructor(props) {
     super(props);
@@ -53,6 +55,10 @@ class OrderReview extends Component {
 
   handleExecutorChange = selectedExecutor => {
     this.setState({ executorId: selectedExecutor.value });
+  };
+
+  handleBack = () => {
+    this.props.history.push("/dashboard");
   };
 
   choseExecutor = () => {
@@ -200,66 +206,67 @@ class OrderReview extends Component {
   };
 
   buttonsSpace = () => {
-    if (this.state.type.name === "refund") {
-      if (this.state.creator.id == this.state.userId) {
-        return (
-          <React.Fragment>
-            <ExecutorRefundButtons
-              userId={this.state.userId}
-              userRoles={this.state.userRoles}
-              status={this.state.status}
-              requestId={this.state.requestId}
-              executorId={this.state.executorId}
-              validateComment={this.executorAlert}
-            />
+    if (this.state.type.name === "order") {
+      return (
+        <React.Fragment>
+          <ExecutorButtons
+            userId={this.state.userId}
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
+            validateComment={this.executorAlert}
+          />
+          {this.state.creator.id == this.state.userId && (
             <CreatorButtons
               requestId={this.state.requestId}
               status={this.state.status}
             />
-          </React.Fragment>
-        );
-      } else
-        return (
-          <React.Fragment>
-            <ExecutorRefundButtons
-              userRoles={this.state.userRoles}
-              status={this.state.status}
-              requestId={this.state.requestId}
-              executorId={this.state.executorId}
-              validateComment={this.executorAlert}
-            />
-          </React.Fragment>
-        );
-    } else {
-      if (this.state.creator.id == this.state.userId) {
-        return (
-          <React.Fragment>
-            <ExecutorButtons
-              userId={this.state.userId}
-              userRoles={this.state.userRoles}
-              status={this.state.status}
-              requestId={this.state.requestId}
-              executorId={this.state.executorId}
-              validateComment={this.executorAlert}
-            />
+          )}
+        </React.Fragment>
+      );
+    } else if (this.state.type.name === "refund")
+      return (
+        <React.Fragment>
+          <ExecutorRefundButtons
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
+            validateComment={this.executorAlert}
+          />
+          {this.state.creator.id == this.state.userId && (
             <CreatorButtons
               requestId={this.state.requestId}
               status={this.state.status}
             />
-          </React.Fragment>
-        );
-      } else
-        return (
-          <React.Fragment>
-            <ExecutorButtons
-              userRoles={this.state.userRoles}
-              status={this.state.status}
+          )}
+        </React.Fragment>
+      );
+    else if (this.state.type.name === "replenishment") {
+      let resultItems = [];
+      this.state.equipment.map(equip =>
+        resultItems.push({ id: equip.id, quantity: equip.quantity })
+      );
+      return (
+        <React.Fragment>
+          <ExecutorReplenishmentButtons
+            userRoles={this.state.userRoles}
+            status={this.state.status}
+            requestId={this.state.requestId}
+            executorId={this.state.executorId}
+            validateComment={this.executorAlert}
+            warehouseId={this.state.warehouse.id}
+            resultItems={resultItems}
+          />
+          {this.state.creator.id == this.state.userId && (
+            <CreatorButtons
               requestId={this.state.requestId}
-              executorId={this.state.executorId}
-              validateComment={this.executorAlert}
+              status={this.state.status}
             />
-          </React.Fragment>
-        );
+          )}
+        </React.Fragment>
+      );
     }
   };
 
@@ -419,13 +426,22 @@ class OrderReview extends Component {
         <div className="container">
           <div className="container">
             <h4 className="text-danger">{this.state.executorAlert}</h4>
-            <h2>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.handleBack}
+            >
+              Back
+            </Button>
+            <h2>Title: {this.state.title} </h2>
+            <h4>
               Creator:{" "}
               {this.state.creator.firstName +
                 " " +
-                this.state.creator.secondName + ", " + this.state.creator.email}
-            </h2>
-            <h2>Title: {this.state.title} </h2>
+                this.state.creator.secondName +
+                ", " +
+                this.state.creator.email}
+            </h4>
             <h4 className="form-group">
               Status:
               <span className="badge badge-primary m-2">
@@ -468,7 +484,9 @@ class OrderReview extends Component {
               </h4>
             </div>
 
-            {this.state.executors != null && this.choseExecutor()}
+            {this.state.executors != null &&
+              this.state.type.name != "replenishment" &&
+              this.choseExecutor()}
             <h3>Order items</h3>
             {this.state.unavalibleEquipment.length > 0 && (
               <h4 className="text-danger">
