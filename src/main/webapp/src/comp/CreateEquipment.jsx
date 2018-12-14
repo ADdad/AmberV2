@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import * as Countries from "./Countries";
+import Select from "react-select";
 
 class CreateEquipment extends Component {
   constructor(props) {
@@ -53,6 +55,18 @@ class CreateEquipment extends Component {
     } else {
       window.scrollTo(0, 0);
     }
+  };
+
+  handleCountryChange = selectedCountry => {
+    this.setState({ country: selectedCountry.value });
+  };
+
+  getCountryOptions = () => {
+    let res = [];
+    Countries.country_list.map(country =>
+      res.push({ value: country, label: country })
+    );
+    return res;
   };
 
   handleCancel = () => {
@@ -122,11 +136,11 @@ class CreateEquipment extends Component {
             </div>
           </div>
           <div className="form-row">
-            <div className="form-group col-md-10">
+            <div className="form-group col-md-5">
               <label>Country</label>
-              <input
-                className="form-control col-md-6"
-                onChange={p => this.setState({ country: p.target.value })}
+              <Select
+                onChange={this.handleCountryChange}
+                options={this.getCountryOptions()}
               />
             </div>
           </div>

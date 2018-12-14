@@ -193,6 +193,15 @@ class DashboardPage extends Component {
           secondary={request.description.substr(0, 30)}
         />
         <ListItemText primary={request.typeId} className="col-md-2" />
+        {/* <ListItemText
+          className="col-md-2 ml-0 p-0"
+          primary={request.creator.email.substr(0, 10)}
+          secondary={
+            request.creator.firstName +
+            " " +
+            request.creator.secondName.substr(0, 5)
+          }
+        /> */}
         <ListItemText
           className="col-md-2 ml-0 p-0"
           primary={request.creationDate.substr(0, 10)}
@@ -334,7 +343,7 @@ class DashboardPage extends Component {
         .then(response => response.json())
         .then(data => {
           this.downloadCreatedRequestsPaginated(this.state.activePage);
-          console.log(data);
+          this.forceUpdate();
         })
         .catch(error => {
           console.error("Error:", error);

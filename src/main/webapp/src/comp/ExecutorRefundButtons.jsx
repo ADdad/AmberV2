@@ -44,7 +44,10 @@ class ExecutorRefundButtons extends Component {
   };
 
   handleClick = name => {
-    if (name === "Waiting for equipment" && this.props.executorId == null) {
+    if (
+      name === "Waiting for equipment" &&
+      this.props.executorId == null
+    ) {
       console.log("worked");
       this.props.validateComment("Chose executor");
     } else {

@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-class ExecutorButtons extends Component {
+class ExecutorReplenishmentButtons extends Component {
   constructor(props) {
     super(props);
     this.state = {
       buttons: [],
       confirmation: false,
       noButtons: false,
-      adminStates: ["Opened", "On reviewing"],
-      keeperStates: ["In progress", "On hold", "Delivering"],
+      adminStates: ["Opened", "On reviewing", "Waiting for equipment"],
       comment: null,
       commentStatus: "",
       buttonChange: false
@@ -44,36 +43,51 @@ class ExecutorButtons extends Component {
   };
 
   handleClick = name => {
-    if (name === "In progress" && this.props.executorId == null) {
-      this.props.validateComment("Chose executor");
-    } else {
-      if (name === "Rejected" || name === "On hold") {
-        this.setState({ confirmation: true, commentStatus: name });
-      } else {
-        this.setState({ buttonChange: true });
-        fetch("/request", {
-          method: "PATCH",
-          body: JSON.stringify({
-            status: name,
-            executorId: this.props.executorId,
-            requestId: this.props.requestId,
-            userId: null,
-            commentText: null
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
+    if (name === "Completed") {
+      fetch("/equipment/list", {
+        method: "POST",
+        body: JSON.stringify({
+          warehouseId: this.props.warehouseId,
+          items: this.props.resultItems
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
         })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-          })
-          .catch(error => {
-            console.error("Error:", error);
-          });
-        if (name !== "On reviewing") this.props.history.push("/dashboard");
-        else window.location.reload();
-      }
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
+    if (name === "Rejected") {
+      this.setState({ confirmation: true, commentStatus: name });
+    } else {
+      this.setState({ buttonChange: true });
+      fetch("/request", {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: name,
+          executorId: this.props.executorId,
+          requestId: this.props.requestId,
+          userId: null,
+          commentText: null
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+      if (name !== "On reviewing") this.props.history.push("/dashboard");
+      else window.location.reload();
     }
   };
 
@@ -111,7 +125,7 @@ class ExecutorButtons extends Component {
         localButtons.push({
           value: "Approve",
           type: "success",
-          status: "In progress"
+          status: "Waiting for equipment"
         });
         localButtons.push({
           value: "Reject",
@@ -120,28 +134,11 @@ class ExecutorButtons extends Component {
         });
         break;
       }
-      case "In progress": {
+      case "Waiting for equipment": {
         localButtons.push({
-          value: "Send",
+          value: "Replenish",
           type: "success",
-          status: "Delivering"
-        });
-        localButtons.push({ value: "Hold", type: "danger", status: "On hold" });
-        break;
-      }
-      case "On hold": {
-        localButtons.push({
-          value: "Back to execute",
-          type: "success",
-          status: "In progress"
-        });
-        break;
-      }
-      case "Delivering": {
-        localButtons.push({
-          value: "Cancel delivering",
-          type: "danger",
-          status: "In progress"
+          status: "Completed"
         });
         break;
       }
@@ -194,18 +191,14 @@ class ExecutorButtons extends Component {
 
   render() {
     if (
-      (!(
-        this.props.userRoles.filter(role => role === "ROLE_ADMIN").length >
-          0 && this.state.adminStates.includes(this.props.status)
-      ) &&
-        !(
-          this.props.userRoles.filter(role => role === "ROLE_KEEPER")
-            .length > 0 && this.state.keeperStates.includes(this.props.status)
-        )) ||
+      !(
+        this.props.userRoles.filter(role => role === "ROLE_ADMIN").length > 0 &&
+        this.state.adminStates.includes(this.props.status)
+      ) ||
       this.props.status === "Canceled"
-    ) {
+    )
       return <h3 />;
-    }
+
     if (this.state.confirmation) {
       return this.commentField();
     }
@@ -228,4 +221,4 @@ class ExecutorButtons extends Component {
   }
 }
 
-export default withRouter(ExecutorButtons);
+export default withRouter(ExecutorReplenishmentButtons);
