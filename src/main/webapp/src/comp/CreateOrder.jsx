@@ -22,7 +22,7 @@ class CreateOrder extends Component {
       viewItems: [],
       warehouses: [],
       warehouseId: "",
-      type: "refund",
+      type: "",
       description: "",
       attachments: [],
       optionalAttributes: [],

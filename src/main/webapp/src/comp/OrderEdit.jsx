@@ -106,6 +106,30 @@ class OrderEdit extends Component {
         }
       }
     }
+    if (this.state.type.name === "refund") {
+      let localEquipment = [...this.state.equipment];
+      if (resultItemsLocal.length > localEquipment.length) {
+        localAlert += "You can`t refund more than have\n";
+        validated = false;
+      } else {
+        for (let i = 0; i < resultItemsLocal.length; i++) {
+          let index = localEquipment.findIndex(
+            p => p.id === resultItemsLocal[i].id
+          );
+          if (index < 0) {
+            localAlert += "You can`t refund items not from order\n";
+            validated = false;
+            break;
+          }
+          if (localEquipment[index].quantity < resultItemsLocal[i].quantity) {
+            localAlert += "You can`t refund more than have\n";
+            validated = false;
+            break;
+          }
+        }
+      }
+    }
+
     let newAlert = localAlert.split("\n").map((item, i) => (
       <p key={i} className="text-danger">
         {item}
@@ -113,6 +137,32 @@ class OrderEdit extends Component {
     ));
     this.setState({ alert: newAlert });
     return validated;
+  };
+
+  resetEquipment = localEquip => {
+    let readyItems = [];
+    let viewLoc = [];
+    for (let i = 0; i < localEquip.length; i++) {
+      readyItems.push({
+        id: localEquip[i].id,
+        quantity: localEquip[i].quantity
+      });
+      viewLoc.push(this.itemName(localEquip[i]));
+    }
+    this.setState({ resultItems: readyItems, viewItems: viewLoc });
+  };
+
+  renderResetItemsButton = () => {
+    return (
+      <div className="form-group col-md-3">
+        <button
+          onClick={() => this.resetEquipment(this.state.equipment)}
+          className="btn btn-lg btn-outline-danger"
+        >
+          ResetItems
+        </button>
+      </div>
+    );
   };
 
   componentWillMount() {
@@ -137,7 +187,6 @@ class OrderEdit extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         this.setState({
           title: data.title,
           status: data.status,
@@ -156,11 +205,35 @@ class OrderEdit extends Component {
         });
         if (data.status != "Rejected" && data.status != "Opened")
           this.props.history.push("/dashboard");
+        this.loadRefundData(data.type.name);
         this.loadEquipment(data.equipment);
-        this.loadAdditionaAtrributes(data.type);
+        this.loadAdditionaAtrributes(data.type, data.connectedRequest);
       })
       .catch(error => console.log(error));
   }
+
+  loadRefundData = (type, connectedRequest) => {
+    if (type === "refund") {
+      fetch(`/request/${connectedRequest}`, {
+        method: "GET"
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.setState({
+            connectedRequest: data.id,
+            equipment: data.equipment,
+            isLoading: false
+          });
+          if (
+            data.status != "Completed" ||
+            data.creator.id != this.state.userId
+          )
+            this.props.history.push("/dashboard");
+          this.loadEquipment(data.equipment);
+        })
+        .catch(error => console.log(error));
+    }
+  };
 
   componentDidMount() {
     this.setState({ isLoading: true });
@@ -754,9 +827,17 @@ class OrderEdit extends Component {
             </div>
 
             <div className="form-row">
-              <div className="form-group col-md-9">
+              <div
+                className={
+                  this.state.type.name === "refund"
+                    ? "form-group col-md-6"
+                    : "form-group col-md-9"
+                }
+              >
                 <h3>Items</h3>
               </div>
+              {this.state.type.name === "refund" &&
+                this.renderResetItemsButton()}
               <div className="form-group col-md-3">
                 <button
                   onClick={() => this.handleRemoveAll()}

@@ -423,7 +423,7 @@ class OrderReview extends Component {
               Creator:{" "}
               {this.state.creator.firstName +
                 " " +
-                this.state.creator.secondName}{" "}
+                this.state.creator.secondName + ", " + this.state.creator.email}
             </h2>
             <h2>Title: {this.state.title} </h2>
             <h4 className="form-group">

@@ -21,6 +21,15 @@ public class RequestInfoDto {
     private List<AttributeInfoDto> attributes;
     private List<Comment> comments;
     private List<EquipmentInfoDto> equipment;
+    private String connectedRequest;
+
+    public String getConnectedRequest() {
+        return connectedRequest;
+    }
+
+    public void setConnectedRequest(String connectedRequest) {
+        this.connectedRequest = connectedRequest;
+    }
 
     public List<EquipmentInfoDto> getEquipment() {
         return equipment;
@@ -81,6 +90,7 @@ public class RequestInfoDto {
         this.archive = request.isArchive();
         this.creationDate = request.getCreationDate();
         this.modifiedDate = request.getModifiedDate();
+        if(request.getConnectedRequestId() != null) this.connectedRequest = request.getConnectedRequestId();
     }
 
 
