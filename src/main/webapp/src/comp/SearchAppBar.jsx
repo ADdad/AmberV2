@@ -9,7 +9,7 @@ import {withRouter} from "react-router-dom";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
-const styles = {
+const styles = theme=> ({
     root: {
         width: "100%"
     },
@@ -67,10 +67,14 @@ const styles = {
             }
         }
     },
+
+});
+
+const selectedStyle = {
     muiItemSelected: {
         backgroundColor: "#3f51b5"
     }
-};
+}
 const ITEM_HEIGHT = 48;
 
 class SearchAppBar extends React.Component {
@@ -152,7 +156,7 @@ class SearchAppBar extends React.Component {
         return (
             <MenuItem
                 style={{color: "#ffffff",backgroundColor: "#c2185b", ...(this.state.menuIndex === 1 ?
-                        styles.muiItemSelected : {}) }}
+                        selectedStyle.muiItemSelected : {}) }}
                 onClick={this.handleDashboard}
                 selected={this.state.menuIndex === 1}
             >
@@ -165,7 +169,7 @@ class SearchAppBar extends React.Component {
             return (
                 <MenuItem
                     style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 2 ?
-                            styles.muiItemSelected:{})}}
+                            selectedStyle.muiItemSelected:{})}}
                     onClick={this.handleCreateRegularOrder}
                     selected={this.state.menuIndex === 2}
                 >
@@ -180,7 +184,7 @@ class SearchAppBar extends React.Component {
                 <React.Fragment>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 3 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleCreateReplenishmentOrder}
                         selected={this.state.menuIndex === 3}
                     >
@@ -188,7 +192,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 4 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleReports}
                         selected={this.state.menuIndex === 4}
                     >
@@ -207,7 +211,7 @@ class SearchAppBar extends React.Component {
                 <React.Fragment>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 4 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleReports}
                         selected={this.state.menuIndex === 4}
                     >
@@ -215,7 +219,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 5 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleRoleChange}
                         selected={this.state.menuIndex === 5}
                     >
@@ -223,7 +227,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 6 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleAddItems}
                         selected={this.state.menuIndex === 6}
                     >
@@ -231,7 +235,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 7 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleRegisterEquipment}
                         selected={this.state.menuIndex === 7}
                     >
@@ -244,7 +248,7 @@ class SearchAppBar extends React.Component {
                 <React.Fragment>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 5 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleRoleChange}
                         selected={this.state.menuIndex === 5}
                     >
@@ -252,7 +256,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 6 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleAddItems}
                         selected={this.state.menuIndex === 6}
                     >
@@ -260,7 +264,7 @@ class SearchAppBar extends React.Component {
                     </MenuItem>
                     <MenuItem
                         style={{color: "#ffffff", backgroundColor: "#c2185b", ...(this.state.menuIndex === 7 ?
-                                styles.muiItemSelected:{})}}
+                                selectedStyle.muiItemSelected:{})}}
                         onClick={this.handleRegisterEquipment}
                         selected={this.state.menuIndex === 7}
                     >
