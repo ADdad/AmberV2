@@ -12,6 +12,9 @@ import javax.sql.DataSource;
 import javax.xml.ws.Response;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -76,6 +79,9 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         List<ReportEquipmentResponseDto> response = jdbcTemplate.query(SQLQueries.GET_DELIVERED_EQUIPMENT_WITH_PAGINATION,
                 new Object[]{reportDto.getWarehouseId(), reportDto.getFromDate(), reportDto.getToDate(), limit, offset},
                 (resultSet, rowNum) -> {
@@ -84,9 +90,14 @@ public class ReportDaoImpl implements ReportDao {
         return ResponseEntity.ok(response);
     }
 
+
+
     @Override
     public List<ReportEquipmentResponseDto> getAllDeliveredEquipment(ReportDeliveredEquipmentDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         return jdbcTemplate.query(SQLQueries.GET_ALL_DELIVERED_EQUIPMENT, new Object[]{reportDto.getWarehouseId(),
                 reportDto.getFromDate(), reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportEquipmentResponseDto(resultSet);
@@ -122,6 +133,9 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_PROCESSED_ORDERS_WITH_PAGINATION,
                 new Object[]{reportDto.getFromDate(), reportDto.getToDate(), limit, offset}, (resultSet, rowNum) -> {
                     return getReportOrdersResponseDto(resultSet);
@@ -132,6 +146,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportOrdersResponseExcelDto> getAllProcessedOrders(ReportOrdersDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         return jdbcTemplate.query(SQLQueries.GET_ALL_PROCESSED_ORDERS, new Object[]{reportDto.getFromDate(),
                 reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
@@ -144,6 +161,9 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_UNPROCESSED_ORDERS_WITH_PAGINATION,
                 new Object[]{reportDto.getFromDate(), reportDto.getToDate(), limit, offset}, (resultSet, rowNum) ->
                         getReportOrdersResponseDto(resultSet));
@@ -153,6 +173,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportOrdersResponseExcelDto> getAllUnprocessedOrders(ReportOrdersDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         return jdbcTemplate.query(SQLQueries.GET_ALL_UNPROCESSED_ORDERS, new Object[]{reportDto.getFromDate(),
                 reportDto.getToDate()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
@@ -165,6 +188,9 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_EXECUTED_ORDERS_BY_WITH_PAGINATION,
                 new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset},
                 (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
@@ -174,6 +200,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportOrdersResponseExcelDto> getAllExecutedOrders(ReportOrdersWithUserDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         return jdbcTemplate.query(SQLQueries.GET_ALL_EXECUTED_ORDERS, new Object[]{reportDto.getFromDate(),
                 reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
@@ -185,6 +214,9 @@ public class ReportDaoImpl implements ReportDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         int offset = reportDto.getPageNumber() * reportDto.getResultsPerPage();
         int limit = reportDto.getResultsPerPage();
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         List<ReportOrdersResponseDto> response = jdbcTemplate.query(SQLQueries.GET_CREATED_ORDERS_BY_WITH_PAGINATION,
                 new Object[]{reportDto.getFromDate(), reportDto.getToDate(), reportDto.getUserId(), limit, offset},
                 (resultSet, rowNum) -> getReportOrdersResponseDto(resultSet));
@@ -194,6 +226,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReportOrdersResponseExcelDto> getAllCreatedOrders(ReportOrdersWithUserDto reportDto) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        if(reportDto.getFromDate().equals(reportDto.getToDate())) {
+            reportDto.setToDate(addOneDay(reportDto.getToDate()));
+        }
         return jdbcTemplate.query(SQLQueries.GET_ALL_CREATED_ORDERS, new Object[]{reportDto.getFromDate(),
                 reportDto.getToDate(), reportDto.getUserId()}, (resultSet, rowNum) -> {
             return getReportOrdersResponseExcelDto(resultSet);
@@ -298,5 +333,13 @@ public class ReportDaoImpl implements ReportDao {
         equipment.setEquipmentModel(resultSet.getString("model"));
         equipment.setEquipmentProducer(resultSet.getString("producer"));
         return equipment;
+    }
+
+    private Date addOneDay(Date toDate) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(toDate);
+        c.add(Calendar.DATE, 1);
+        toDate = c.getTime();
+        return toDate;
     }
 }

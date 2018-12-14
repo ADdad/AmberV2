@@ -21,7 +21,8 @@ class ReportsPage extends Component {
             creatorsPage : 0,
             creatorId : "",
             warehouseId : "",
-            equipmentMinQuantity : 1
+            equipmentMinQuantity : 1,
+            today : new Date().toISOString().split("T")[0]
         }
     }
 
@@ -142,6 +143,7 @@ class ReportsPage extends Component {
     }
     handleFromInputChange = (event) => {
         this.setState({fromDate : event.target.value, showReport : false, reportRows : [], reportPage : 0});
+        this._toDate.value = "";
     }
     handleToInputChange = (event) => {
         this.setState({toDate : event.target.value, showReport : false, reportRows : [], reportPage : 0});
@@ -469,12 +471,13 @@ class ReportsPage extends Component {
                     <div className="col-2">
                         <label>From date:</label>
                         <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
-                               id="from-date4" className="form-control" type="date"/>
+                               id="from-date4" max={this.state.today} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
                         <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node}
-                               id="to-date4" min={this.state.fromDate} className="form-control" type="date"/>
+                               id="to-date4" min={this.state.fromDate} max={this.state.today} className="form-control"
+                               type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
@@ -488,13 +491,14 @@ class ReportsPage extends Component {
                     <div className="col-2">
                         <label>From date:</label>
                         <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
-                               id="from-date5" className="form-control" type="date"/>
+                               id="from-date5" max={this.state.today} className="form-control" type="date"/>
                     <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
                         <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node}
-                               id="to-date5" min={this.state.fromDate} className="form-control" type="date"/>
+                               id="to-date5" max={this.state.today} min={this.state.fromDate} className="form-control"
+                               type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
@@ -508,13 +512,13 @@ class ReportsPage extends Component {
                     <div className="col-2">
                         <label>From date:</label>
                         <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
-                               id="from-date6" className="form-control" type="date"/>
+                               id="from-date6" max={this.state.today} className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
                         <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date6"
-                               min={this.state.fromDate} className="form-control" type="date"/>
+                               min={this.state.fromDate} max={this.state.today} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
@@ -541,13 +545,13 @@ class ReportsPage extends Component {
                 <div className="col-2">
                     <label>From date:</label>
                     <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node} id="from-date7"
-                           className="form-control" type="date"/>
+                           className="form-control" max={this.state.today} type="date"/>
                     <br/>
                 </div>
                 <div className="col-2">
                     <label>To date:</label>
                     <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date7"
-                           min={this.state.fromDate} className="form-control" type="date"/>
+                           min={this.state.fromDate} max={this.state.today} className="form-control" type="date"/>
                 </div>
                 <div className="col-2">
                     <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
@@ -574,13 +578,13 @@ class ReportsPage extends Component {
                     <div className="col-2">
                         <label>From date:</label>
                         <input onChange={this.handleFromInputChange} ref={(node) => this._fromDate = node}
-                               id="from-date8" className="form-control" type="date"/>
+                               id="from-date8" max={this.state.today} className="form-control" type="date"/>
                         <br/>
                     </div>
                     <div className="col-2">
                         <label>To date:</label>
                         <input onChange={this.handleToInputChange} ref={(node) => this._toDate = node} id="to-date8"
-                               min={this.state.fromDate} className="form-control" type="date"/>
+                               min={this.state.fromDate} max={this.state.today} className="form-control" type="date"/>
                     </div>
                     <div className="col-2">
                         <button onClick={this.handleGenerateReport} className="btn btn-outline-primary height-center">
