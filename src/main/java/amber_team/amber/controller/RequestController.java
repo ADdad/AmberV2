@@ -75,7 +75,7 @@ public class RequestController {
     @GetMapping("/request/create/{type}")
     @ResponseStatus(HttpStatus.OK)
     public CreateOrderDto creationData(@PathVariable String type) {
-        logger.info("Getting creation data for type " + type);
+        logger.debug("Getting creation data for type " + type);
         return requestService.creationData(type);
     }
 
@@ -112,8 +112,9 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity uploadNewFile(@NotNull @RequestParam("files") MultipartFile[] multipartFile,
                                         @PathVariable String requestId) throws IOException {
-        logger.info("Upload attachments for id" + requestId + "size " + multipartFile.length);
+        logger.debug("Upload attachments for id" + requestId + "size " + multipartFile.length);
         if (multipartFile.length < 1) {
+            logger.debug("No attachments");
             attachmentsService.deleteRequestAttachments(requestId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

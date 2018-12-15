@@ -3,6 +3,8 @@ package amber_team.amber.service.implementation;
 import amber_team.amber.model.dto.FileInfoDto;
 import amber_team.amber.model.dto.ListFilesDto;
 import amber_team.amber.service.interfaces.AttachmentsService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 @Service(value = "attachmentsService")
 public class AttachmentsServiceImpl implements AttachmentsService {
     private final String MAIN_PATH = "./src/main/resources/attachments/";
+    private static Logger logger = LogManager.getLogger(AttachmentsService.class);
 
     @Override
     public ResponseEntity uploadAttachments(List<MultipartFile> files, String requestId) throws IOException {
@@ -44,7 +47,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
             Files.write(path, bytes);
 
         }
-
+        logger.debug("Written attachments");
         return ResponseEntity.ok("Good");
     }
 
@@ -82,6 +85,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
 
     @Override
     public ListFilesDto listFiles(String requestId) {
+        logger.debug("Get list of files");
         if (Files.notExists(Paths.get(MAIN_PATH + requestId))) return new ListFilesDto();
         List<FileInfoDto> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(MAIN_PATH + requestId))) {
