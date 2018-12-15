@@ -1,6 +1,7 @@
 package amber_team.amber.service.implementation;
 
 import amber_team.amber.dao.interfaces.EmailDao;
+import amber_team.amber.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,8 +37,8 @@ public class EmailServiceImpl {
         sendSimpleMessage(to, subject, text);
     }
 
-    public void sendRequestStatusChanged(String to, String firstName, String requestTitle, String existedStatus,
-                                         String currentStatus) {
+    public void sendRequestStatusChanged(String to, String firstName, String requestTitle, Status existedStatus,
+                                         Status currentStatus) {
         String requestStatusChangedTemplate = emailDao.getRequestStatusChangedTemplate();
         String text = String.format(requestStatusChangedTemplate, firstName, requestTitle, existedStatus, currentStatus);
         String subject = "Request status changed!";

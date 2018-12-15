@@ -1,6 +1,7 @@
 package amber_team.amber.model.dto;
 
 import amber_team.amber.model.entities.*;
+import amber_team.amber.util.Status;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,7 +14,7 @@ public class RequestInfoDto {
     private User executor;
     private Type type;
     private String title;
-    private String status;
+   // private String status;
     private Timestamp creationDate;
     private Timestamp modifiedDate;
     private String description;
@@ -22,6 +23,29 @@ public class RequestInfoDto {
     private List<Comment> comments;
     private List<EquipmentInfoDto> equipment;
     private String connectedRequest;
+    private Status status;
+
+    public RequestInfoDto() {
+    }
+
+    public RequestInfoDto(Request request) {
+        this.id = request.getId();
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.archive = request.isArchive();
+        this.creationDate = request.getCreationDate();
+        this.modifiedDate = request.getModifiedDate();
+        this.status = request.getStatus();
+        if (request.getConnectedRequestId() != null) this.connectedRequest = request.getConnectedRequestId();
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOfStatus(status);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
 
     public String getConnectedRequest() {
         return connectedRequest;
@@ -79,21 +103,6 @@ public class RequestInfoDto {
         this.comments = comments;
     }
 
-    public RequestInfoDto() {
-    }
-
-    public RequestInfoDto(Request request) {
-        this.id = request.getId();
-        this.title = request.getTitle();
-        this.description = request.getDescription();
-        this.status = request.getStatus();
-        this.archive = request.isArchive();
-        this.creationDate = request.getCreationDate();
-        this.modifiedDate = request.getModifiedDate();
-        if(request.getConnectedRequestId() != null) this.connectedRequest = request.getConnectedRequestId();
-    }
-
-
     public String getId() {
         return id;
     }
@@ -124,14 +133,6 @@ public class RequestInfoDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getDescription() {

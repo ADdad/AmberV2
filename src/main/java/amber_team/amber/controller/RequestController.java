@@ -83,7 +83,6 @@ public class RequestController {
     @GetMapping("/request/equipment/find/{value}")
     public EquipmentSearchDto findEquipment(@PathVariable String value) {
         return requestService.searchEquipment(value);
-
     }
 
 

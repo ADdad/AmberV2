@@ -1,7 +1,8 @@
 package amber_team.amber.model.entities;
 
+import amber_team.amber.util.Status;
+
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class Request {
     private String executorId;
     private String typeId;
     private String title;
-    private String status;
+    private Status status;
     private String connectedRequestId;
     private Timestamp creationDate;
     private Timestamp modifiedDate;
@@ -23,6 +24,18 @@ public class Request {
     private List<Attribute> attributes;
     private Map<Equipment, Integer> equipment;
     private List<Comment> comments;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOfStatus(status);
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getConnectedRequestId() {
         return connectedRequestId;
@@ -80,13 +93,6 @@ public class Request {
         this.title = title;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public Timestamp getCreationDate() {
         return creationDate;
@@ -143,4 +149,7 @@ public class Request {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+
 }
+

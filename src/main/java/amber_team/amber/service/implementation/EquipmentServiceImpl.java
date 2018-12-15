@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static amber_team.amber.util.Constants.EQUIPMENT_DROPLIST_LIMIT;
+
 @Service(value = "equipmentService")
 public class EquipmentServiceImpl implements EquipmentService {
-    private static final int EQUIPMENT_LIMIT = 100;
+
 
     private final EquipmentDao equipmentDao;
     private final WarehouseDao warehouseDao;
@@ -34,7 +36,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public EquipmentSearchDto getLimitedEquipment() {
-        List<Equipment> equipment = equipmentDao.getLimited(EQUIPMENT_LIMIT);
+        List<Equipment> equipment = equipmentDao.getLimited(EQUIPMENT_DROPLIST_LIMIT);
         EquipmentSearchDto equipmentSearchDto = new EquipmentSearchDto();
         equipmentSearchDto.setEquipment(equipment);
         return equipmentSearchDto;

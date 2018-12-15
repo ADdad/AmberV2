@@ -5,4 +5,10 @@ public class Constants {
 
     public static final int ROLE_USER = 2;
     public static final int ENABLED_USER = 1;
+    public static final int USERS_PAGINATION_SIZE = 25;
+    public static final String ATTACHMENTS_PATH = "./attachments";
+    public static final int EQUIPMENT_DROPLIST_LIMIT = 100;
+    public static final int REQUESTS_PAGINATION_SIZE = 25;
+    public static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
+    public static final String KEEPER_ROLE_NAME = "ROLE_KEEPER";
 }

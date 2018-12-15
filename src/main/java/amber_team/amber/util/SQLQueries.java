@@ -119,7 +119,7 @@ public class SQLQueries {
     public static final String GET_WAREHOUSE_EXECUTORS = "SELECT DISTINCT id, f_name, s_name, email " +
             "FROM user_warehouses uw INNER JOIN (users AS U1 INNER JOIN user_roles u on U1.id = u.user_id) AS u2 "
             + "ON uw.user_id=u2.user_id " +
-            "WHERE role_id = (SELECT id FROM roles WHERE name = 'ROLE_KEEPER') AND uw.warehouse_id = ?";
+            "WHERE role_id = (SELECT id FROM roles WHERE name = 'ROLE_KEEPER') AND uw.warehouse_id = ? AND enabled = 1";
     public static final String UPDATE_REQUEST = "UPDATE requests SET warehouse_id = ?, creator_id = ?, executor_id = ?,"
             + " req_type_id = ?, connected_request = ?, title = ?, status = ?, creation_date = ?, modified_date = ?," +
             " description = ?, archive = ? " +

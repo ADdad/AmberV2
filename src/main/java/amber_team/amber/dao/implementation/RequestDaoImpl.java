@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.RequestDao;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.util.MergeReflectionUtil;
 import amber_team.amber.util.SQLQueries;
+import amber_team.amber.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +43,13 @@ public class RequestDaoImpl implements RequestDao {
     public Request create(Request request) {
         String id = UUID.randomUUID().toString();
 
-        String status = request.getStatus();
+        Status status = request.getStatus();
         if (status == null)
-            status = "Opened";
+            status = Status.OPENED;
 
         Timestamp creationDate = Timestamp.valueOf(LocalDateTime.now());
 
-        jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status,
+        jdbcTemplate.update(SQLQueries.ADD_NEW_REQUEST, id, request.getCreatorId(), request.getTypeId(), status.toString(),
                 creationDate, creationDate, request.getDescription(), false, request.getWarehouseId(),
                 request.getTitle());
         if (request.getConnectedRequestId() != null) {
@@ -68,7 +69,7 @@ public class RequestDaoImpl implements RequestDao {
             newRequest.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
             jdbcTemplate.update(SQLQueries.UPDATE_REQUEST, newRequest.getWarehouseId(), newRequest.getCreatorId(),
                     newRequest.getExecutorId(), newRequest.getTypeId(), newRequest.getConnectedRequestId(),
-                    newRequest.getTitle(), newRequest.getStatus(), newRequest.getCreationDate(),
+                    newRequest.getTitle(), newRequest.getStatus().toString(), newRequest.getCreationDate(),
                     newRequest.getModifiedDate(), newRequest.getDescription(), newRequest.isArchive(),
                     newRequest.getId());
         } catch (IllegalAccessException | InstantiationException e) {
@@ -78,10 +79,6 @@ public class RequestDaoImpl implements RequestDao {
     }
 
 
-    @Override
-    public Request getByRequest(Request request) {
-        return getById(request.getId());
-    }
 
     @Override
     public Request getById(String requestId) {

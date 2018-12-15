@@ -10,8 +10,6 @@ public interface RequestDao {
 
     Request update(Request request);
 
-    Request getByRequest(Request requestId);
-
     Request getById(String requestId);
 
     int getCountOfUsersActiveRequests(String userId);

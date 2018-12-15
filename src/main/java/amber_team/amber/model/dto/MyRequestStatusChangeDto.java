@@ -1,16 +1,18 @@
 package amber_team.amber.model.dto;
 
+import amber_team.amber.util.Status;
+
 public class MyRequestStatusChangeDto {
     private String requestId;
     private String executorId;
-    private String status;
+    private Status status;
     private String userId;
     private String commentText;
 
     public MyRequestStatusChangeDto() {
     }
 
-    public MyRequestStatusChangeDto(String requestId, String status) {
+    public MyRequestStatusChangeDto(String requestId, Status status) {
         this.requestId = requestId;
         this.status = status;
     }
@@ -58,11 +60,15 @@ public class MyRequestStatusChangeDto {
         this.executorId = executorId;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOfStatus(status);
     }
 }

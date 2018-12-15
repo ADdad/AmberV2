@@ -6,7 +6,6 @@ import amber_team.amber.dao.interfaces.UserDao;
 import amber_team.amber.dao.interfaces.UserListDao;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Role;
-import amber_team.amber.model.entities.User;
 import amber_team.amber.service.interfaces.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static amber_team.amber.util.Constants.USERS_PAGINATION_SIZE;
+
 
 @Service(value = "adminService")
 public class AdminServiceImpl implements AdminService {
-    private static final int PAGINATION_SIZE = 25;
+
 
     private final UserListDao userListDao;
     private final RoleDao roleDao;
@@ -65,7 +66,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public UserListDto getUsers(int pageNumber) {
         UserListDto userListDto = new UserListDto();
-        List<UserInfoDto> users = userDao.getUsersPagination(PAGINATION_SIZE * pageNumber, PAGINATION_SIZE);
+        List<UserInfoDto> users = userDao.getUsersPagination(USERS_PAGINATION_SIZE * pageNumber, USERS_PAGINATION_SIZE);
         users = users.stream().map(user -> {
             List<Role> roles = roleDao.getUserRoles(user.getId());
             user.setRoles(roles);

@@ -27,9 +27,11 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static amber_team.amber.util.Constants.ATTACHMENTS_PATH;
+
 @Service(value = "attachmentsService")
 public class AttachmentsServiceImpl implements AttachmentsService {
-    private final String ATTACHMENTS_PATH = "./attachments";
+
     private static Logger logger = LogManager.getLogger(AttachmentsService.class);
 
     @Override

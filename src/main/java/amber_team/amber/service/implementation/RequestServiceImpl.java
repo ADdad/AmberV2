@@ -7,6 +7,7 @@ import amber_team.amber.model.entities.Comment;
 import amber_team.amber.model.entities.Request;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.service.interfaces.RequestService;
+import amber_team.amber.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static amber_team.amber.util.Constants.*;
+
 
 @Service(value = "requestService")
 public class RequestServiceImpl implements RequestService {
 
 
-    private static final int PAGINATION = 25;
-    private static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
-    private static final String KEEPER_ROLE_NAME = "ROLE_KEEPER";
     private final RequestDao requestDao;
     private final WarehouseDao warehouseDao;
     private final EquipmentDao equipmentDao;
@@ -62,17 +62,6 @@ public class RequestServiceImpl implements RequestService {
         return finalRequest;
 
 
-//		if(request.getTitle().isEmpty()) {
-//			return ResponseEntity.badRequest()
-//					.body(ErrorMessages.EMPTY_TITLE);
-//		} else {
-//			RequestInfoDto newRequest = new RequestInfoDto();
-//			newRequest.setTitle(request.getTitle());
-//			newRequest.setDescription(request.getDescription());
-//			newRequest.setTypeId(request.getTypeId());
-//			//todo setAttrbutes
-//			return requestDao.create(newRequest);
-//		}
     }
 
     private void sendCreationEmail(RequestSaveDto request) {
@@ -113,7 +102,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Request changeStatus(MyRequestStatusChangeDto request) {
 
-        String existedStatus = requestDao.getById(request.getRequestId()).getStatus();
+        Status existedStatus = requestDao.getById(request.getRequestId()).getStatus();
 
         Request requestNew = new Request();
         requestNew.setId(request.getRequestId());
@@ -122,14 +111,14 @@ public class RequestServiceImpl implements RequestService {
 
         String requestTypeName = requestTypeDao.getByRequestId(request.getRequestId()).getName();
         if ("replenishment".equals(requestTypeName) || "refund".equals(requestTypeName)) {
-            if ("Completed".equals(request.getStatus())) {
+            if (Status.COMPLETED.equals(request.getStatus())) {
                 equipmentDao.increaseEquipment(request.getRequestId());
             }
         } else {
-            if ("Delivering".equals(request.getStatus())) {
+            if (Status.DELIVERING.equals(request.getStatus())) {
                 List<EquipmentDto> unavailableEquipment = equipmentDao.decreaseEquipment(request.getRequestId());
                 if (!unavailableEquipment.isEmpty()) {
-                    requestNew.setStatus("On Hold");
+                    requestNew.setStatus(Status.ON_HOLD);
                     requestNew.setConnectedRequestId(createReplenishmentRequest(request, unavailableEquipment));
                 }
             }
@@ -160,7 +149,7 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    private void sendChangeStatusEmail(Request requestNew, String existedStatus) {
+    private void sendChangeStatusEmail(Request requestNew, Status existedStatus) {
         User userInfo = userDao.getById(requestNew.getCreatorId());
         emailService.sendRequestStatusChanged(userInfo.getEmail(), userInfo.getFirstName(), requestNew.getTitle(),
                 existedStatus,
@@ -181,7 +170,7 @@ public class RequestServiceImpl implements RequestService {
     public Request editRequest(RequestSaveDto request) {
         Request newRequest = mapSaveDto(request);
         newRequest.setId(request.getRequestId());
-        newRequest.setStatus("Opened");
+        newRequest.setStatus(Status.OPENED);
         Request finalRequest = requestDao.update(newRequest);
 
         attributesDao.removeRequestValues(request.getRequestId());
@@ -201,10 +190,10 @@ public class RequestServiceImpl implements RequestService {
         List<Request> requestsList = new ArrayList<>();
         if (userByEmail.getRoles().contains(roleDao.getByName(KEEPER_ROLE_NAME)))
             requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page *
-                    PAGINATION, PAGINATION));
+                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE));
         if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
             requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page *
-                    PAGINATION, PAGINATION));
+                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE));
 
         Collections.sort(requestsList, new Comparator<Request>() {
             @Override
@@ -213,7 +202,7 @@ public class RequestServiceImpl implements RequestService {
             }
         });
         try {
-            requestsList = requestsList.subList(0, PAGINATION);
+            requestsList = requestsList.subList(0, REQUESTS_PAGINATION_SIZE);
         } catch (IndexOutOfBoundsException e) {
             requestsList = requestsList.subList(0, requestsList.size());
         }
@@ -233,7 +222,7 @@ public class RequestServiceImpl implements RequestService {
         UserInfoDto userByEmail = userDao.getUserByEmail(userData);
         page--;
         List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userByEmail.getId(), page *
-                PAGINATION, PAGINATION);
+                REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE);
         RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
         requestListDtoPagination.setRequests(listRequests);
         requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersActiveRequests(userByEmail.getId()));
@@ -281,39 +270,5 @@ public class RequestServiceImpl implements RequestService {
         else requestInfoDto.setAttributes(new ArrayList<>());
         requestInfoDto.setEquipment(equipmentDao.getRequestEquipment(id));
         return requestInfoDto;
-    }
-
-
-    private boolean openValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Rejected");
-    }
-
-    private boolean cancelValidation(RequestStatusChangeDto request) {
-        return !request.getStatus().equals("On Reviewing") && !request.getStatus().equals("Delivering") &&
-                !request.getStatus().equals("Completed");
-    }
-
-    private boolean rejectValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("On Reviewing");
-    }
-
-    private boolean reviewValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Open");
-    }
-
-    private boolean progressValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("On Reviewing") || request.getStatus().equals("On Hold");
-    }
-
-    private boolean holdValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("In Progress");
-    }
-
-    private boolean deliverValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("In Progress");
-    }
-
-    private boolean completeValidation(RequestStatusChangeDto request) {
-        return request.getStatus().equals("Delivering");
     }
 }
