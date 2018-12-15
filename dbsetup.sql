@@ -157,9 +157,14 @@ INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('9f047c
 INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('0083b40e-aed7-491b-be76-5e90c59e70b6', 'user4', '$2a$10$zAJMCF7kp81OmCbXnDvsJOy0TxFpcPl/XDW7crI6IkLfrepYLF2ny', 'Petr', 'Petrenko', 1);
 INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('1', 'user1', '$2a$04$Ye7/lJoJin6.m9sOJZ9ujeTgHEVM4VXgI2Ingpsnf9gXyXEXf/IlW', 'Vladimir', 'Porohovich', 1);
 
+INSERT INTO users (id, email, password, s_name, f_name, enabled) VALUES ('1b9529be-f966-4a56-8f13-da1a39064b4e', 'rokden80@gmail.com', '$2a$10$uo8uAfQwsfDMD5RUmXysZu7ZcWv.2q10nkjxZIhe6Lel6LzXsWFbe', 'Den', 'Star', 1);
+
 INSERT INTO user_roles (role_id, user_id) VALUES (1, '1');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '0083b40e-aed7-491b-be76-5e90c59e70b6');
 INSERT INTO user_roles (role_id, user_id) VALUES (2, '9f047c13-8790-45a7-91c5-6fa8859c4884');
+
+INSERT INTO user_roles (role_id, user_id) VALUES (1, '1b9529be-f966-4a56-8f13-da1a39064b4e');
+INSERT INTO user_roles (role_id, user_id) VALUES (3, '1b9529be-f966-4a56-8f13-da1a39064b4e');
 
 INSERT INTO email_templates (id, template) VALUES ('Registration', 'Dear %s, you have been registered in ''Amber warehouse system''!');
 INSERT INTO email_templates (id, template) VALUES ('Request_status_changed', 'Dear %s, your request ''%s'' changed status from %s to %s.');
