@@ -29,12 +29,13 @@ import java.util.zip.ZipOutputStream;
 
 @Service(value = "attachmentsService")
 public class AttachmentsServiceImpl implements AttachmentsService {
-    private final String MAIN_PATH = "./src/main/resources/attachments/";
+    private final String ATTACHMENTS_PATH = "./attachments";
     private static Logger logger = LogManager.getLogger(AttachmentsService.class);
 
     @Override
     public ResponseEntity uploadAttachments(List<MultipartFile> files, String requestId) throws IOException {
         if (files.size() > 6) return new ResponseEntity(HttpStatus.FORBIDDEN);
+        createAttachmentsFolder();
         folderDropAndCreate(requestId);
         for (MultipartFile file : files) {
 
@@ -43,7 +44,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
             }
 
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(MAIN_PATH + requestId + "/" + file.getOriginalFilename());
+            Path path = Paths.get(ATTACHMENTS_PATH + requestId + "/" + file.getOriginalFilename());
             Files.write(path, bytes);
 
         }
@@ -51,16 +52,22 @@ public class AttachmentsServiceImpl implements AttachmentsService {
         return ResponseEntity.ok("Good");
     }
 
+    private void createAttachmentsFolder(){
+        File folder = new File(ATTACHMENTS_PATH);
+        if(!folder.exists()) {
+            folder.mkdir();
+        }
+    }
+
     private void folderDropAndCreate(String requestId) {
-        //TODO Check if can create folder
         deleteRequestAttachments(requestId);
-        File folder = new File(MAIN_PATH + requestId);
+        File folder = new File(ATTACHMENTS_PATH + requestId);
         folder.mkdir();
     }
 
     @Override
     public void deleteRequestAttachments(String requestId) {
-        File folder = new File(MAIN_PATH + requestId);
+        File folder = new File(ATTACHMENTS_PATH + requestId);
         if (folder.exists()) {
             String[] entries = folder.list();
             for (String s : entries) {
@@ -73,7 +80,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
 
     @Override
     public ResponseEntity<byte[]> downloadAttachment(String requestId, String filename) throws IOException {
-        Path filePath = Paths.get(MAIN_PATH + requestId + "/" + filename);
+        Path filePath = Paths.get(ATTACHMENTS_PATH + requestId + "/" + filename);
         byte[] fileContent = Files.readAllBytes(filePath);
         String fileName = filePath.getFileName().toString();
         HttpHeaders header = new HttpHeaders();
@@ -86,9 +93,9 @@ public class AttachmentsServiceImpl implements AttachmentsService {
     @Override
     public ListFilesDto listFiles(String requestId) {
         logger.debug("Get list of files");
-        if (Files.notExists(Paths.get(MAIN_PATH + requestId))) return new ListFilesDto();
+        if (Files.notExists(Paths.get(ATTACHMENTS_PATH + requestId))) return new ListFilesDto();
         List<FileInfoDto> files = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get(MAIN_PATH + requestId))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(ATTACHMENTS_PATH + requestId))) {
             paths
                     .filter(Files::isRegularFile)
                     .forEach((path) -> {
@@ -122,7 +129,7 @@ public class AttachmentsServiceImpl implements AttachmentsService {
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         ZipOutputStream zipOutputStream = new ZipOutputStream(byteOutputStream);
 
-        try (Stream<Path> paths = Files.walk(Paths.get(MAIN_PATH + requestId))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(ATTACHMENTS_PATH + requestId))) {
             paths
                     .filter(Files::isRegularFile)
                     .forEach((path) -> {

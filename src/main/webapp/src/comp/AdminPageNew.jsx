@@ -106,7 +106,8 @@ class AdminPageNew extends Component {
           {user.firstName} {user.secondName}
           {","} {user.email}
         </p>
-        <div className="form-row col-md-10 mt-auto">
+        <br />
+        <div className="col-md-10 mt-auto">
           <Select
             defaultValue={this.rolesOptions(user.roles, user.id)}
             isMulti
