@@ -60,15 +60,17 @@ public class RequestController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/requests/created/{page}")
     @ResponseStatus(HttpStatus.OK)
-    public RequestListDtoPagination getCreatedRequests(Principal principal, @PathVariable int page) {
-        return requestService.getCreatedRequests(principal, page);
+    public RequestListDtoPagination getCreatedRequests(Principal principal, @PathVariable int page,
+                                                       @RequestParam("archive") boolean archive) {
+        return requestService.getCreatedRequests(principal, page, archive);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/requests/executing/{page}")
     @ResponseStatus(HttpStatus.OK)
-    public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page) {
-        return requestService.getExecutingRequests(principal, page);
+    public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page,
+                                                         @RequestParam("archive") boolean archive) {
+        return requestService.getExecutingRequests(principal, page, archive);
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -12,7 +12,7 @@ public interface RequestService {
 
     Request save(RequestSaveDto request);
 
-    RequestListDtoPagination getCreatedRequests(Principal userData, int page);
+    RequestListDtoPagination getCreatedRequests(Principal userData, int page, boolean archive);
 
     void archiveOldRequests();
 
@@ -28,5 +28,6 @@ public interface RequestService {
 
     Request editRequest(RequestSaveDto request);
 
-    RequestListDtoPagination getExecutingRequests(Principal principal, int page);
+    RequestListDtoPagination getExecutingRequests(Principal principal, int page, boolean archive);
+
 }

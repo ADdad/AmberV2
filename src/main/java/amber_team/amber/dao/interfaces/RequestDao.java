@@ -12,19 +12,17 @@ public interface RequestDao {
 
     Request getById(String requestId);
 
-    int getCountOfUsersActiveRequests(String userId);
+    int getCountOfUsersRequests(String userId, boolean archive);
 
-    List<Request> getAllUsersRequests(String userId);
-
-    List<Request> getAllUsersRequestsPagination(String userId, int offset, int limit);
+    List<Request> getAllUsersRequestsPagination(String userId, int offset, int limit, boolean archive);
 
     void archiveOldRequests();
 
-    List<Request> getAdminRequestsPagination(String id, int i, int pagination);
+    List<Request> getAdminRequestsPagination(String id, int i, int pagination, boolean archive);
 
-    List<Request> getKeeperRequestsPagination(String id, int i, int pagination);
+    List<Request> getKeeperRequestsPagination(String id, int i, int pagination, boolean archive);
 
-    int getCountOfKeeperActiveRequests(String userId);
+    int getCountOfKeeperRequests(String userId, boolean archive);
 
-    int getCountOfAdminActiveRequests();
+    int getCountOfAdminRequests(boolean archive);
 }

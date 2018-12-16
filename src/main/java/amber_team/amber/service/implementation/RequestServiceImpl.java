@@ -184,16 +184,16 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestListDtoPagination getExecutingRequests(Principal principal, int page) {
+    public RequestListDtoPagination getExecutingRequests(Principal principal, int page, boolean archive) {
         UserInfoDto userByEmail = userDao.getUserByEmail(principal);
         page--;
         List<Request> requestsList = new ArrayList<>();
         if (userByEmail.getRoles().contains(roleDao.getByName(KEEPER_ROLE_NAME)))
             requestsList.addAll(requestDao.getKeeperRequestsPagination(userByEmail.getId(), page *
-                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE));
+                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE, archive));
         if (userByEmail.getRoles().contains(roleDao.getByName(ADMIN_ROLE_NAME)))
             requestsList.addAll(requestDao.getAdminRequestsPagination(userByEmail.getId(), page *
-                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE));
+                    REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE, archive));
 
         Collections.sort(requestsList, new Comparator<Request>() {
             @Override
@@ -212,20 +212,20 @@ public class RequestServiceImpl implements RequestService {
         }
         RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
         requestListDtoPagination.setRequests(requestsList);
-        requestListDtoPagination.setRequestsCount(requestDao.getCountOfAdminActiveRequests()
-                + requestDao.getCountOfKeeperActiveRequests(userByEmail.getId()));
+        requestListDtoPagination.setRequestsCount(requestDao.getCountOfAdminRequests(archive)
+                + requestDao.getCountOfKeeperRequests(userByEmail.getId(), archive));
         return requestListDtoPagination;
     }
 
     @Override
-    public RequestListDtoPagination getCreatedRequests(Principal userData, int page) {
+    public RequestListDtoPagination getCreatedRequests(Principal userData, int page, boolean archive) {
         UserInfoDto userByEmail = userDao.getUserByEmail(userData);
         page--;
         List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userByEmail.getId(), page *
-                REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE);
+                REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE, archive);
         RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
         requestListDtoPagination.setRequests(listRequests);
-        requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersActiveRequests(userByEmail.getId()));
+        requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersRequests(userByEmail.getId(), archive));
         return requestListDtoPagination;
     }
 

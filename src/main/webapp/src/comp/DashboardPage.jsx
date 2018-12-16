@@ -57,7 +57,7 @@ class DashboardPage extends Component {
   }
 
   downloadCreatedRequestsPaginated = page => {
-    fetch(`/user/requests/created/${page}`, {
+    fetch(`/user/requests/created/${page}?archive=false`, {
       method: "GET"
     })
       .then(response => response.json())
@@ -76,7 +76,7 @@ class DashboardPage extends Component {
   };
 
   downloadExecutingRequestsPaginated = page => {
-    fetch(`/user/requests/executing/${page}`, {
+    fetch(`/user/requests/executing/${page}?archive=false`, {
       method: "GET"
     })
       .then(response => response.json())

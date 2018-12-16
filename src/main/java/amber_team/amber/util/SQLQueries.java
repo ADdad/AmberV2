@@ -376,22 +376,23 @@ public class SQLQueries {
     public static final String GET_ALL_ROLES = "SELECT * FROM roles";
     public static final String GET_ALL_ACTIVE_USERS = "SELECT * FROM users WHERE enabled = 1";
     public static final String GET_ALL_USERS = "SELECT * FROM users";
-    public static final String GET_USERS_CREATED_REQUESTS = "SELECT * FROM requests WHERE creator_id = ?";
     public static final String GET_USERS_CREATED_REQUESTS_PAGINATION = "SELECT * FROM requests" +
-            " WHERE creator_id = ? AND archive = false " +
+            " WHERE creator_id = ? AND archive = ? " +
             "ORDER BY creation_date DESC LIMIT ? OFFSET ?";
-    public static final String USERS_ACTIVE_REQUESTS_COUNT = "SELECT COUNT(*) FROM requests WHERE creator_id = ? AND" +
-            " archive = false";
+    public static final String USERS_REQUESTS_COUNT = "SELECT COUNT(*) FROM requests WHERE creator_id = ? AND" +
+            " archive = ?";
     public static final String ROLE_BY_NAME = "SELECT * FROM roles WHERE name = ?";
     public static final String GET_EXECUTORS_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE executor_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND archive = false ORDER BY modified_date DESC" +
+            " status != 'Canceled' AND status != 'Completed' AND status != 'Opened' AND status != 'Rejected'" +
+            " AND archive = ?" +
+            " ORDER BY modified_date DESC" +
             " LIMIT ? OFFSET ?";
     public static final String GET_ADMIN_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE status = 'Opened'" +
-            " AND archive = false ORDER BY modified_date DESC LIMIT ? OFFSET ?";
+            " AND archive = ? ORDER BY modified_date DESC LIMIT ? OFFSET ?";
     public static final String GET_COUNT_ADMIN_REQUESTS = "SELECT COUNT(*) FROM requests WHERE status = 'Opened'" +
-            " AND archive = false";
+            " AND archive = ?";
     public static final String GET_COUNT_EXECUTORS_REQUESTS = "SELECT COUNT(*) FROM requests WHERE executor_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND archive = false";
+            " status != 'Canceled' AND status != 'Completed' AND status != 'Rejected' AND archive = ?";
     public static final String CLEAR_USERS_ROLES = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id NOT IN (:roles)";
     public static final String UPDATE_ENABLED_USER = "UPDATE users SET enabled = ? WHERE id = ?";
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";

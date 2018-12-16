@@ -94,25 +94,14 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public int getCountOfUsersActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_ACTIVE_REQUESTS_COUNT, new Object[]{userId},
+    public int getCountOfUsersRequests(String userId, boolean archive) {
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.USERS_REQUESTS_COUNT, new Object[]{userId, archive},
                 Integer.class);
 //        if (count == null) return 0;
         return count == null ? 0 : count;
 //        return count;
     }
 
-    @Override
-    public List<Request> getAllUsersRequests(String userId) {
-        List<Request> requests = jdbcTemplate.query(
-                SQLQueries.GET_USERS_CREATED_REQUESTS, new Object[]{userId},
-                new RowMapper<Request>() {
-                    public Request mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                        return mapRequest(resultSet);
-                    }
-                });
-        return requests;
-    }
 
     private Request mapRequest(ResultSet resultSet) throws SQLException {
         Request info = new Request();
@@ -132,9 +121,9 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> getAllUsersRequestsPagination(String userId, int offset, int limit) {
+    public List<Request> getAllUsersRequestsPagination(String userId, int offset, int limit, boolean archive) {
         List<Request> requests = jdbcTemplate.query(
-                SQLQueries.GET_USERS_CREATED_REQUESTS_PAGINATION, new Object[]{userId, limit, offset},
+                SQLQueries.GET_USERS_CREATED_REQUESTS_PAGINATION, new Object[]{userId, archive, limit, offset},
                 new RowMapper<Request>() {
                     public Request mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                         return mapRequest(resultSet);
@@ -152,9 +141,9 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> getAdminRequestsPagination(String id, int offset, int limit) {
+    public List<Request> getAdminRequestsPagination(String id, int offset, int limit, boolean archive) {
         List<Request> requests = jdbcTemplate.query(
-                SQLQueries.GET_ADMIN_REQUESTS_PAGINATION, new Object[]{limit, offset},
+                SQLQueries.GET_ADMIN_REQUESTS_PAGINATION, new Object[]{archive, limit, offset},
                 new RowMapper<Request>() {
                     public Request mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                         return mapRequest(resultSet);
@@ -164,9 +153,9 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> getKeeperRequestsPagination(String id, int offset, int limit) {
+    public List<Request> getKeeperRequestsPagination(String id, int offset, int limit, boolean archive) {
         List<Request> requests = jdbcTemplate.query(
-                SQLQueries.GET_EXECUTORS_REQUESTS_PAGINATION, new Object[]{id, limit, offset},
+                SQLQueries.GET_EXECUTORS_REQUESTS_PAGINATION, new Object[]{id, archive, limit, offset},
                 new RowMapper<Request>() {
                     public Request mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                         return mapRequest(resultSet);
@@ -176,16 +165,16 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public int getCountOfKeeperActiveRequests(String userId) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId},
+    public int getCountOfKeeperRequests(String userId, boolean archive) {
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId, archive},
                 Integer.class);
         if (count == null) return 0;
         return count;
     }
 
     @Override
-    public int getCountOfAdminActiveRequests() {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_ADMIN_REQUESTS, Integer.class);
+    public int getCountOfAdminRequests(boolean archive) {
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_ADMIN_REQUESTS, new Object[]{archive}, Integer.class);
         if (count == null) return 0;
         return count;
     }
