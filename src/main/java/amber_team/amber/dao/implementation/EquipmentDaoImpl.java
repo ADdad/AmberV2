@@ -40,9 +40,6 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
 
-//    public void setDataSource(DataSource dataSource) {
-//        this.dataSource = dataSource;
-//    }
 
     @Override
     public Equipment getById(String id) {

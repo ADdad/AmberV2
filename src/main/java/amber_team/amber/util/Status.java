@@ -23,7 +23,9 @@ public enum Status {
     @JsonProperty("Delivering")
     DELIVERING("Delivering"),
     @JsonProperty("Waiting for equipment")
-    WAITING_FOR_EQUIPMENT("Waiting for equipment");
+    WAITING_FOR_EQUIPMENT("Waiting for equipment"),
+    @JsonProperty("Waiting for replenishment")
+    WAITING_FOR_REPLENISHMENT("Waiting for replenishment");
 
     private static Map<String, Status> map = null;
     private final String name;

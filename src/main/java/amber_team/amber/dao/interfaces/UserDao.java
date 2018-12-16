@@ -25,4 +25,6 @@ public interface UserDao {
     List<UserInfoDto> getAll();
 
     boolean checkEmailAvailability(String email);
+
+    List<UserInfoDto> searchUsers(String search);
 }

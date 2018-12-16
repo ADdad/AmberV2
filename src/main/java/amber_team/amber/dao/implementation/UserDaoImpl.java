@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import static amber_team.amber.util.Constants.USERS_SEARCH_LIMIT;
+
 @Repository(value = "userDao")
 public class UserDaoImpl implements UserDao {
     @Autowired
@@ -171,6 +173,16 @@ public class UserDaoImpl implements UserDao {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<UserInfoDto> searchUsers(String search) {
+        String formatValue = "%" + search + "%";
+
+        List<UserInfoDto> users = jdbcTemplate.query(
+                SQLQueries.FIND_USERS_BY_VALUE, new Object[]{formatValue, formatValue, formatValue, USERS_SEARCH_LIMIT},
+                (rs, rowNum) -> getUserInfoDto(rs));
+        return users;
     }
 
 

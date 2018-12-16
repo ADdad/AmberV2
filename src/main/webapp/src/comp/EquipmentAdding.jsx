@@ -177,7 +177,7 @@ class EquipmentAdding extends Component {
     if (this.state.initialized)
       return (
         <div className="form-row">
-          <div className="form-group col-md-11">
+          <div className="form-group col-md-12">
             <AsyncSelect
               cacheOptions
               defaultOptions={this.getItemsOptions(this.state.myItems)}

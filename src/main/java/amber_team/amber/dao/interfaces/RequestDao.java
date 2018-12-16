@@ -3,6 +3,7 @@ package amber_team.amber.dao.interfaces;
 
 import amber_team.amber.model.entities.Request;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface RequestDao {
@@ -25,4 +26,10 @@ public interface RequestDao {
     int getCountOfKeeperRequests(String userId, boolean archive);
 
     int getCountOfAdminRequests(boolean archive);
+
+    List<Request> searchRequests(String search, String id, boolean archive);
+
+    List<Request> searchExecutorRequests(String search, String id, boolean archive);
+
+    List<Request> searchAdminRequests(String search, boolean archive);
 }

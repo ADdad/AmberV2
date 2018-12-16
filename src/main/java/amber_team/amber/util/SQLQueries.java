@@ -382,17 +382,21 @@ public class SQLQueries {
     public static final String USERS_REQUESTS_COUNT = "SELECT COUNT(*) FROM requests WHERE creator_id = ? AND" +
             " archive = ?";
     public static final String ROLE_BY_NAME = "SELECT * FROM roles WHERE name = ?";
-    public static final String GET_EXECUTORS_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE executor_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND status != 'Opened' AND status != 'Rejected'" +
-            " AND archive = ?" +
+    public static final String GET_EXECUTORS_REQUESTS_PAGINATION = "SELECT * FROM requests" +
+            " WHERE executor_id = ? AND" +
+            " status != 'Canceled' AND status != 'Completed' AND status != 'Opened' AND status != 'Rejected' " +
+            "AND status != 'Waiting for replenishment' AND archive = ?" +
             " ORDER BY modified_date DESC" +
             " LIMIT ? OFFSET ?";
-    public static final String GET_ADMIN_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE status = 'Opened'" +
+    public static final String GET_ADMIN_REQUESTS_PAGINATION = "SELECT * FROM requests" +
+            " WHERE status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing'" +
             " AND archive = ? ORDER BY modified_date DESC LIMIT ? OFFSET ?";
-    public static final String GET_COUNT_ADMIN_REQUESTS = "SELECT COUNT(*) FROM requests WHERE status = 'Opened'" +
+    public static final String GET_COUNT_ADMIN_REQUESTS = "SELECT COUNT(*) FROM requests" +
+            " WHERE status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing'" +
             " AND archive = ?";
     public static final String GET_COUNT_EXECUTORS_REQUESTS = "SELECT COUNT(*) FROM requests WHERE executor_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND status != 'Rejected' AND archive = ?";
+            " status != 'Canceled' AND status != 'Completed' AND status != 'Rejected' AND status != 'On reviewing' " +
+            " AND status != 'Waiting for replenishment' AND archive = ?";
     public static final String CLEAR_USERS_ROLES = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id NOT IN (:roles)";
     public static final String UPDATE_ENABLED_USER = "UPDATE users SET enabled = ? WHERE id = ?";
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";
@@ -402,7 +406,18 @@ public class SQLQueries {
             "re.quantity-we.quantity AS quantity_diff FROM request_equipment AS re JOIN warehouse_equipment AS we ON " +
             "we.equipment_id = re.equipment_id " +
             " WHERE re.request_id = ? AND we.warehouse_id = ?";
-
+    public static final String FIND_USER_REQUESTS_BY_VALUE = "SELECT * FROM requests " +
+            "WHERE creator_id = ? AND ((title LIKE ?) OR (description LIKE ?)) AND archive = ? LIMIT ?";
+    public static final String FIND_KEEPER_REQUESTS_BY_VALUE = "SELECT * FROM requests " +
+            "WHERE executor_id = ? AND ((title LIKE ?) OR (description LIKE ?)) AND archive = ? " +
+            "AND (status = 'In progress' OR status = 'On hold' OR status = 'Waiting for equipment' " +
+            "OR status = 'Delivering') LIMIT ?";
+    public static final String FIND_ADMIN_REQUESTS_BY_VALUE = "SELECT * FROM requests " +
+            "WHERE ((title LIKE ?) OR (description LIKE ?)) " +
+            " AND (status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing') " +
+            "AND archive = ? LIMIT ?";
+    public static final String FIND_USERS_BY_VALUE = "SELECT * FROM users WHERE (email LIKE ? ) OR (f_name LIKE ? ) OR (s_name LIKE ? ) " +
+            "LIMIT ?";
 
     private SQLQueries() {
     }

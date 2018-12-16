@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static amber_team.amber.util.Constants.REQUESTS_SEARCH_LIMIT;
+
 @Repository(value = "requestDao")
 public class RequestDaoImpl implements RequestDao {
     private static final Logger log = LoggerFactory.getLogger(RequestDaoImpl.class);
@@ -177,5 +179,35 @@ public class RequestDaoImpl implements RequestDao {
         Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_ADMIN_REQUESTS, new Object[]{archive}, Integer.class);
         if (count == null) return 0;
         return count;
+    }
+
+    @Override
+    public List<Request> searchRequests(String search, String id, boolean archive) {
+        String formatValue = "%" + search + "%";
+
+        List<Request> requests = jdbcTemplate.query(
+                SQLQueries.FIND_USER_REQUESTS_BY_VALUE, new Object[]{id, formatValue, formatValue, archive, REQUESTS_SEARCH_LIMIT},
+                (rs, rowNum) -> mapRequest(rs));
+        return requests;
+    }
+
+    @Override
+    public List<Request> searchExecutorRequests(String search, String id, boolean archive) {
+        String formatValue = "%" + search + "%";
+
+        List<Request> requests = jdbcTemplate.query(
+                SQLQueries.FIND_KEEPER_REQUESTS_BY_VALUE, new Object[]{id, formatValue, formatValue, archive, REQUESTS_SEARCH_LIMIT},
+                (rs, rowNum) -> mapRequest(rs));
+        return requests;
+    }
+
+    @Override
+    public List<Request> searchAdminRequests(String search, boolean archive) {
+        String formatValue = "%" + search + "%";
+
+        List<Request> requests = jdbcTemplate.query(
+                SQLQueries.FIND_ADMIN_REQUESTS_BY_VALUE, new Object[]{formatValue, formatValue, archive, REQUESTS_SEARCH_LIMIT},
+                (rs, rowNum) -> mapRequest(rs));
+        return requests;
     }
 }

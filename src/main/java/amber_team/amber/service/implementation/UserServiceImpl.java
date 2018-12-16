@@ -2,6 +2,7 @@ package amber_team.amber.service.implementation;
 
 
 import amber_team.amber.dao.interfaces.UserDao;
+import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.regex.Matcher;
 
 
@@ -69,6 +71,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<UserInfoDto> getUserInfo(Principal principal) {
         return userDao.getUserInfo(principal);
+    }
+
+    @Override
+    public UserListDto searchUsers(String search) {
+        List<UserInfoDto> userInfoDtoList = userDao.searchUsers(search);
+        UserListDto userListDto = new UserListDto();
+        userListDto.setList(userInfoDtoList);
+        return userListDto;
     }
 
     private boolean checkForNotNull(String email, String password, String firstName, String secondName) {

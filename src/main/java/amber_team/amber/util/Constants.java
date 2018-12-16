@@ -11,4 +11,7 @@ public class Constants {
     public static final int REQUESTS_PAGINATION_SIZE = 25;
     public static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
     public static final String KEEPER_ROLE_NAME = "ROLE_KEEPER";
+    public static final String USER_ROLE_NAME = "ROLE_USER";
+    public static final int REQUESTS_SEARCH_LIMIT  = 30;
+    public static final int USERS_SEARCH_LIMIT  = 30;
 }

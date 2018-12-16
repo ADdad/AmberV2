@@ -1,10 +1,12 @@
 package amber_team.amber.controller;
 
+import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.model.dto.UserDto;
 import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,13 @@ public class UserController {
     @GetMapping(value = "/userinfo")
     public ResponseEntity<UserInfoDto> getUserInfo(Principal principal) {
         return userService.getUserInfo(principal);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
+    @GetMapping(value = "/users")
+    @ResponseStatus(HttpStatus.OK)
+    public UserListDto searchUsers(@RequestParam("search") String search) {
+        return userService.searchUsers(search);
     }
 
 }

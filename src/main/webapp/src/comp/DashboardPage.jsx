@@ -11,6 +11,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Visibility from "@material-ui/icons/Visibility";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AsyncSelect from "react-select/lib/Async";
+import { debounce } from "lodash";
 
 class DashboardPage extends Component {
   state = {
@@ -289,7 +291,6 @@ class DashboardPage extends Component {
   };
 
   renderExecutingRequests = () => {
-    console.log(this.state.executingListSize);
     let executingRequests = this.state.executingRequests.map(u =>
       this.renderExecutingRequest(u)
     );
@@ -387,6 +388,133 @@ class DashboardPage extends Component {
     this.props.history.push("/order/create/order");
   };
 
+  renderAsyncCreatorSelect = () => {
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <AsyncSelect
+          cacheOptions
+          defaultOptions={this.getRequestsOptions(this.state.createdRequests)}
+          loadOptions={this.loadCreatorOptions}
+          onChange={this.chosenItem}
+        />
+      </div>
+    );
+  };
+
+  renderAsyncExecutorSelect = () => {
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <AsyncSelect
+          cacheOptions
+          defaultOptions={this.getRequestsOptions(this.state.executingRequests)}
+          loadOptions={this.loadExecutorOptions}
+          onChange={this.chosenItem}
+        />
+      </div>
+    );
+  };
+
+  loadCreatorOptions = (input, callback) => {
+    if (!input || input.length < 1) {
+      return callback(this.getRequestsOptions(this.state.createdRequests));
+    }
+    return fetch(`/requests?search=${input}&created=true&archive=false`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        console.log(json);
+        let options = [];
+        options = this.getRequestsOptions(json.requests);
+        return callback(options);
+      });
+  };
+
+  loadExecutorOptions = (input, callback) => {
+    if (!input || input.length < 1) {
+      return callback(this.getRequestsOptions(this.state.executingRequests));
+    }
+    return fetch(`/requests?search=${input}&created=false&archive=false`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let options = [];
+        options = this.getRequestsOptions(json.requests);
+        return this.loadUsers(options, input, callback);
+      });
+  };
+
+  loadUsers = (options, input, callback) => {
+    console.log(options);
+    return fetch(`/users?search=${input}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let res = options.concat(this.getUsersOptions(json.list));
+        console.log(res);
+        return callback(res);
+      });
+  };
+
+  getRequestsOptions = requests => {
+    let requestsLocal = requests;
+    let result = [];
+    requestsLocal.map(i =>
+      result.push({ label: this.requestName(i), value: i.id, type: "request" })
+    );
+    return result;
+  };
+
+  getUsersOptions = users => {
+    let usersLocal = users;
+    let result = [];
+    usersLocal.map(i =>
+      result.push({ label: this.userName(i), value: i.id, type: "user" })
+    );
+    return result;
+  };
+
+  userName = user => {
+    return (
+      user.email.substr(0, 20) +
+      ", " +
+      user.firstName.substr(0, 20) +
+      " " +
+      user.secondName.substr(0, 20)
+    );
+  };
+
+  requestName = request => {
+    return (
+      request.title.substr(0, 20) +
+      ", " +
+      request.description.substr(0, 20) +
+      ", " +
+      request.status
+    );
+  };
+
+  chosenItem = item => {
+    if (typeof item != "undefined") {
+      if (item.type == "request") {
+        this.props.history.push(`order/${item.value}`);
+      }
+      if (item.type == "user") {
+        this.props.history.push(`user/${item.value}`);
+      }
+    }
+  };
+
   renderLoader = () => {
     return (
       <React.Fragment>
@@ -424,6 +552,18 @@ class DashboardPage extends Component {
                 this.state.createdChecked.length > 0 &&
                 this.createCancelManyButton()}
             </div>
+          </div>
+          <div className="form-row">
+            {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+              .length > 0 &&
+              this.state.createdListSize > 0 &&
+              this.renderAsyncCreatorSelect()}
+            {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
+              .length > 0 ||
+              this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
+                .length > 0) &&
+              this.state.executingListSize > 0 &&
+              this.renderAsyncExecutorSelect()}
           </div>
           <div className="form-row">
             {this.state.userRoles.filter(role => role.name === "ROLE_USER")

@@ -5,6 +5,7 @@ import amber_team.amber.dao.interfaces.*;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Comment;
 import amber_team.amber.model.entities.Request;
+import amber_team.amber.model.entities.Role;
 import amber_team.amber.model.entities.User;
 import amber_team.amber.service.interfaces.RequestService;
 import amber_team.amber.util.Status;
@@ -215,6 +216,27 @@ public class RequestServiceImpl implements RequestService {
         requestListDtoPagination.setRequestsCount(requestDao.getCountOfAdminRequests(archive)
                 + requestDao.getCountOfKeeperRequests(userByEmail.getId(), archive));
         return requestListDtoPagination;
+    }
+
+    @Override
+    public RequestListDtoPagination searchRequests(Principal principal, String search, boolean created, boolean archive) {
+        UserInfoDto user = userDao.getUserByEmail(principal);
+        List<Request> requestList = new ArrayList<>();
+        if (created && containsRole(user, USER_ROLE_NAME)) {
+            requestList.addAll(requestDao.searchRequests(search, user.getId(), archive));
+        }
+        if (!created && containsRole(user, KEEPER_ROLE_NAME)) {
+            requestList.addAll(requestDao.searchExecutorRequests(search, user.getId(), archive));
+        }
+        if (!created && containsRole(user, ADMIN_ROLE_NAME)) {
+            requestList.addAll(requestDao.searchAdminRequests(search, archive));
+        }
+        RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination(requestList);
+        return requestListDtoPagination;
+    }
+
+    private boolean containsRole(UserInfoDto user, String role) {
+        return user.getRoles().stream().map(Role::getName).anyMatch(role::equals);
     }
 
     @Override

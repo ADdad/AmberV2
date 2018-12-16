@@ -8,7 +8,7 @@ class ExecutorReplenishmentButtons extends Component {
       buttons: [],
       confirmation: false,
       noButtons: false,
-      adminStates: ["Opened", "On reviewing", "Waiting for equipment"],
+      adminStates: ["Opened", "On reviewing", "Waiting for replenishment"],
       comment: null,
       commentStatus: "",
       buttonChange: false
@@ -125,7 +125,7 @@ class ExecutorReplenishmentButtons extends Component {
         localButtons.push({
           value: "Approve",
           type: "success",
-          status: "Waiting for equipment"
+          status: "Waiting for replenishment"
         });
         localButtons.push({
           value: "Reject",
@@ -134,7 +134,7 @@ class ExecutorReplenishmentButtons extends Component {
         });
         break;
       }
-      case "Waiting for equipment": {
+      case "Waiting for replenishment": {
         localButtons.push({
           value: "Replenish",
           type: "success",

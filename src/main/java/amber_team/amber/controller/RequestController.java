@@ -66,6 +66,16 @@ public class RequestController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public RequestListDtoPagination searchRequests(Principal principal, @RequestParam("archive") boolean archive,
+                                                   @RequestParam("created") boolean created,
+                                                   @RequestParam("search") String search) {
+        System.out.println(search);
+        return requestService.searchRequests(principal, search, created, archive);
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/requests/executing/{page}")
     @ResponseStatus(HttpStatus.OK)
     public RequestListDtoPagination getExecutingRequests(Principal principal, @PathVariable int page,
