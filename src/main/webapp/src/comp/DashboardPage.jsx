@@ -387,10 +387,6 @@ class DashboardPage extends Component {
     this.props.history.push("/order/create/order");
   };
 
-  handleReportsPage = () => {
-    this.props.history.push("/reports");
-  };
-
   renderLoader = () => {
     return (
       <React.Fragment>

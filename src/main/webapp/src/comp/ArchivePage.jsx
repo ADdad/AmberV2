@@ -365,8 +365,7 @@ class ArchivePage extends Component {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div>
             <h4 className="text-muted">
-              Hello you don`t have created orders or for executing, so you
-              can...
+              Hello you still don`t have archived orders
             </h4>
           </div>
         </div>
@@ -374,21 +373,17 @@ class ArchivePage extends Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={this.handleCreateOrder}
+            onClick={this.handleDashboard}
           >
-            Create order
+            Dashboard
           </Button>
         </div>
       </React.Fragment>
     );
   };
 
-  handleCreateOrder = () => {
-    this.props.history.push("/order/create/order");
-  };
-
-  handleReportsPage = () => {
-    this.props.history.push("/reports");
+  handleDashboard = () => {
+    this.props.history.push("/dashboard");
   };
 
   renderLoader = () => {
