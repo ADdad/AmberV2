@@ -22,7 +22,7 @@ public interface RequestService {
 
     UserListDto getWarehouseExecutors(String warehouseId);
 
-    Request changeStatus(MyRequestStatusChangeDto request);
+    Request changeStatus(RequestStatusChangeDto request);
 
     void changeStatus(ListRequestChangeStatusDto request);
 

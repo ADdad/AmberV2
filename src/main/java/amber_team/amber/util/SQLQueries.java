@@ -377,11 +377,11 @@ public class SQLQueries {
     public static final String GET_ALL_ACTIVE_USERS = "SELECT * FROM users WHERE enabled = 1";
     public static final String GET_ALL_USERS = "SELECT * FROM users";
     public static final String GET_USERS_CREATED_REQUESTS = "SELECT * FROM requests WHERE creator_id = ?";
-    public static final String GET_USERS_CREATED_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE creator_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND archive = false " +
+    public static final String GET_USERS_CREATED_REQUESTS_PAGINATION = "SELECT * FROM requests" +
+            " WHERE creator_id = ? AND archive = false " +
             "ORDER BY creation_date DESC LIMIT ? OFFSET ?";
     public static final String USERS_ACTIVE_REQUESTS_COUNT = "SELECT COUNT(*) FROM requests WHERE creator_id = ? AND" +
-            " status != 'Canceled' AND status != 'Completed' AND archive = false";
+            " archive = false";
     public static final String ROLE_BY_NAME = "SELECT * FROM roles WHERE name = ?";
     public static final String GET_EXECUTORS_REQUESTS_PAGINATION = "SELECT * FROM requests WHERE executor_id = ? AND" +
             " status != 'Canceled' AND status != 'Completed' AND archive = false ORDER BY modified_date DESC" +

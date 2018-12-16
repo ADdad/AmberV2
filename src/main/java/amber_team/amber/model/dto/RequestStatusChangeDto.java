@@ -2,17 +2,17 @@ package amber_team.amber.model.dto;
 
 import amber_team.amber.util.Status;
 
-public class MyRequestStatusChangeDto {
+public class RequestStatusChangeDto {
     private String requestId;
     private String executorId;
     private Status status;
     private String userId;
     private String commentText;
 
-    public MyRequestStatusChangeDto() {
+    public RequestStatusChangeDto() {
     }
 
-    public MyRequestStatusChangeDto(String requestId, Status status) {
+    public RequestStatusChangeDto(String requestId, Status status) {
         this.requestId = requestId;
         this.status = status;
     }

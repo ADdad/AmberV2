@@ -1,12 +1,14 @@
 package amber_team.amber.model.dto;
 
+import amber_team.amber.util.Status;
+
 import java.util.Date;
 
 public class ReportOrdersResponseExcelDto {
     private String creator;
     private String executor;
     private String orderType;
-    private String orderStatus;
+    private Status orderStatus;
     private Date creationDate;
     private Date modifiedDate;
     private String orderDescription;
@@ -37,12 +39,16 @@ public class ReportOrdersResponseExcelDto {
         this.orderType = orderType;
     }
 
-    public String getOrderStatus() {
+    public Status getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(Status orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = Status.valueOfStatus(orderStatus);
     }
 
     public Date getCreationDate() {

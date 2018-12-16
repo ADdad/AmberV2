@@ -100,7 +100,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request changeStatus(MyRequestStatusChangeDto request) {
+    public Request changeStatus(RequestStatusChangeDto request) {
 
         Status existedStatus = requestDao.getById(request.getRequestId()).getStatus();
 
@@ -145,7 +145,7 @@ public class RequestServiceImpl implements RequestService {
     public void changeStatus(ListRequestChangeStatusDto requests) {
         for (String requestId :
                 requests.getRequests()) {
-            changeStatus(new MyRequestStatusChangeDto(requestId, requests.getStatus()));
+            changeStatus(new RequestStatusChangeDto(requestId, requests.getStatus()));
         }
     }
 
@@ -156,7 +156,7 @@ public class RequestServiceImpl implements RequestService {
                 requestNew.getStatus());
     }
 
-    private String createReplenishmentRequest(MyRequestStatusChangeDto request, List<EquipmentDto> unavailableEquipment) {
+    private String createReplenishmentRequest(RequestStatusChangeDto request, List<EquipmentDto> unavailableEquipment) {
         RequestSaveDto replRequest = new RequestSaveDto();
         replRequest.setCreatorId(request.getUserId());
         replRequest.setItems(unavailableEquipment);

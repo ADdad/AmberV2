@@ -88,7 +88,7 @@ public class RequestController {
 
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/request")
-    public Request updateRequest(@RequestBody MyRequestStatusChangeDto request) {
+    public Request updateRequest(@RequestBody RequestStatusChangeDto request) {
         return requestService.changeStatus(request);
     }
 

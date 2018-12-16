@@ -2,7 +2,6 @@ package amber_team.amber.dao.interfaces;
 
 import amber_team.amber.model.dto.EquipmentInfoDto;
 import amber_team.amber.model.dto.EquipmentDto;
-import amber_team.amber.model.dto.MyRequestStatusChangeDto;
 import amber_team.amber.model.entities.Equipment;
 import org.springframework.http.ResponseEntity;
 
