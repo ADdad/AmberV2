@@ -2,7 +2,6 @@ package amber_team.amber.util;
 
 public class SQLQueries {
 
-    public static final String DROP_USER_ROLES = "DELETE FROM user_roles";
     public static final String EQUIPMENT_INFO_BY_WAREHOUSE = "SELECT equipment.id, equipment.model, equipment.producer," +
             "equipment.country, warehouse_equipment.quantity " +
             "FROM equipment " +
@@ -27,7 +26,6 @@ public class SQLQueries {
             "WHERE users.email = ?";
     public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
             "FROM users WHERE users.email =?";
-    public static final String IF_EXISTS_USER_ROLE = "SELECT count(*) FROM user_roles WHERE  user_id = ? AND role_id = ?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
@@ -94,8 +92,6 @@ public class SQLQueries {
             "A2.attr_order AS attr_order FROM attributes AS A2 INNER JOIN attribute_types AS AT1 " +
             "ON A2.attr_type_id=AT1.id) AS A1 ON RV1.attr_id=A1.id " +
             "WHERE RV1.request_id = ?";
-    public static final String ADD_WAREHOUSE_EQUIPMENT = "INSERT INTO warehouse_equipment(warehouse_id, equipment_id, quantity) " +
-            "VALUES (?, ?, ?)";
     public static final String GET_REQUEST_EQUIPMENT = "SELECT E1.id AS id, E1.model AS model, E1.producer AS producer," +
             " E1.country AS country, E2.quantity AS quantity " +
             "FROM equipment AS E1 INNER JOIN request_equipment AS E2 on E1.id = E2.equipment_id " +
@@ -110,12 +106,6 @@ public class SQLQueries {
     public static final String UPDATE_WARE_EQUIP_QUANTITY = "UPDATE warehouse_equipment" +
             " SET quantity = ? " +
             " WHERE equipment_id = ? AND warehouse_id = ?  ";
-    public static final String GET_REQUEST_WAREHOUSE_EQUIPMENT_QUANTITY_DIFFERENCE = "SELECT e.id AS id, " +
-            "  re.quantity-we.quantity AS quantity_diff " +
-            "FROM request_equipment AS re " +
-            "INNER JOIN equipment AS e ON e.id = re.equipment_id " +
-            "INNER JOIN warehouse_equipment AS we ON e.id = we.equipment_id " +
-            "WHERE request_id = ?";
     public static final String GET_WAREHOUSE_EXECUTORS = "SELECT DISTINCT id, f_name, s_name, email " +
             "FROM user_warehouses uw INNER JOIN (users AS U1 INNER JOIN user_roles u on U1.id = u.user_id) AS u2 "
             + "ON uw.user_id=u2.user_id " +

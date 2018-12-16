@@ -3,7 +3,6 @@ package amber_team.amber.service.implementation;
 
 import amber_team.amber.dao.interfaces.RoleDao;
 import amber_team.amber.dao.interfaces.UserDao;
-import amber_team.amber.dao.interfaces.UserListDao;
 import amber_team.amber.model.dto.*;
 import amber_team.amber.model.entities.Role;
 import amber_team.amber.service.interfaces.AdminService;
@@ -22,14 +21,12 @@ import static amber_team.amber.util.Constants.USERS_PAGINATION_SIZE;
 public class AdminServiceImpl implements AdminService {
 
 
-    private final UserListDao userListDao;
     private final RoleDao roleDao;
     private final UserDao userDao;
     private final EmailServiceImpl emailService;
 
     @Autowired
-    public AdminServiceImpl(UserListDao userListDao, RoleDao roleDao, UserDao userDao, EmailServiceImpl emailService) {
-        this.userListDao = userListDao;
+    public AdminServiceImpl(RoleDao roleDao, UserDao userDao, EmailServiceImpl emailService) {
         this.roleDao = roleDao;
         this.userDao = userDao;
         this.emailService = emailService;
@@ -39,8 +36,6 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseEntity update(UpdateRolesListDto userDtos) {
         try {
-
-            System.out.println(userDtos.getUsers());
             sendUpdateEmail(userDtos);
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -48,9 +43,8 @@ public class AdminServiceImpl implements AdminService {
         if (userDtos.getUsers().isEmpty()) return ResponseEntity.badRequest().body("Empty list to update");
         else if (userDtos.getUsers().contains(null)) return ResponseEntity.badRequest().body("Null obj");
 
-        return userListDao.update(userDtos);
+        return userDao.update(userDtos);
     }
-
 
 
     @Override
@@ -60,7 +54,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public UserListDto returnUsers() {
-        return userListDao.returnUsers();
+        return userDao.returnUsers();
     }
 
     @Override
@@ -86,8 +80,8 @@ public class AdminServiceImpl implements AdminService {
 
     private void sendUpdateEmail(UpdateRolesListDto users) {
         UserInfoDto userLocal;
-        for (UpdateRolesDto user:
-             users.getUsers()) {
+        for (UpdateRolesDto user :
+                users.getUsers()) {
             userLocal = userDao.getByIdWithRoles(user.getUserId());
             List<String> roles = userLocal.getRoles().stream().map(Role::getName).collect(Collectors.toList());
             emailService.sendUserRolesChanged(userLocal.getEmail(), userLocal.getFirstName(), roles);

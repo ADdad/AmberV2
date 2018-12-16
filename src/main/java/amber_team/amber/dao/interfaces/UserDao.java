@@ -1,7 +1,9 @@
 package amber_team.amber.dao.interfaces;
 
 
+import amber_team.amber.model.dto.UpdateRolesListDto;
 import amber_team.amber.model.dto.UserInfoDto;
+import amber_team.amber.model.dto.UserListDto;
 import amber_team.amber.model.entities.User;
 import org.springframework.http.ResponseEntity;
 
@@ -16,6 +18,7 @@ public interface UserDao {
     List<UserInfoDto> getAllActive();
 
     User getById(String id);
+
     UserInfoDto getByIdWithRoles(String id);
 
     UserInfoDto getUserByEmail(Principal principal);
@@ -27,4 +30,8 @@ public interface UserDao {
     boolean checkEmailAvailability(String email);
 
     List<UserInfoDto> searchUsers(String search);
+
+    ResponseEntity update(UpdateRolesListDto userDtos);
+
+    UserListDto returnUsers();
 }
