@@ -14,8 +14,12 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class AdminController {
+    private final AdminService adminService;
+
     @Autowired
-    private AdminService adminService;
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/users/data")

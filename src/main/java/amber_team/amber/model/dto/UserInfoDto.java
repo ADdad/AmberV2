@@ -11,6 +11,15 @@ public class UserInfoDto {
     private String firstName;
     private String secondName;
     private List<Role> roles;
+    private int enabled;
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
 
     public UserInfoDto() {
     }
