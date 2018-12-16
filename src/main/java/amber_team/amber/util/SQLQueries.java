@@ -389,14 +389,14 @@ public class SQLQueries {
             " ORDER BY modified_date DESC" +
             " LIMIT ? OFFSET ?";
     public static final String GET_ADMIN_REQUESTS_PAGINATION = "SELECT * FROM requests" +
-            " WHERE status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing'" +
-            " AND archive = ? ORDER BY modified_date DESC LIMIT ? OFFSET ?";
+            " WHERE (status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing')" +
+            " AND archive = ? ORDER BY modified_date DESC LIMIT ? OFFSET ? ";
     public static final String GET_COUNT_ADMIN_REQUESTS = "SELECT COUNT(*) FROM requests" +
-            " WHERE status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing'" +
-            " AND archive = ?";
+            " WHERE (status = 'Opened' OR status = 'Waiting for replenishment' OR status = 'On reviewing') " +
+            " AND archive = ? ";
     public static final String GET_COUNT_EXECUTORS_REQUESTS = "SELECT COUNT(*) FROM requests WHERE executor_id = ? AND" +
             " status != 'Canceled' AND status != 'Completed' AND status != 'Rejected' AND status != 'On reviewing' " +
-            " AND status != 'Waiting for replenishment' AND archive = ?";
+            " AND status != 'Waiting for replenishment' AND archive = ? ";
     public static final String CLEAR_USERS_ROLES = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id NOT IN (:roles)";
     public static final String UPDATE_ENABLED_USER = "UPDATE users SET enabled = ? WHERE id = ?";
     public static final String CONNECT_REQUEST = "UPDATE requests SET connected_request = ? WHERE id = ?";

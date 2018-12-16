@@ -65,13 +65,28 @@ public class RequestController {
         return requestService.getCreatedRequests(principal, page, archive);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_KEEPER')")
+    @GetMapping("/user/requests/direct/{page}")
+    @ResponseStatus(HttpStatus.OK)
+    public RequestListDtoPagination getUsersRequests(@PathVariable int page,
+                                                     @RequestParam("userId") String userId) {
+        return requestService.getUsersRequests(userId, page);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public RequestListDtoPagination searchUsersRequests(@RequestParam("userId") String userId,
+                                                   @RequestParam("search") String search) {
+        return requestService.searchUsersRequests(search, userId);
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/requests")
     @ResponseStatus(HttpStatus.OK)
     public RequestListDtoPagination searchRequests(Principal principal, @RequestParam("archive") boolean archive,
                                                    @RequestParam("created") boolean created,
                                                    @RequestParam("search") String search) {
-        System.out.println(search);
         return requestService.searchRequests(principal, search, created, archive);
     }
 

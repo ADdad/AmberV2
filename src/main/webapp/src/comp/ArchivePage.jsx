@@ -11,6 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Visibility from "@material-ui/icons/Visibility";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AsyncSelect from "react-select/lib/Async";
 
 class ArchivePage extends Component {
   state = {
@@ -132,11 +133,6 @@ class ArchivePage extends Component {
         divider
         onClick={this.handleToggleCreated(request.id)}
       >
-        <Checkbox
-          checked={this.state.createdChecked.indexOf(request.id) !== -1}
-          tabIndex={-1}
-          disableRipple
-        />
         <ListItemText
           className="col-md-4"
           primary={request.title.substr(0, 17)}
@@ -182,11 +178,6 @@ class ArchivePage extends Component {
         divider
         onClick={this.handleToggleExecuting(request.id)}
       >
-        <Checkbox
-          checked={this.state.executingChecked.indexOf(request.id) !== -1}
-          tabIndex={-1}
-          disableRipple
-        />
         <ListItemText
           className="col-md-4"
           primary={request.title.substr(0, 17)}
@@ -223,6 +214,133 @@ class ArchivePage extends Component {
         </ListItemSecondaryAction>
       </ListItem>
     );
+  };
+
+  renderAsyncCreatorSelect = () => {
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <AsyncSelect
+          cacheOptions
+          defaultOptions={this.getRequestsOptions(this.state.createdRequests)}
+          loadOptions={this.loadCreatorOptions}
+          onChange={this.chosenItem}
+        />
+      </div>
+    );
+  };
+
+  renderAsyncExecutorSelect = () => {
+    return (
+      <div
+        className={
+          this.state.doubleList ? "col-md-6 form-group" : "col-md-12 form-group"
+        }
+      >
+        <AsyncSelect
+          cacheOptions
+          defaultOptions={this.getRequestsOptions(this.state.executingRequests)}
+          loadOptions={this.loadExecutorOptions}
+          onChange={this.chosenItem}
+        />
+      </div>
+    );
+  };
+
+  loadCreatorOptions = (input, callback) => {
+    if (!input || input.length < 1) {
+      return callback(this.getRequestsOptions(this.state.createdRequests));
+    }
+    return fetch(`/requests?search=${input}&created=true&archive=true`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        console.log(json);
+        let options = [];
+        options = this.getRequestsOptions(json.requests);
+        return callback(options);
+      });
+  };
+
+  loadExecutorOptions = (input, callback) => {
+    if (!input || input.length < 1) {
+      return callback(this.getRequestsOptions(this.state.executingRequests));
+    }
+    return fetch(`/requests?search=${input}&created=false&archive=true`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let options = [];
+        options = this.getRequestsOptions(json.requests);
+        return this.loadUsers(options, input, callback);
+      });
+  };
+
+  loadUsers = (options, input, callback) => {
+    console.log(options);
+    return fetch(`/users?search=${input}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let res = options.concat(this.getUsersOptions(json.list));
+        console.log(res);
+        return callback(res);
+      });
+  };
+
+  getRequestsOptions = requests => {
+    let requestsLocal = requests;
+    let result = [];
+    requestsLocal.map(i =>
+      result.push({ label: this.requestName(i), value: i.id, type: "request" })
+    );
+    return result;
+  };
+
+  getUsersOptions = users => {
+    let usersLocal = users;
+    let result = [];
+    usersLocal.map(i =>
+      result.push({ label: this.userName(i), value: i.id, type: "user" })
+    );
+    return result;
+  };
+
+  userName = user => {
+    return (
+      user.email.substr(0, 20) +
+      ", " +
+      user.firstName.substr(0, 20) +
+      " " +
+      user.secondName.substr(0, 20)
+    );
+  };
+
+  requestName = request => {
+    return (
+      request.title.substr(0, 20) +
+      ", " +
+      request.description.substr(0, 20) +
+      ", " +
+      request.status
+    );
+  };
+
+  chosenItem = item => {
+    if (typeof item != "undefined") {
+      if (item.type == "request") {
+        this.props.history.push(`order/${item.value}`);
+      }
+      if (item.type == "user") {
+        this.props.history.push(`user/${item.value}`);
+      }
+    }
   };
 
   handleToggleExecuting = value => () => {
@@ -416,13 +534,17 @@ class ArchivePage extends Component {
           {this.state.executingListSize < 1 &&
             this.state.createdListSize < 1 &&
             this.renderHelloMessage()}
-          <div className="from-row d-flex justify-content-between">
-            <div>
-              {this.state.userRoles.filter(role => role.name === "ROLE_USER")
-                .length > 0 &&
-                this.state.createdChecked.length > 0 &&
-                this.createCancelManyButton()}
-            </div>
+          <div className="form-row">
+            {this.state.userRoles.filter(role => role.name === "ROLE_USER")
+              .length > 0 &&
+              this.state.createdListSize > 0 &&
+              this.renderAsyncCreatorSelect()}
+            {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")
+              .length > 0 ||
+              this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
+                .length > 0) &&
+              this.state.executingListSize > 0 &&
+              this.renderAsyncExecutorSelect()}
           </div>
           <div className="form-row">
             {this.state.userRoles.filter(role => role.name === "ROLE_USER")

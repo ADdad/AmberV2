@@ -184,26 +184,12 @@ class DashboardPage extends Component {
         divider
         onClick={this.handleToggleExecuting(request.id)}
       >
-        <Checkbox
-          checked={this.state.executingChecked.indexOf(request.id) !== -1}
-          tabIndex={-1}
-          disableRipple
-        />
         <ListItemText
           className="col-md-4"
           primary={request.title.substr(0, 17)}
           secondary={request.description.substr(0, 30)}
         />
         <ListItemText primary={request.typeId} className="col-md-2" />
-        {/* <ListItemText
-          className="col-md-2 ml-0 p-0"
-          primary={request.creator.email.substr(0, 10)}
-          secondary={
-            request.creator.firstName +
-            " " +
-            request.creator.secondName.substr(0, 5)
-          }
-        /> */}
         <ListItemText
           className="col-md-2 ml-0 p-0"
           primary={request.creationDate.substr(0, 10)}
@@ -510,7 +496,7 @@ class DashboardPage extends Component {
         this.props.history.push(`order/${item.value}`);
       }
       if (item.type == "user") {
-        this.props.history.push(`user/${item.value}`);
+        this.props.history.push(`users/${item.value}`);
       }
     }
   };

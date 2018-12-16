@@ -102,12 +102,11 @@ class AdminPageNew extends Component {
   renderUser = user => {
     return (
       <div className="form-row border rounded m-2 col-md-12">
-        <p className="form-group">
+        <p className="form-row">
           {user.firstName} {user.secondName}
           {","} {user.email}
         </p>
-        <br />
-        <div className="col-md-10 mt-auto">
+        <div className="form-row col-md-10 mt-auto">
           <Select
             defaultValue={this.rolesOptions(user.roles, user.id)}
             isMulti

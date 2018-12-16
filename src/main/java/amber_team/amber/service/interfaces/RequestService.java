@@ -31,4 +31,8 @@ public interface RequestService {
     RequestListDtoPagination getExecutingRequests(Principal principal, int page, boolean archive);
 
     RequestListDtoPagination searchRequests(Principal principal, String search, boolean created, boolean archive);
+
+    RequestListDtoPagination getUsersRequests(String userId, int page);
+
+    RequestListDtoPagination searchUsersRequests(String search, String userId);
 }

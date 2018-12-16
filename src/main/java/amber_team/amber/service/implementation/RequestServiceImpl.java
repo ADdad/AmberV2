@@ -235,6 +235,25 @@ public class RequestServiceImpl implements RequestService {
         return requestListDtoPagination;
     }
 
+    @Override
+    public RequestListDtoPagination getUsersRequests(String userId, int page) {
+        page--;
+        List<Request> listRequests = requestDao.getAllUsersRequestsPagination(userId, page *
+                REQUESTS_PAGINATION_SIZE, REQUESTS_PAGINATION_SIZE, false);
+        RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination();
+        requestListDtoPagination.setRequests(listRequests);
+        requestListDtoPagination.setRequestsCount(requestDao.getCountOfUsersRequests(userId, false));
+        return requestListDtoPagination;
+    }
+
+    @Override
+    public RequestListDtoPagination searchUsersRequests(String search, String userId) {
+        List<Request> requestList = new ArrayList<>();
+        requestList.addAll(requestDao.searchRequests(search, userId, false));
+        RequestListDtoPagination requestListDtoPagination = new RequestListDtoPagination(requestList);
+        return requestListDtoPagination;
+    }
+
     private boolean containsRole(UserInfoDto user, String role) {
         return user.getRoles().stream().map(Role::getName).anyMatch(role::equals);
     }

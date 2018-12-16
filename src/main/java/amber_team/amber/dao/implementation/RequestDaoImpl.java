@@ -168,7 +168,8 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public int getCountOfKeeperRequests(String userId, boolean archive) {
-        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS, new Object[]{userId, archive},
+        Integer count = jdbcTemplate.queryForObject(SQLQueries.GET_COUNT_EXECUTORS_REQUESTS,
+                new Object[]{userId, archive},
                 Integer.class);
         if (count == null) return 0;
         return count;

@@ -19,6 +19,7 @@ import SearchAppBar from "./comp/SearchAppBar";
 import EquipmentAdding from "./comp/EquipmentAdding";
 import CreateEquipment from "./comp/CreateEquipment";
 import ArchivePage from "./comp/ArchivePage";
+import UsersRequests from "./comp/UsersRequests";
 
 const fakeAuth = {
   isAuthenticated: true,
@@ -88,6 +89,7 @@ class App extends Component {
               path="/order/create/:type/:requestId?"
               component={CreateOrder}
             />
+            <Route path="/users/:userId" component={UsersRequests} />
             <Route path="/order/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/archive" component={ArchivePage} />
