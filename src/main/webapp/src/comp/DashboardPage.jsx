@@ -512,7 +512,6 @@ class DashboardPage extends Component {
   };
 
   render() {
-    console.log(this.state);
     if (
       this.state.executingListSize == null ||
       this.state.createdListSize == null
