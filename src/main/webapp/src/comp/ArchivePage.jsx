@@ -37,7 +37,7 @@ class ArchivePage extends Component {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        
         let doubleListLocal = true;
         if (
           data.roles.filter(role => role.name === "ROLE_USER").length > 0 &&
@@ -84,7 +84,7 @@ class ArchivePage extends Component {
       .then(data => {
         let doubleList = true;
         if (data.requestsCount < 1) doubleList = false;
-        console.log(data);
+      
         this.setState({
           executingRequests: data.requests,
           executingListSize: data.requestsCount,
@@ -112,7 +112,7 @@ class ArchivePage extends Component {
       .then(response => response.json())
       .then(data => {
         this.downloadCreatedRequestsPaginated(this.state.activePage);
-        console.log(data);
+       
       })
       .catch(error => {
         console.error("Error:", error);
@@ -259,7 +259,7 @@ class ArchivePage extends Component {
         return response.json();
       })
       .then(json => {
-        console.log(json);
+       
         let options = [];
         options = this.getRequestsOptions(json.requests);
         return callback(options);
@@ -282,14 +282,14 @@ class ArchivePage extends Component {
   };
 
   loadUsers = (options, input, callback) => {
-    console.log(options);
+  
     return fetch(`/users?search=${input}`)
       .then(response => {
         return response.json();
       })
       .then(json => {
         let res = options.concat(this.getUsersOptions(json.list));
-        console.log(res);
+        
         return callback(res);
       });
   };
@@ -407,7 +407,7 @@ class ArchivePage extends Component {
   };
 
   renderExecutingRequests = () => {
-    console.log(this.state.executingListSize);
+  
     let executingRequests = this.state.executingRequests.map(u =>
       this.renderExecutingRequest(u)
     );

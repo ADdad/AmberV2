@@ -89,7 +89,7 @@ class App extends Component {
               path="/order/create/:type/:requestId?"
               component={CreateOrder}
             />
-            <Route path="/users/:userId" component={UsersRequests} />
+            <Route path="/user/:userId" component={UsersRequests} />
             <Route path="/order/:requestId" component={OrderReview} />
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/archive" component={ArchivePage} />

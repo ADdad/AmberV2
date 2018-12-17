@@ -13,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AsyncSelect from "react-select/lib/Async";
 import { debounce } from "lodash";
+import Select from "react-select";
 
 class UsersRequests extends Component {
   state = {
@@ -20,12 +21,15 @@ class UsersRequests extends Component {
     executingChecked: [],
     userId: null,
     userRoles: [],
+    directUser: null,
     activePage: 1,
     itemsPerPage: 25,
     isLoading: false,
     doubleList: false,
     createdRequests: [],
-    directedUserId: null
+    directedUserId: null,
+    newUserRoles: [],
+    systemRoles: null
   };
 
   componentWillMount() {
@@ -41,7 +45,31 @@ class UsersRequests extends Component {
         this.downloadCreatedRequestsPaginated(1);
       })
       .catch(error => console.log(error));
+    this.loadUser(this.props.match.params.userId);
+    fetch(`/users/data`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          systemRoles: data.systemRoles
+        });
+      })
+      .catch(error => console.log(error));
   }
+
+  loadUser = userId => {
+    fetch(`/users/${userId}`, {
+      method: "GET"
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          directUser: data
+        });
+      })
+      .catch(error => console.log(error));
+  };
 
   downloadCreatedRequestsPaginated = page => {
     fetch(`/user/requests/direct/${page}?userId=${this.state.directedUserId}`, {
@@ -71,7 +99,7 @@ class UsersRequests extends Component {
         dense
         button
         divider
-        onClick={this.handleToggleCreated(request.id)}
+        onClick={() => this.handleToggleCreated(request.id)}
       >
         <ListItemText
           className="col-md-4"
@@ -116,6 +144,116 @@ class UsersRequests extends Component {
     this.setState({
       createdChecked: newChecked
     });
+  };
+
+  renderEnableButton = userId => {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => this.handleEnableUser(userId)}
+        className="form-group m-2 col-md-2"
+      >
+        Enable user
+      </Button>
+    );
+  };
+
+  rolesOptions = (roles, userId) => {
+    let localRoles = roles;
+    let rolesOptions = [];
+    localRoles.map(r =>
+      rolesOptions.push({
+        label: r.name.substr(5),
+        value: r.id,
+        userId: userId
+      })
+    );
+    return rolesOptions;
+  };
+
+  handleEnableUser = userId => {
+    fetch(`/users/enable?userId=${userId}&value=true`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(r => r.json())
+      .then(d => {
+        this.loadUser(this.state.directedUserId);
+      })
+      .catch(error => console.log("error.....", error));
+  };
+
+  renderUser = user => {
+    return (
+      <div className="form-row border rounded m-2 col-md-12">
+        <div className="form-group m-2 col-md-4">
+          <p>
+            {user.firstName} {user.secondName}
+            {","} {user.email}
+          </p>
+        </div>
+        <div className="form-group col-md-6 mt-auto">
+          <Select
+            defaultValue={this.rolesOptions(user.roles, user.id)}
+            isMulti
+            name={user.id}
+            options={this.rolesOptions(this.state.systemRoles, user.id)}
+            className="basic-multi-select form-group"
+            classNamePrefix="select"
+            onChange={e => this.handleUserChange(user.id, e)}
+          />
+        </div>
+        {this.renderSaveButton()}
+        {user.enabled == 0 && this.renderEnableButton(user.id)}
+      </div>
+    );
+  };
+
+  renderSaveButton = () => {
+    return (
+      <Button
+        variant="outlined"
+        color="primary"
+        className="form-group m-2 col-md-2"
+        onClick={this.handleSaveRoles}
+      >
+        Save roles
+      </Button>
+    );
+  };
+
+  handleSaveRoles = () => {
+    fetch("/users", {
+      method: "PATCH",
+      body: JSON.stringify({
+        users: [
+          {
+            userId: this.state.directedUserId,
+            roles: this.state.newUserRoles
+          }
+        ]
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(r => r.json())
+      .then(d => {
+        this.setState({ newUserRoles: [] });
+      })
+      .catch(error => {
+        this.setState({ newUserRoles: [] });
+        console.log("error.....", error);
+      });
+  };
+
+  handleUserChange = (userId, userData) => {
+    let rolesId = [];
+    userData.map(d => rolesId.push(d.value));
+    this.setState({ newUserRoles: rolesId });
   };
 
   renderCreatedRequests = () => {
@@ -253,12 +391,20 @@ class UsersRequests extends Component {
   };
 
   render() {
-    if (this.state.usersListSize == null) {
+    if (
+      this.state.usersListSize == null ||
+      this.state.directUser == null ||
+      this.state.systemRoles == null
+    ) {
       return this.renderLoader();
     }
     return (
       <React.Fragment>
         <div className="container-fluid">
+          {this.state.userRoles.filter(role => role.name === "ROLE_ADMIN")
+            .length > 0 &&
+            this.state.directUser != null &&
+            this.renderUser(this.state.directUser)}
           {this.state.usersListSize < 1 && this.renderHelloMessage()}
           <div className="form-row">
             {(this.state.userRoles.filter(role => role.name === "ROLE_KEEPER")

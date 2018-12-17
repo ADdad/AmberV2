@@ -38,7 +38,6 @@ class DashboardPage extends Component {
     fetch("/userinfo")
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         let doubleListLocal = true;
         if (
           data.roles.filter(role => role.name === "ROLE_USER").length > 0 &&
@@ -85,7 +84,7 @@ class DashboardPage extends Component {
       .then(data => {
         let doubleList = true;
         if (data.requestsCount < 1) doubleList = false;
-        console.log(data);
+
         this.setState({
           executingRequests: data.requests,
           executingListSize: data.requestsCount,
@@ -113,7 +112,6 @@ class DashboardPage extends Component {
       .then(response => response.json())
       .then(data => {
         this.downloadCreatedRequestsPaginated(this.state.activePage);
-        console.log(data);
       })
       .catch(error => {
         console.error("Error:", error);
@@ -417,7 +415,6 @@ class DashboardPage extends Component {
         return response.json();
       })
       .then(json => {
-        console.log(json);
         let options = [];
         options = this.getRequestsOptions(json.requests);
         return callback(options);
@@ -440,14 +437,13 @@ class DashboardPage extends Component {
   };
 
   loadUsers = (options, input, callback) => {
-    console.log(options);
     return fetch(`/users?search=${input}`)
       .then(response => {
         return response.json();
       })
       .then(json => {
         let res = options.concat(this.getUsersOptions(json.list));
-        console.log(res);
+
         return callback(res);
       });
   };
@@ -496,7 +492,7 @@ class DashboardPage extends Component {
         this.props.history.push(`order/${item.value}`);
       }
       if (item.type == "user") {
-        this.props.history.push(`users/${item.value}`);
+        this.props.history.push(`user/${item.value}`);
       }
     }
   };
@@ -516,6 +512,7 @@ class DashboardPage extends Component {
   };
 
   render() {
+    console.log(this.state);
     if (
       this.state.executingListSize == null ||
       this.state.createdListSize == null

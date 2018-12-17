@@ -38,7 +38,6 @@ class OrderReview extends Component {
 
   getExecutorsOptions = () => {
     let res = [];
-    console.log(this.state.executors);
     this.state.executors.map(e =>
       res.push({
         value: e.id,
@@ -146,7 +145,7 @@ class OrderReview extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        
         this.setState({
           title: data.title,
           status: data.status,
@@ -193,11 +192,11 @@ class OrderReview extends Component {
   };
 
   loadUnavalibleEquipment = requestId => {
-    console.log(requestId);
+
     fetch(`/equipment/unavalible/${requestId}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+     
         this.setState({
           unavalibleEquipment: data.list
         });
@@ -302,7 +301,6 @@ class OrderReview extends Component {
         .then(response => response.json())
         .then(data => {
           this.setState({ executors: data.list });
-          console.log("Executors", data);
         })
         .catch(error => console.log(error));
     }

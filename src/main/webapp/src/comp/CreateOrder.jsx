@@ -182,7 +182,7 @@ class CreateOrder extends Component {
   //Split in functions
 
   loadEquipment = localEquip => {
-    console.log(this.state);
+
     let localItemsOptions = this.getItemsOptions(localEquip);
     localItemsOptions.map(e => this.addItem(e));
 
@@ -230,7 +230,7 @@ class CreateOrder extends Component {
         .then(response => response.json())
         .then(data => {
           if (this.state.attachments.length > 0) {
-            console.log(data);
+            
             this.uploadFiles(data.id);
           } else {
             this.props.history.push("/dashboard");
@@ -524,7 +524,7 @@ class CreateOrder extends Component {
   };
 
   loadOptions = (input, callback) => {
-    console.log(input);
+
     if (!input || input.length < 1) {
       return callback(this.getItemsOptions(this.state.myItems));
     }

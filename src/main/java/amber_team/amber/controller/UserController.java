@@ -43,4 +43,11 @@ public class UserController {
         return userService.searchUsers(search);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping(value = "/users/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserInfoDto getUserById(@PathVariable String userId) {
+        return userService.getUserById(userId);
+    }
+
 }

@@ -1,6 +1,7 @@
 package amber_team.amber.service.interfaces;
 
 import amber_team.amber.model.dto.UserDto;
+import amber_team.amber.model.dto.UserInfoDto;
 import amber_team.amber.model.dto.UserListDto;
 import org.springframework.http.ResponseEntity;
 
@@ -14,4 +15,6 @@ public interface UserService {
     ResponseEntity getUserInfo(Principal principal);
 
     UserListDto searchUsers(String search);
+
+    UserInfoDto getUserById(String userId);
 }

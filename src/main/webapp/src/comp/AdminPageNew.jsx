@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Pagination from "react-js-pagination";
 import Select from "react-select";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import AsyncSelect from "react-select/lib/Async";
 
 class AdminPageNew extends Component {
   state = {
@@ -25,7 +28,7 @@ class AdminPageNew extends Component {
           userRoles: data.roles.map(role => role.name),
           isLoading: false
         });
-        if (!this.state.userRoles.includes("ROLE_ADMIN")) {
+        if (data.roles.filter(u => u.name == "ROLE_ADMIN").length < 1) {
           this.props.history.push("/errorpage");
         }
       })
@@ -35,7 +38,6 @@ class AdminPageNew extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         this.setState({
           systemRoles: data.systemRoles,
           listSize: data.usersCount
@@ -47,6 +49,62 @@ class AdminPageNew extends Component {
 
   handleRemoveUser = userId => {
     this.handleUserChange(userId, []);
+  };
+
+  renderAsyncAdminSelect = () => {
+    return (
+      <div className="form-row">
+        <div className="col-md-12 form-group">
+          <AsyncSelect
+            cacheOptions
+            defaultOptions={this.getUsersOptions(this.state.users)}
+            loadOptions={this.loadUsersOptions}
+            onChange={this.chosenItem}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  loadUsersOptions = (input, callback) => {
+    if (!input || input.length < 1) {
+      return callback(this.getUsersOptions(this.state.users));
+    }
+    return fetch(`/users?search=${input}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        let res = this.getUsersOptions(json.list);
+        return callback(res);
+      });
+  };
+
+  getUsersOptions = users => {
+    let usersLocal = users;
+    let result = [];
+    usersLocal.map(i =>
+      result.push({ label: this.userName(i), value: i.id, type: "user" })
+    );
+    return result;
+  };
+
+  userName = user => {
+    return (
+      user.email.substr(0, 20) +
+      ", " +
+      user.firstName.substr(0, 20) +
+      " " +
+      user.secondName.substr(0, 20)
+    );
+  };
+
+  chosenItem = item => {
+    if (typeof item != "undefined") {
+      if (item.type == "user") {
+        this.props.history.push(`user/${item.value}`);
+      }
+    }
   };
 
   rolesOptions = (roles, userId) => {
@@ -63,7 +121,6 @@ class AdminPageNew extends Component {
   };
 
   updateUsers = () => {
-    console.log("User to update: ", this.state.usersToUpdate);
     if (this.state.usersToUpdate.length > 0) {
       fetch("/users", {
         method: "PATCH",
@@ -76,10 +133,12 @@ class AdminPageNew extends Component {
       })
         .then(r => r.json())
         .then(d => {
-          console.log(d);
-          this.setState({ usersToUpdate: [], postStyle: true });
+          this.setState({ usersToUpdate: [] });
         })
-        .catch(error => console.log("error.....", error));
+        .catch(error => {
+          console.log("error.....", error);
+          this.setState({ usersToUpdate: [] });
+        });
     }
   };
 
@@ -99,14 +158,46 @@ class AdminPageNew extends Component {
     this.setState({ usersToUpdate: usersToUpdateLocal });
   };
 
+  renderEnableButton = userId => {
+    return (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => this.handleEnableUser(userId)}
+        className="form-group m-2 col-md-2"
+      >
+        Enable user
+      </Button>
+    );
+  };
+
+  handleEnableUser = userId => {
+    fetch(`/users/enable?userId=${userId}&value=true`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(r => r.json())
+      .then(d => {
+        this.updateUsers();
+      })
+      .catch(error => {
+        this.updateUsers();
+        console.log("error.....", error);
+      });
+  };
+
   renderUser = user => {
     return (
       <div className="form-row border rounded m-2 col-md-12">
-        <p className="form-row">
-          {user.firstName} {user.secondName}
-          {","} {user.email}
-        </p>
-        <div className="form-row col-md-10 mt-auto">
+        <div className="form-group m-2 col-md-4">
+          <p>
+            {user.firstName} {user.secondName}
+            {","} {user.email}
+          </p>
+        </div>
+        <div className="form-group col-md-6 mt-auto">
           <Select
             defaultValue={this.rolesOptions(user.roles, user.id)}
             isMulti
@@ -117,18 +208,19 @@ class AdminPageNew extends Component {
             onChange={e => this.handleUserChange(user.id, e)}
           />
         </div>
+        {user.enabled == 0 && this.renderEnableButton(user.id)}
       </div>
     );
   };
 
   handlePageChange = pageNumber => {
     const convertNumber = pageNumber - 1;
-    fetch(`/users/${convertNumber}`, {
+    fetch(`/users/page/${convertNumber}`, {
       method: "GET"
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+      
         this.setState({
           activePage: pageNumber,
           users: data.list
@@ -137,14 +229,29 @@ class AdminPageNew extends Component {
       .catch(error => console.log(error));
   };
 
+  renderLoader = () => {
+    return (
+      <React.Fragment>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </div>
+      </React.Fragment>
+    );
+  };
+
   render() {
     let user = this.state.users.map(u => this.renderUser(u));
-    if (this.state.isLoading) {
-      return <p>Loading ...</p>;
+    if (this.state.systemRoles.length < 1) {
+      return this.renderLoader();
     }
     return (
       <React.Fragment>
         <div className="col-md-12">
+          {this.renderAsyncAdminSelect()}
           <div className="form-row">
             <button
               className={

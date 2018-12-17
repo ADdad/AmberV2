@@ -31,6 +31,8 @@ public interface UserDao {
 
     List<UserInfoDto> searchUsers(String search);
 
+    void enableUser(String userId, boolean enable);
+
     ResponseEntity update(UpdateRolesListDto userDtos);
 
     UserListDto returnUsers();

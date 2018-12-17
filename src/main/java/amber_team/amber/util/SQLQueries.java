@@ -24,7 +24,7 @@ public class SQLQueries {
             "INNER JOIN user_roles ON users.id = user_roles.user_id " +
             "INNER JOIN roles ON user_roles.role_id = roles.id " +
             "WHERE users.email = ?";
-    public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name " +
+    public static final String USER_INFO_BY_USERNAME = "SELECT id, email, f_name, s_name, enabled " +
             "FROM users WHERE users.email =?";
     public static final String USERS_INFO = "SELECT users.id, users.email, users.f_name, users.s_name, roles.name " +
             "FROM users " +

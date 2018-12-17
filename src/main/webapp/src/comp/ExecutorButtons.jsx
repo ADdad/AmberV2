@@ -35,7 +35,7 @@ class ExecutorButtons extends Component {
         .then(data => {
           this.setState({ buttonChange: true });
           this.props.history.push("/dashboard");
-          console.log(data);
+         
         })
         .catch(error => {
           console.error("Error:", error);
@@ -66,7 +66,7 @@ class ExecutorButtons extends Component {
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data);
+            
           })
           .catch(error => {
             console.error("Error:", error);
@@ -96,7 +96,7 @@ class ExecutorButtons extends Component {
 
   initButtons = () => {
     let status = this.props.status;
-    console.log("Init buttons", status);
+    
     let localButtons = [];
     switch (status) {
       case "Opened": {

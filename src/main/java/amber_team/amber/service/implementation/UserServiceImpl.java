@@ -81,6 +81,11 @@ public class UserServiceImpl implements UserService {
         return userListDto;
     }
 
+    @Override
+    public UserInfoDto getUserById(String userId) {
+        return userDao.getByIdWithRoles(userId);
+    }
+
     private boolean checkForNotNull(String email, String password, String firstName, String secondName) {
         return !(email.isEmpty() || password.isEmpty() || firstName.isEmpty() || secondName.isEmpty());
     }

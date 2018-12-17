@@ -8,11 +8,9 @@ import java.security.Principal;
 public interface AdminService {
     ResponseEntity update(UpdateRolesListDto userDtos);
 
-    UserListDto getAdminInfo(Principal principal);
-
-    UserListDto returnUsers();
-
     UserListDto getUsers(int pageNumber);
 
     AdminPageUsersDataDto getUsersData();
+
+    ResponseEntity enableUser(String userId, boolean value);
 }

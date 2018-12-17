@@ -29,9 +29,15 @@ public class AdminController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/users/{pageNumber}")
+    @GetMapping(value = "/users/page/{pageNumber}")
     public UserListDto getUsers(@PathVariable int pageNumber) {
         return adminService.getUsers(pageNumber);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping(value = "/users/enable")
+    public ResponseEntity enableUser(@RequestParam("userId") String userId, @RequestParam("value") boolean value) {
+        return adminService.enableUser(userId, value);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

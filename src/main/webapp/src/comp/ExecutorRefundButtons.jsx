@@ -35,7 +35,7 @@ class ExecutorRefundButtons extends Component {
         .then(data => {
           this.setState({ buttonChange: true });
           this.props.history.push("/dashboard");
-          console.log(data);
+          
         })
         .catch(error => {
           console.error("Error:", error);
@@ -48,7 +48,7 @@ class ExecutorRefundButtons extends Component {
       name === "Waiting for equipment" &&
       this.props.executorId == null
     ) {
-      console.log("worked");
+     
       this.props.validateComment("Chose executor");
     } else {
       if (name === "Rejected") {
@@ -70,7 +70,7 @@ class ExecutorRefundButtons extends Component {
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data);
+            
           })
           .catch(error => {
             console.error("Error:", error);
@@ -100,7 +100,7 @@ class ExecutorRefundButtons extends Component {
 
   initButtons = () => {
     let status = this.props.status;
-    console.log("Init buttons", status);
+  
     let localButtons = [];
     switch (status) {
       case "Opened": {

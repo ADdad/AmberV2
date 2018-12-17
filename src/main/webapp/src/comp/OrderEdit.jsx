@@ -247,7 +247,7 @@ class OrderEdit extends Component {
   }
 
   loadAdditionaAtrributes = type => {
-    console.log(this.state.type);
+ 
     fetch(`/request/create/${type.name}`)
       .then(res => res.json())
       .then(response => {
@@ -706,8 +706,6 @@ class OrderEdit extends Component {
       attachmetsListLocal = this.attachmentsList();
     }
 
-    console.log(this.state.type);
-    console.log(this.state.optionalAttributes);
     let localOptionalFields = [];
     if (this.state.type != null && this.state.optionalAttributes.length > 0) {
       const globalOptionalFields = [...this.state.optionalAttributes];

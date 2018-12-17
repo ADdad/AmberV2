@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,16 +47,6 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public UserListDto getAdminInfo(Principal principal) {
-        return null;
-    }
-
-    @Override
-    public UserListDto returnUsers() {
-        return userDao.returnUsers();
-    }
-
-    @Override
     public UserListDto getUsers(int pageNumber) {
         UserListDto userListDto = new UserListDto();
         List<UserInfoDto> users = userDao.getUsersPagination(USERS_PAGINATION_SIZE * pageNumber, USERS_PAGINATION_SIZE);
@@ -74,8 +63,14 @@ public class AdminServiceImpl implements AdminService {
     public AdminPageUsersDataDto getUsersData() {
         AdminPageUsersDataDto adminPageUsersDataDto = new AdminPageUsersDataDto();
         adminPageUsersDataDto.setSystemRoles(roleDao.getAll());
-        adminPageUsersDataDto.setUsersCount(userDao.getAllActive().size());
+        adminPageUsersDataDto.setUsersCount(userDao.getAll().size());
         return adminPageUsersDataDto;
+    }
+
+    @Override
+    public ResponseEntity enableUser(String userId, boolean value) {
+        userDao.enableUser(userId, value);
+        return ResponseEntity.ok().body("Done");
     }
 
     private void sendUpdateEmail(UpdateRolesListDto users) {

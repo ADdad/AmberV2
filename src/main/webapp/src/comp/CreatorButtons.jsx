@@ -7,7 +7,6 @@ class CreatorButtons extends Component {
   };
 
   handleClick = name => {
-    console.log(name);
     if (name == "refund") {
       let path = "/order/create/refund/" + this.props.requestId;
       this.props.history.push(path);
@@ -32,7 +31,7 @@ class CreatorButtons extends Component {
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
+          console.log("Good");
         })
         .catch(error => {
           console.error("Error:", error);
@@ -42,7 +41,7 @@ class CreatorButtons extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.status);
+    
     this.initButtons();
   }
 

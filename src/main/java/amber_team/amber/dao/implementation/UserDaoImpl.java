@@ -103,6 +103,7 @@ public class UserDaoImpl implements UserDao {
         info.setEmail(rs.getString("email"));
         info.setFirstName(rs.getString("f_name"));
         info.setSecondName(rs.getString("s_name"));
+        info.setEnabled(rs.getInt("enabled"));
         return info;
     }
 
@@ -191,10 +192,9 @@ public class UserDaoImpl implements UserDao {
         return users;
     }
 
-
-    private void enableUser(String userId, boolean enable) {
-        int enabled = 0;
-        if (enable) enabled = 1;
+    @Override
+    public void enableUser(String userId, boolean enable) {
+        int enabled = enable ? 1 : 0;
         jdbcTemplate.update(SQLQueries.UPDATE_ENABLED_USER, enabled, userId);
     }
 

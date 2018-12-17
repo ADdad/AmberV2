@@ -38,7 +38,7 @@ class EquipmentAdding extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+       
         this.setState({
           myItems: data.equipment,
           initialized: true
@@ -50,7 +50,7 @@ class EquipmentAdding extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+       
         this.setState({
           warehouses: data.warehouses
         });
@@ -78,7 +78,7 @@ class EquipmentAdding extends Component {
   };
 
   loadOptions = (input, callback) => {
-    console.log(input);
+    
     if (!input || input.length < 1) {
       return callback(this.getItemsOptions(this.state.myItems));
     }
