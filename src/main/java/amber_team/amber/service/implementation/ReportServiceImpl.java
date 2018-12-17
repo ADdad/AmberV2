@@ -65,37 +65,69 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity getProcessedOrdersReport(ReportOrdersDto reportDto) {
-        return reportDao.getProcessedOrdersReport(reportDto);
+        if (checkReportOrdersDto(reportDto)) {
+            return reportDao.getProcessedOrdersReport(reportDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
+
+
 
     @Override
     public ResponseEntity getUnprocessedOrdersReport(ReportOrdersDto reportDto) {
-        return reportDao.getUnprocessedOrdersReport(reportDto);
+        if (checkReportOrdersDto(reportDto)) {
+            return reportDao.getUnprocessedOrdersReport(reportDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
 
     @Override
     public ResponseEntity getExecutedOrdersReportBy(ReportOrdersWithUserDto reportDto) {
-        return reportDao.getExecutedOrdersReportBy(reportDto);
+        if (checkReportOrdersDto(reportDto)) {
+            return reportDao.getExecutedOrdersReportBy(reportDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
 
     @Override
     public ResponseEntity getCreatedOrdersReportBy(ReportOrdersWithUserDto reportDto) {
-        return reportDao.getCreatedOrdersReportBy(reportDto);
+        if (checkReportOrdersDto(reportDto)) {
+            return reportDao.getCreatedOrdersReportBy(reportDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
 
     @Override
     public ResponseEntity getWarehouses(PaginationDto helperDto) {
-        return reportDao.getWarehouses(helperDto);
+        if(checkPaginationDto(helperDto)) {
+            return reportDao.getWarehouses(helperDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
+
+
 
     @Override
     public ResponseEntity getExecutors(PaginationDto helperDto) {
-        return reportDao.getExecutors(helperDto);
+        if(checkPaginationDto(helperDto)) {
+            return reportDao.getExecutors(helperDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
 
     @Override
     public ResponseEntity getCreators(PaginationDto helperDto) {
-        return reportDao.getCreators(helperDto);
+        if(checkPaginationDto(helperDto)) {
+            return reportDao.getCreators(helperDto);
+        } else {
+            return ResponseEntity.badRequest().body(ErrorMessages.BLANK_INPUTS);
+        }
     }
 
     @Override
@@ -191,6 +223,15 @@ public class ReportServiceImpl implements ReportService {
     private boolean checkReportAvailableEquipmentDto(ReportAvailableEquipmentDto reportDto) {
         return !(reportDto.getWarehouseId().isEmpty() || reportDto.getPageNumber() < 0 ||
                 reportDto.getResultsPerPage() < 0);
+    }
+
+    private boolean checkReportOrdersDto(ReportOrdersDto reportDto) {
+        return !(reportDto.getFromDate().compareTo(reportDto.getToDate()) < 0 ||  reportDto.getPageNumber() < 0 ||
+                reportDto.getResultsPerPage() < 0);
+    }
+
+    private boolean checkPaginationDto(PaginationDto helperDto) {
+        return !(helperDto.getPageNumber() < 0 || helperDto.getResultsPerPage() < 0);
     }
 
 }
